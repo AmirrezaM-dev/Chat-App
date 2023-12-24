@@ -1,12 +1,20 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
+import "./assets/webfonts/inter/inter.css"
+import "./assets/css/app.min.css"
+import "bootstrap/dist/css/bootstrap.min.css"
 import App from "./App"
-import reportWebVitals from "./reportWebVitals"
+import { HashRouter as Router } from "react-router-dom"
+import MainComponent from "./Components/useMain"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
 	<React.StrictMode>
-		<App />
+		<Router>
+			<MainComponent>
+				<App />
+			</MainComponent>
+		</Router>
 	</React.StrictMode>
 )

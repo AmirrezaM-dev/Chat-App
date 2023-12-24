@@ -1,0 +1,12 @@
+.no-dropdown-after .dropdown-toggle::after,
+.main .dropdown-toggle::after {
+	display: none !important;
+}
+.main-layout a,
+.modal a {
+	text-decoration: none;
+}
+.no-shadow-change,
+.no-shadow-change:focus {
+	box-shadow: inherit !important;
+}
