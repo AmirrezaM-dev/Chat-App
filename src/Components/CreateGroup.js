@@ -158,9 +158,9 @@ const CreateGroup = () => {
 									</div>
 									<div className="media-body">
 										<h6 className="text-truncate">
-											<a href="#" className="text-reset">
+											<Link className="text-reset">
 												Catherine Richardson
-											</a>
+											</Link>
 										</h6>
 										<p className="text-muted mb-0">
 											Online
@@ -199,9 +199,9 @@ const CreateGroup = () => {
 									</div>
 									<div className="media-body">
 										<h6 className="text-truncate">
-											<a href="#" className="text-reset">
+											<Link className="text-reset">
 												Katherine Schneider
-											</a>
+											</Link>
 										</h6>
 										<p className="text-muted mb-0">
 											Online
@@ -240,9 +240,9 @@ const CreateGroup = () => {
 									</div>
 									<div className="media-body">
 										<h6 className="text-truncate">
-											<a href="#" className="text-reset">
+											<Link className="text-reset">
 												Brittany K. Williams
-											</a>
+											</Link>
 										</h6>
 										<p className="text-muted mb-0">
 											Offline
@@ -280,9 +280,9 @@ const CreateGroup = () => {
 									</div>
 									<div className="media-body">
 										<h6 className="text-truncate">
-											<a href="#" className="text-reset">
+											<Link className="text-reset">
 												Christina Turner
-											</a>
+											</Link>
 										</h6>
 										<p className="text-muted mb-0">Busy</p>
 									</div>
@@ -319,9 +319,9 @@ const CreateGroup = () => {
 									</div>
 									<div className="media-body">
 										<h6 className="text-truncate">
-											<a href="#" className="text-reset">
+											<Link className="text-reset">
 												Annie Richardson
-											</a>
+											</Link>
 										</h6>
 										<p className="text-muted mb-0">Away</p>
 									</div>

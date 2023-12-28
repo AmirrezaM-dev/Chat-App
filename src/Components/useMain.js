@@ -9,15 +9,15 @@ export function useMain() {
 const MainComponent = ({ children }) => {
 	const [showNewChat, setShowNewChat] = useState(false)
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
+	const [showNotifications, setShowNotifications] = useState(false)
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
-	const [showNotification, setShowNotification] = useState(false)
 	return (
 		<MainContent.Provider
 			value={{
 				showNewChat,
 				setShowNewChat,
-				showNotification,
-				setShowNotification,
+				showNotifications,
+				setShowNotifications,
 				showCreateGroup,
 				setShowCreateGroup,
 				showInviteOthers,

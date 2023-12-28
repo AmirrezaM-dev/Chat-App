@@ -1,4 +1,8 @@
-import { faEllipsisVertical, faSearch } from "@fortawesome/free-solid-svg-icons"
+import {
+	faEllipsisVertical,
+	faPhoneAlt,
+	faSearch,
+} from "@fortawesome/free-solid-svg-icons"
 import { faBell } from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
@@ -10,7 +14,7 @@ const Sidebar = () => {
 	const { side, id } = useParams()
 	const navigate = useNavigate()
 	const {
-		setShowNotification,
+		setShowNotifications,
 		setShowNewChat,
 		setShowCreateGroup,
 		setShowInviteOthers,
@@ -26,10 +30,7 @@ const Sidebar = () => {
 					}`}
 				>
 					<div className="d-flex flex-column h-100">
-						<div
-							className="hide-scrollbar h-100"
-							id="chatContactsList"
-						>
+						<div className="hide-scrollbar h-100">
 							{/* Chat Header Start */}
 							<div
 								className={`${
@@ -46,7 +47,7 @@ const Sidebar = () => {
 										<li
 											className="nav-item list-inline-item me-1"
 											onClick={() => {
-												setShowNotification(true)
+												setShowNotifications(true)
 											}}
 										>
 											<Link
@@ -173,10 +174,7 @@ const Sidebar = () => {
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item groups">
-									<a
-										className="contacts-link"
-										href="chat-2.html"
-									>
+									<Link className="contacts-link">
 										<div className="avatar bg-success text-light">
 											<span>
 												{/* Default :: Inline SVG */}
@@ -231,12 +229,12 @@ const Sidebar = () => {
 												</div>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item friends unread">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-offline bg-info text-light">
 											<span>EW</span>
 										</div>
@@ -260,12 +258,12 @@ const Sidebar = () => {
 												</div>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item friends">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-busy">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -301,12 +299,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item unread">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-online">
 											<img
 												src={require("../assets/media/avatar/4.png")}
@@ -334,12 +332,12 @@ const Sidebar = () => {
 												</div>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item friends">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-offline">
 											<img
 												src={require("../assets/media/avatar/5.png")}
@@ -375,12 +373,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item friends">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-online">
 											<img
 												src={require("../assets/media/avatar/6.png")}
@@ -418,12 +416,12 @@ const Sidebar = () => {
 												</div>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item friends">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-offline">
 											<img
 												src={require("../assets/media/avatar/7.png")}
@@ -456,12 +454,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 								{/* Chat Item Start */}
 								<li className="contacts-item archived">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar avatar-away">
 											<img
 												src={require("../assets/media/avatar/8.png")}
@@ -484,7 +482,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* Chat Item End */}
 							</ul>
@@ -493,596 +491,11 @@ const Sidebar = () => {
 					</div>
 				</div>
 				{/* Chats Tab Content End */}
-				{/* Calls Tab Content Start */}
-				<div
-					className={`tab-pane ${side === "calls" ? "active" : ""}`}
-					id="calls-content"
-				>
-					<div className="d-flex flex-column h-100">
-						<div
-							className="hide-scrollbar h-100"
-							id="callContactsList"
-						>
-							{/* Chat Header Start */}
-							<div className="sidebar-header sticky-top p-2">
-								<div className="d-flex justify-content-between align-items-center">
-									{/* Chat Tab Pane Title Start */}
-									<h5 className="font-weight-semibold mb-0">
-										Calls
-									</h5>
-									{/* Chat Tab Pane Title End */}
-									<ul className="nav flex-nowrap">
-										<li className="nav-item list-inline-item me-1">
-											<a
-												className="nav-link text-muted px-1"
-												href="#"
-												title="Notifications"
-												role="button"
-												data-toggle="modal"
-												data-target="#notificationModal"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img src="./../../assets/media/heroicons/outline/bell.svg" alt="" class="injectable hw-20"> */}
-											</a>
-										</li>
-										<li className="nav-item list-inline-item me-0">
-											<div className="dropdown">
-												<a
-													className="nav-link text-muted px-1"
-													href="#"
-													role="button"
-													title="Details"
-													data-toggle="dropdown"
-													aria-haspopup="true"
-													aria-expanded="false"
-												>
-													{/* Default :: Inline SVG */}
-													<svg
-														className="hw-20"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-														/>
-													</svg>
-													{/* Alternate :: External File link */}
-													{/* <img src="./../../assets/media/heroicons/outline/dots-vertical.svg" alt="" class="injectable hw-20"> */}
-												</a>
-												<div className="dropdown-menu dropdown-menu-right">
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#startConversation"
-													>
-														New Chat
-													</a>
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#createGroup"
-													>
-														Create Group
-													</a>
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#inviteOthers"
-													>
-														Invite Others
-													</a>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</div>
-								{/* Sidebar Header Start */}
-								<div className="sidebar-sub-header">
-									{/* Sidebar Header Dropdown Start */}
-									<Dropdown className="nav-link px-1 me-2">
-										<Dropdown.Toggle
-											variant="outline-mute"
-											className="dropdown text-dark border border-secondary"
-										>
-											All Chats
-										</Dropdown.Toggle>
-										<Dropdown.Menu>
-											<Dropdown.Item>
-												Select
-											</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
-									{/* Sidebar Header Dropdown End */}
-									{/* Sidebar Search Start */}
-									<Form className="form-inline">
-										<div className="input-group">
-											<input
-												type="text"
-												className="form-control search border-right-0 transparent-bg pe-0"
-												placeholder="Search users"
-											/>
-											<div className="input-group-append">
-												<div
-													className="input-group-text transparent-bg border-left-0"
-													role="button"
-												>
-													{/* Default :: Inline SVG */}
-													<svg
-														className="text-muted hw-20"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-														/>
-													</svg>
-													{/* Alternate :: External File link */}
-													{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/search.svg" alt=""> */}
-												</div>
-											</div>
-										</div>
-									</Form>
-									{/* Sidebar Search End */}
-								</div>
-								{/* Sidebar Header End */}
-							</div>
-							{/* Chat Header End */}
-							{/* Call Contact List Start */}
-							<ul
-								className="contacts-list"
-								id="callLogTab"
-								data-call-list=""
-							>
-								{/* Call Item Start */}
-								<li className="contacts-item incoming active">
-									<a href="#" className="media-link" />
-									<div className="contacts-link">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/2.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Catherine Richardson
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M14.414 7l3.293-3.293a1 1 0 00-1.414-1.414L13 5.586V4a1 1 0 10-2 0v4.003a.996.996 0 00.617.921A.997.997 0 0012 9h4a1 1 0 100-2h-1.586z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-incoming.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													Just now
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item outgoing">
-									<a href="#" className="media-link" />
-									<div className="contacts-link outgoing">
-										<div className="avatar bg-info text-light">
-											<span>EW</span>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Eva Walker
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M17.924 2.617a.997.997 0 00-.215-.322l-.004-.004A.997.997 0 0017 2h-4a1 1 0 100 2h1.586l-3.293 3.293a1 1 0 001.414 1.414L16 5.414V7a1 1 0 102 0V3a.997.997 0 00-.076-.383z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-outgoing.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													5 mins ago
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item missed">
-									<a href="#" className="media-link" />
-									<div className="contacts-link missed">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/3.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Christopher Garcia
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-danger me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M14.414 7l3.293-3.293a1 1 0 00-1.414-1.414L13 5.586V4a1 1 0 10-2 0v4.003a.996.996 0 00.617.921A.997.997 0 0012 9h4a1 1 0 100-2h-1.586z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-danger me-1" src="./../../assets/media/heroicons/solid/phone-incoming.svg" alt=""> */}
-												<p className="text-danger mb-0">
-													20 mins ago
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item outgoing">
-									<a href="#" className="media-link" />
-									<div className="contacts-link outgoing">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/4.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Christina Turner
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M17.924 2.617a.997.997 0 00-.215-.322l-.004-.004A.997.997 0 0017 2h-4a1 1 0 100 2h1.586l-3.293 3.293a1 1 0 001.414 1.414L16 5.414V7a1 1 0 102 0V3a.997.997 0 00-.076-.383z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-outgoing.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													4 hour ago
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item incoming">
-									<a href="#" className="media-link" />
-									<div className="contacts-link incoming">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/5.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Tammy Martinez
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M14.414 7l3.293-3.293a1 1 0 00-1.414-1.414L13 5.586V4a1 1 0 10-2 0v4.003a.996.996 0 00.617.921A.997.997 0 0012 9h4a1 1 0 100-2h-1.586z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-incoming.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													Yesterday
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item incoming">
-									<a href="#" className="media-link" />
-									<div className="contacts-link incoming">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/6.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Bonnie Torres
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M14.414 7l3.293-3.293a1 1 0 00-1.414-1.414L13 5.586V4a1 1 0 10-2 0v4.003a.996.996 0 00.617.921A.997.997 0 0012 9h4a1 1 0 100-2h-1.586z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-incoming.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													12/06/2020
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-								{/* Call Item Start */}
-								<li className="contacts-item outgoing">
-									<a href="#" className="media-link" />
-									<div className="contacts-link outgoing">
-										<div className="avatar">
-											<img
-												src={require("../assets/media/avatar/7.png")}
-												alt=""
-											/>
-										</div>
-										<div className="contacts-content">
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													Jacqueline James
-												</h6>
-											</div>
-											<div className="contacts-texts">
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-16 text-muted me-1"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M17.924 2.617a.997.997 0 00-.215-.322l-.004-.004A.997.997 0 0017 2h-4a1 1 0 100 2h1.586l-3.293 3.293a1 1 0 001.414 1.414L16 5.414V7a1 1 0 102 0V3a.997.997 0 00-.076-.383z" />
-													<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/phone-outgoing.svg" alt=""> */}
-												<p className="text-muted mb-0">
-													16/05/2020
-												</p>
-											</div>
-										</div>
-										<div className="contacts-action">
-											<button
-												className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted"
-												type="button"
-											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/phone.svg" alt=""> */}
-											</button>
-										</div>
-									</div>
-								</li>
-								{/* Call Item End */}
-							</ul>
-							{/* Call Contact List Start */}
-						</div>
-					</div>
-				</div>
-				{/* Calls Tab Content End */}
 				{/* Friends Tab Content Start */}
 				<div
 					className={`tab-pane ${
 						side === "contacts" ? "active" : ""
 					}`}
-					id="friends-content"
 				>
 					<div className="d-flex flex-column h-100">
 						<div className="hide-scrollbar" id="friendsList">
@@ -1095,143 +508,79 @@ const Sidebar = () => {
 									</h5>
 									{/* Chat Tab Pane Title End */}
 									<ul className="nav flex-nowrap">
-										<li className="nav-item list-inline-item me-1">
-											<a
+										<li
+											className="nav-item list-inline-item me-1"
+											onClick={() => {
+												setShowNotifications(true)
+											}}
+										>
+											<Link
 												className="nav-link text-muted px-1"
-												href="#"
 												title="Notifications"
-												role="button"
-												data-toggle="modal"
-												data-target="#notificationModal"
 											>
-												{/* Default :: Inline SVG */}
-												<svg
-													className="hw-20"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-													/>
-												</svg>
-												{/* Alternate :: External File link */}
-												{/* <img src="./../../assets/media/heroicons/outline/bell.svg" alt="" class="injectable hw-20"> */}
-											</a>
+												<FontAwesomeIcon
+													icon={faBell}
+												/>
+											</Link>
 										</li>
 										<li className="nav-item list-inline-item me-0">
-											<div className="dropdown">
-												<a
-													className="nav-link text-muted px-1"
-													href="#"
-													role="button"
-													title="Details"
-													data-toggle="dropdown"
-													aria-haspopup="true"
-													aria-expanded="false"
+											<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
+												<Dropdown.Toggle
+													className="nav-link text-muted px-1 py-0"
+													as={Link}
 												>
-													{/* Default :: Inline SVG */}
-													<svg
-														className="hw-20"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-														/>
-													</svg>
-													{/* Alternate :: External File link */}
-													{/* <img src="./../../assets/media/heroicons/outline/dots-vertical.svg" alt="" class="injectable hw-20"> */}
-												</a>
-												<div className="dropdown-menu dropdown-menu-right">
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#startConversation"
+													<FontAwesomeIcon
+														icon={
+															faEllipsisVertical
+														}
+													/>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													<Dropdown.Item
+														onClick={() =>
+															setShowNewChat(true)
+														}
 													>
 														New Chat
-													</a>
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#createGroup"
+													</Dropdown.Item>
+													<Dropdown.Item
+														onClick={() =>
+															setShowCreateGroup(
+																true
+															)
+														}
 													>
 														Create Group
-													</a>
-													<a
-														className="dropdown-item"
-														href="#"
-														role="button"
-														data-toggle="modal"
-														data-target="#inviteOthers"
+													</Dropdown.Item>
+													<Dropdown.Item
+														onClick={() =>
+															setShowInviteOthers(
+																true
+															)
+														}
 													>
 														Invite Others
-													</a>
-												</div>
-											</div>
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
 										</li>
 									</ul>
 								</div>
 								{/* Sidebar Header Start */}
 								<div className="sidebar-sub-header">
-									{/* Sidebar Header Dropdown Start */}
-									<Dropdown className="nav-link px-1 me-2">
-										<Dropdown.Toggle
-											variant="outline-mute"
-											className="dropdown text-dark border border-secondary"
-										>
-											All Chats
-										</Dropdown.Toggle>
-										<Dropdown.Menu>
-											<Dropdown.Item>
-												Select
-											</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
-									{/* Sidebar Header Dropdown End */}
 									{/* Sidebar Search Start */}
-									<Form className="form-inline">
-										<div className="input-group">
-											<input
-												type="text"
-												className="form-control search border-right-0 transparent-bg pe-0"
-												placeholder="Search users"
+									<Form className="w-100">
+										<InputGroup className="w-100 bg-transparent">
+											<Form.Control
+												placeholder="Search"
+												className="bg-transparent border border-end-0 no-shadow-change"
 											/>
-											<div className="input-group-append">
-												<div
-													className="input-group-text transparent-bg border-left-0"
-													role="button"
-												>
-													{/* Default :: Inline SVG */}
-													<svg
-														className="text-muted hw-20"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-														/>
-													</svg>
-													{/* Alternate :: External File link */}
-													{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/search.svg" alt=""> */}
-												</div>
-											</div>
-										</div>
+											<InputGroup.Text className="border border-start-0 bg-transparent">
+												<FontAwesomeIcon
+													icon={faSearch}
+												/>
+											</InputGroup.Text>
+										</InputGroup>
 									</Form>
 									{/* Sidebar Search End */}
 								</div>
@@ -1253,7 +602,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item active">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1286,12 +635,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1324,7 +673,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1336,7 +685,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1369,7 +718,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1381,7 +730,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1414,12 +763,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1452,7 +801,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1464,7 +813,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1497,7 +846,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1509,7 +858,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1542,12 +891,12 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1580,7 +929,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1592,7 +941,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1625,7 +974,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 								{/* Item Series Start */}
@@ -1637,7 +986,7 @@ const Sidebar = () => {
 								{/* Item Series End */}
 								{/* friends Item Start */}
 								<li className="contacts-item">
-									<a className="contacts-link" href="#">
+									<Link className="contacts-link">
 										<div className="avatar">
 											<img
 												src={require("../assets/media/avatar/3.png")}
@@ -1670,7 +1019,7 @@ const Sidebar = () => {
 												</p>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</li>
 								{/* friends Item End */}
 							</ul>
@@ -1682,15 +1031,75 @@ const Sidebar = () => {
 				{/* Profile Tab Content Start */}
 				<div
 					className={`tab-pane ${side === "profile" ? "active" : ""}`}
-					id="profile-content"
 				>
 					<div className="d-flex flex-column h-100">
 						<div className="hide-scrollbar">
 							{/* Sidebar Header Start */}
 							<div className="sidebar-header sticky-top p-2 mb-3">
-								<h5 className="font-weight-semibold">
-									Profile
-								</h5>
+								<div className="d-flex justify-content-between align-items-center">
+									<h5 className="font-weight-semibold">
+										Profile
+									</h5>
+									<ul className="nav flex-nowrap">
+										<li
+											className="nav-item list-inline-item me-1"
+											onClick={() => {
+												setShowNotifications(true)
+											}}
+										>
+											<Link
+												className="nav-link text-muted px-1"
+												title="Notifications"
+											>
+												<FontAwesomeIcon
+													icon={faBell}
+												/>
+											</Link>
+										</li>
+										<li className="nav-item list-inline-item me-0">
+											<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
+												<Dropdown.Toggle
+													className="nav-link text-muted px-1 py-0"
+													as={Link}
+												>
+													<FontAwesomeIcon
+														icon={
+															faEllipsisVertical
+														}
+													/>
+												</Dropdown.Toggle>
+												<Dropdown.Menu>
+													<Dropdown.Item
+														onClick={() =>
+															setShowNewChat(true)
+														}
+													>
+														New Chat
+													</Dropdown.Item>
+													<Dropdown.Item
+														onClick={() =>
+															setShowCreateGroup(
+																true
+															)
+														}
+													>
+														Create Group
+													</Dropdown.Item>
+													<Dropdown.Item
+														onClick={() =>
+															setShowInviteOthers(
+																true
+															)
+														}
+													>
+														Invite Others
+													</Dropdown.Item>
+												</Dropdown.Menu>
+											</Dropdown>
+										</li>
+									</ul>
+								</div>
+								{/* asd */}
 								<p className="text-muted mb-0">
 									Personal Information &amp; Settings
 								</p>
@@ -1775,43 +1184,24 @@ const Sidebar = () => {
 											<div className="card-options">
 												<div className="dropdown">
 													<button
-														className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted text-muted"
+														className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted border-0 text-muted"
 														type="button"
 														data-toggle="dropdown"
 														aria-haspopup="true"
 														aria-expanded="false"
 													>
-														{/* Default :: Inline SVG */}
-														<svg
-															className="hw-20"
-															fill="none"
-															viewBox="0 0 24 24"
-															stroke="currentColor"
-														>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-															/>
-														</svg>
-														{/* Alternate :: External File link */}
-														{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/dots-vertical.svg" alt=""> */}
+														<FontAwesomeIcon
+															icon={faPhoneAlt}
+														/>
 													</button>
 													<div className="dropdown-menu">
-														<a
-															className="dropdown-item"
-															href="#"
-														>
+														<Link className="dropdown-item">
 															Change Profile
 															Picture
-														</a>
-														<a
-															className="dropdown-item"
-															href="#"
-														>
+														</Link>
+														<Link className="dropdown-item">
 															Change Number
-														</a>
+														</Link>
 													</div>
 												</div>
 											</div>
@@ -2020,12 +1410,9 @@ const Sidebar = () => {
 															<p className="small text-muted mb-0">
 																Facebook
 															</p>
-															<a
-																className="font-size-sm font-weight-medium"
-																href="#"
-															>
+															<Link className="font-size-sm font-weight-medium">
 																@cathe.richardson
-															</a>
+															</Link>
 														</div>
 														{/* Default :: Inline SVG */}
 														<svg
@@ -2051,12 +1438,9 @@ const Sidebar = () => {
 															<p className="small text-muted mb-0">
 																Twitter
 															</p>
-															<a
-																className="font-size-sm font-weight-medium"
-																href="#"
-															>
+															<Link className="font-size-sm font-weight-medium">
 																@cathe.richardson
-															</a>
+															</Link>
 														</div>
 														{/* Default :: Inline SVG */}
 														<svg
@@ -2082,12 +1466,9 @@ const Sidebar = () => {
 															<p className="small text-muted mb-0">
 																Instagram
 															</p>
-															<a
-																className="font-size-sm font-weight-medium"
-																href="#"
-															>
+															<Link className="font-size-sm font-weight-medium">
 																@cathe.richardson
-															</a>
+															</Link>
 														</div>
 														{/* Default :: Inline SVG */}
 														<svg
@@ -2127,12 +1508,9 @@ const Sidebar = () => {
 															<p className="small text-muted mb-0">
 																Linkedin
 															</p>
-															<a
-																className="font-size-sm font-weight-medium"
-																href="#"
-															>
+															<Link className="font-size-sm font-weight-medium">
 																@cathe.richardson
-															</a>
+															</Link>
 														</div>
 														{/* Default :: Inline SVG */}
 														<svg
