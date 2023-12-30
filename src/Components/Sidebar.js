@@ -1,32 +1,31 @@
 import {
+	faCog,
 	faEllipsisVertical,
-	faPhoneAlt,
+	faRightFromBracket,
 	faSearch,
 } from "@fortawesome/free-solid-svg-icons"
-import { faBell } from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
-import { Dropdown, Form, InputGroup } from "react-bootstrap"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import { useMain } from "./useMain"
+import { Button, Dropdown, Form, InputGroup } from "react-bootstrap"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
+import { useAuth } from "./useAuth"
+import SideBarDropDownOptions from "./SideBarDropDownOptions"
 
 const Sidebar = () => {
-	const { side, id } = useParams()
+	const { loggedIn } = useAuth()
+	const { id } = useParams()
 	const navigate = useNavigate()
-	const {
-		setShowNotifications,
-		setShowNewChat,
-		setShowCreateGroup,
-		setShowInviteOthers,
-	} = useMain()
-	return (
+	const pathname = useLocation().pathname
+	return loggedIn ? (
 		<aside className="sidebar">
 			{/* Tab Content Start */}
 			<div className="tab-content">
 				{/* Chat Tab Content Start */}
 				<div
 					className={`tab-pane ${
-						side === "chat" || side === undefined ? "active" : ""
+						pathname === "/" || pathname.indexOf("chat") !== -1
+							? "active"
+							: ""
 					}`}
 				>
 					<div className="d-flex flex-column h-100">
@@ -43,64 +42,7 @@ const Sidebar = () => {
 										Chats
 									</h5>
 									{/* Chat Tab Pane Title End */}
-									<ul className="nav flex-nowrap">
-										<li
-											className="nav-item list-inline-item me-1"
-											onClick={() => {
-												setShowNotifications(true)
-											}}
-										>
-											<Link
-												className="nav-link text-muted px-1"
-												title="Notifications"
-											>
-												<FontAwesomeIcon
-													icon={faBell}
-												/>
-											</Link>
-										</li>
-										<li className="nav-item list-inline-item me-0">
-											<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
-												<Dropdown.Toggle
-													className="nav-link text-muted px-1 py-0"
-													as={Link}
-												>
-													<FontAwesomeIcon
-														icon={
-															faEllipsisVertical
-														}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item
-														onClick={() =>
-															setShowNewChat(true)
-														}
-													>
-														New Chat
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowCreateGroup(
-																true
-															)
-														}
-													>
-														Create Group
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowInviteOthers(
-																true
-															)
-														}
-													>
-														Invite Others
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</li>
-									</ul>
+									<SideBarDropDownOptions />
 								</div>
 								{/* Sidebar Header Start */}
 								<div className="sidebar-sub-header">
@@ -108,7 +50,7 @@ const Sidebar = () => {
 									<Dropdown className="nav-link px-1 me-2">
 										<Dropdown.Toggle
 											variant="outline-mute"
-											className="dropdown text-dark border border-secondary"
+											className="text-dark border border-dark"
 										>
 											All Chats
 										</Dropdown.Toggle>
@@ -124,9 +66,9 @@ const Sidebar = () => {
 										<InputGroup className="w-100 bg-transparent">
 											<Form.Control
 												placeholder="Search"
-												className="bg-transparent border border-end-0 no-shadow-change"
+												className="bg-transparent border border-dark border-end-0 no-shadow-change"
 											/>
-											<InputGroup.Text className="border border-start-0 bg-transparent">
+											<InputGroup.Text className="border border-dark border-start-0 bg-transparent">
 												<FontAwesomeIcon
 													icon={faSearch}
 												/>
@@ -494,7 +436,7 @@ const Sidebar = () => {
 				{/* Friends Tab Content Start */}
 				<div
 					className={`tab-pane ${
-						side === "contacts" ? "active" : ""
+						pathname.indexOf("contacts") !== -1 ? "active" : ""
 					}`}
 				>
 					<div className="d-flex flex-column h-100">
@@ -507,64 +449,7 @@ const Sidebar = () => {
 										Friends
 									</h5>
 									{/* Chat Tab Pane Title End */}
-									<ul className="nav flex-nowrap">
-										<li
-											className="nav-item list-inline-item me-1"
-											onClick={() => {
-												setShowNotifications(true)
-											}}
-										>
-											<Link
-												className="nav-link text-muted px-1"
-												title="Notifications"
-											>
-												<FontAwesomeIcon
-													icon={faBell}
-												/>
-											</Link>
-										</li>
-										<li className="nav-item list-inline-item me-0">
-											<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
-												<Dropdown.Toggle
-													className="nav-link text-muted px-1 py-0"
-													as={Link}
-												>
-													<FontAwesomeIcon
-														icon={
-															faEllipsisVertical
-														}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item
-														onClick={() =>
-															setShowNewChat(true)
-														}
-													>
-														New Chat
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowCreateGroup(
-																true
-															)
-														}
-													>
-														Create Group
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowInviteOthers(
-																true
-															)
-														}
-													>
-														Invite Others
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</li>
-									</ul>
+									<SideBarDropDownOptions />
 								</div>
 								{/* Sidebar Header Start */}
 								<div className="sidebar-sub-header">
@@ -573,9 +458,9 @@ const Sidebar = () => {
 										<InputGroup className="w-100 bg-transparent">
 											<Form.Control
 												placeholder="Search"
-												className="bg-transparent border border-end-0 no-shadow-change"
+												className="bg-transparent border border-dark border-end-0 no-shadow-change"
 											/>
-											<InputGroup.Text className="border border-start-0 bg-transparent">
+											<InputGroup.Text className="border border-dark border-start-0 bg-transparent">
 												<FontAwesomeIcon
 													icon={faSearch}
 												/>
@@ -1030,7 +915,9 @@ const Sidebar = () => {
 				{/* Friends Tab Content End */}
 				{/* Profile Tab Content Start */}
 				<div
-					className={`tab-pane ${side === "profile" ? "active" : ""}`}
+					className={`tab-pane ${
+						pathname.indexOf("profile") !== -1 ? "active" : ""
+					}`}
 				>
 					<div className="d-flex flex-column h-100">
 						<div className="hide-scrollbar">
@@ -1040,66 +927,8 @@ const Sidebar = () => {
 									<h5 className="font-weight-semibold">
 										Profile
 									</h5>
-									<ul className="nav flex-nowrap">
-										<li
-											className="nav-item list-inline-item me-1"
-											onClick={() => {
-												setShowNotifications(true)
-											}}
-										>
-											<Link
-												className="nav-link text-muted px-1"
-												title="Notifications"
-											>
-												<FontAwesomeIcon
-													icon={faBell}
-												/>
-											</Link>
-										</li>
-										<li className="nav-item list-inline-item me-0">
-											<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
-												<Dropdown.Toggle
-													className="nav-link text-muted px-1 py-0"
-													as={Link}
-												>
-													<FontAwesomeIcon
-														icon={
-															faEllipsisVertical
-														}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item
-														onClick={() =>
-															setShowNewChat(true)
-														}
-													>
-														New Chat
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowCreateGroup(
-																true
-															)
-														}
-													>
-														Create Group
-													</Dropdown.Item>
-													<Dropdown.Item
-														onClick={() =>
-															setShowInviteOthers(
-																true
-															)
-														}
-													>
-														Invite Others
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</li>
-									</ul>
+									<SideBarDropDownOptions />
 								</div>
-								{/* asd */}
 								<p className="text-muted mb-0">
 									Personal Information &amp; Settings
 								</p>
@@ -1126,84 +955,56 @@ const Sidebar = () => {
 													</h5>
 												</div>
 												<div className="d-flex">
-													<button
-														className="btn btn-outline-default mx-1"
-														type="button"
+													<Button
+														variant=""
+														className="mx-1 border border-dark"
 													>
-														{/* Default :: Inline SVG */}
-														<svg
-															className="hw-18 d-none d-sm-inline-block"
-															fill="none"
-															viewBox="0 0 24 24"
-															stroke="currentColor"
-														>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-															/>
-														</svg>
-														{/* Alternate :: External File link */}
-														{/* <img class="injectable hw-18" src="./../../assets/media/heroicons/outline/logout.svg" alt=""> */}
-														<span>Logout</span>
-													</button>
-													<button
-														className="btn btn-outline-default mx-1 d-xl-none"
-														data-profile-edit=""
-														type="button"
+														<FontAwesomeIcon
+															icon={
+																faRightFromBracket
+															}
+														/>
+														<span className="ms-1">
+															Logout
+														</span>
+													</Button>
+													<Button
+														variant=""
+														className="border border-dark mx-1 d-xl-none"
 													>
-														{/* Default :: Inline SVG */}
-														<svg
-															className="hw-18 d-none d-sm-inline-block"
-															fill="none"
-															viewBox="0 0 24 24"
-															stroke="currentColor"
-														>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-															/>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-															/>
-														</svg>
-														{/* Alternate :: External File link */}
-														{/* <img class="injectable hw-18" src="./../../assets/media/heroicons/outline/cog.svg" alt=""> */}
-														<span>Settings</span>
-													</button>
+														<FontAwesomeIcon
+															icon={faCog}
+														/>
+														<span className="ms-1">
+															Settings
+														</span>
+													</Button>
 												</div>
 											</div>
 											{/* Card Details End */}
 											{/* Card Options Start */}
 											<div className="card-options">
-												<div className="dropdown">
-													<button
-														className="btn btn-secondary btn-icon btn-minimal btn-sm text-muted border-0 text-muted"
-														type="button"
-														data-toggle="dropdown"
-														aria-haspopup="true"
-														aria-expanded="false"
+												<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
+													<Dropdown.Toggle
+														className="btn-icon btn-minimal btn-sm text-muted border-0 text-muted"
+														as={Link}
 													>
 														<FontAwesomeIcon
-															icon={faPhoneAlt}
+															icon={
+																faEllipsisVertical
+															}
 														/>
-													</button>
-													<div className="dropdown-menu">
-														<Link className="dropdown-item">
+													</Dropdown.Toggle>
+													<Dropdown.Menu>
+														<Dropdown.Item>
 															Change Profile
-															Picture
-														</Link>
-														<Link className="dropdown-item">
+															picture
+														</Dropdown.Item>
+														<Dropdown.Item>
 															Change Number
-														</Link>
-													</div>
-												</div>
+														</Dropdown.Item>
+													</Dropdown.Menu>
+												</Dropdown>
 											</div>
 											{/* Card Options End */}
 										</div>
@@ -1555,6 +1356,8 @@ const Sidebar = () => {
 			</div>
 			{/* Tab Content End */}
 		</aside>
+	) : (
+		<></>
 	)
 }
 

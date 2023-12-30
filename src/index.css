@@ -1,3 +1,5 @@
+.no-dropdown-before .dropdown-toggle::before,
+.main .dropdown-toggle::before,
 .no-dropdown-after .dropdown-toggle::after,
 .main .dropdown-toggle::after {
 	display: none !important;
@@ -9,4 +11,7 @@
 .no-shadow-change,
 .no-shadow-change:focus {
 	box-shadow: inherit !important;
+}
+.cursor-pointer {
+	cursor: pointer;
 }

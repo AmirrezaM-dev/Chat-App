@@ -2,11 +2,13 @@ import { faEnvelope, faMessage } from "@fortawesome/free-regular-svg-icons"
 import { faUserAlt, faUserFriends } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { useAuth } from "./useAuth"
 
 const Navigation = () => {
+	const { loggedIn } = useAuth()
 	const { side } = useParams()
 	const navigate = useNavigate()
-	return (
+	return loggedIn ? (
 		<>
 			{/* Navigation Start */}
 			<div className="navigation navbar navbar-light bg-primary">
@@ -69,6 +71,8 @@ const Navigation = () => {
 			</div>
 			{/* Navigation End */}
 		</>
+	) : (
+		<></>
 	)
 }
 

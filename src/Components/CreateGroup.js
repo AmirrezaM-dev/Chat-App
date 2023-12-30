@@ -1,7 +1,7 @@
 import { Col, Modal, Row, Form, Button } from "react-bootstrap"
 import { useMain } from "./useMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheck } from "@fortawesome/free-solid-svg-icons"
+import { faCheck, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { Link } from "react-router-dom"
 
 const CreateGroup = () => {
@@ -118,26 +118,8 @@ const CreateGroup = () => {
 									placeholder="Search"
 								/>
 								<div className="input-group-append">
-									<div
-										className="input-group-text transparent-bg border-left-0"
-										role="button"
-									>
-										{/* Default :: Inline SVG */}
-										<svg
-											className="hw-20"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-											/>
-										</svg>
-										{/* Alternate :: External File link */}
-										{/* <img class="injectable hw-20" src="./../../assets/media/heroicons/outline/search.svg" alt=""> */}
+									<div className="input-group-text transparent-bg border-left-0 cursor-pointer">
+										<FontAwesomeIcon icon={faSearch} />
 									</div>
 								</div>
 							</div>
@@ -351,15 +333,19 @@ const CreateGroup = () => {
 					</Col>
 				</Row>
 				<Row
-					className="pt-2 h-100 d-none"
+					className="pt-2 h-100 d-block"
 					data-step={3}
 					data-title="Finished"
 				>
 					<Col sm={12}>
 						<div className="d-flex justify-content-center align-items-center flex-column h-100">
-							<div className="btn btn-success btn-icon rounded-circle text-light mb-3 d-flex align-items-center">
+							<Button
+								disabled
+								variant="success"
+								className="btn-icon rounded-circle text-light mb-3 opacity-100"
+							>
 								<FontAwesomeIcon icon={faCheck} />
-							</div>
+							</Button>
 							<h6>Group Created Successfully</h6>
 							<p className="text-muted text-center">
 								Lorem ipsum dolor sit amet consectetur

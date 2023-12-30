@@ -11,6 +11,7 @@ const MainComponent = ({ children }) => {
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
+	const [showPreloader, setShowPreloader] = useState(false)
 	return (
 		<MainContent.Provider
 			value={{
@@ -22,6 +23,8 @@ const MainComponent = ({ children }) => {
 				setShowCreateGroup,
 				showInviteOthers,
 				setShowInviteOthers,
+				showPreloader,
+				setShowPreloader,
 			}}
 		>
 			{children}
