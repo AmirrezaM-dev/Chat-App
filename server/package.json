@@ -1,7 +1,7 @@
 {
-	"name": "todo-app",
+	"name": "chat-app",
 	"version": "0.1.0",
-	"description": "Fit App",
+	"description": "Chat App Server",
 	"main": "./server.js",
 	"homepage": "./",
 	"scripts": {
