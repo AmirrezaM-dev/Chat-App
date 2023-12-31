@@ -29,6 +29,29 @@ const App = () => {
 				pathname.indexOf("signup") !== -1)
 		)
 			navigate("/chat")
+		const main = document.getElementsByClassName("main")
+		const sidebarHeaders = document.getElementsByClassName("sidebar-header")
+		if (main?.[0])
+			if (
+				(pathname.indexOf("chat") !== -1 && pathname > "/chat/") ||
+				(pathname.indexOf("contacts") !== -1 && pathname > "/contacts/")
+			) {
+				Object.keys(sidebarHeaders).map((sidebarHeader) =>
+					sidebarHeaders[sidebarHeader].classList.add(
+						"d-none",
+						"d-lg-block"
+					)
+				)
+				main[0].classList.add("main-visible")
+			} else {
+				main[0].classList.remove("main-visible")
+				Object.keys(sidebarHeaders).map((sidebarHeader) =>
+					sidebarHeaders[sidebarHeader].classList.remove(
+						"d-none",
+						"d-lg-block"
+					)
+				)
+			}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loggedIn, pathname])
 	return !firstLogin || showPreloader ? (
@@ -45,6 +68,7 @@ const App = () => {
 					<Route path={"/chat"} element={<ChatStart />} />
 					<Route path={"/chat/:id"} element={<Chat />} />
 					<Route path={"/contacts"} element={<Contacts />} />
+					<Route path={"/contacts/:id"} element={<Contacts />} />
 					<Route path={"/profile"} element={<Profile />} />
 				</Routes>
 			</main>

@@ -5,8 +5,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Dropdown } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 const Contacts = () => {
+	const navigate = useNavigate()
 	return (
 		<div className="friends px-0 py-2 p-xl-3 d-block">
 			<div className="container-xl">
@@ -57,6 +58,7 @@ const Contacts = () => {
 									variant="secondary"
 									size="sm"
 									className="btn-icon btn-minimal text-muted border-0"
+									onClick={() => navigate("/contacts")}
 								>
 									<FontAwesomeIcon icon={faArrowLeft} />
 								</Button>

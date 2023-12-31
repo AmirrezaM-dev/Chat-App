@@ -7,13 +7,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import { Button, Dropdown, Form, InputGroup } from "react-bootstrap"
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./useAuth"
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
 
 const Sidebar = () => {
 	const { loggedIn } = useAuth()
-	const { id } = useParams()
 	const navigate = useNavigate()
 	const pathname = useLocation().pathname
 	return loggedIn ? (
@@ -31,11 +30,7 @@ const Sidebar = () => {
 					<div className="d-flex flex-column h-100">
 						<div className="hide-scrollbar h-100">
 							{/* Chat Header Start */}
-							<div
-								className={`${
-									id ? "d-none d-lg-block" : ""
-								} sidebar-header sticky-top p-2`}
-							>
+							<div className={`sidebar-header sticky-top p-2`}>
 								<div className="d-flex justify-content-between align-items-center">
 									{/* Chat Tab Pane Title Start */}
 									<h5 className="font-weight-semibold mb-0">

@@ -1,12 +1,12 @@
 import { faEnvelope, faMessage } from "@fortawesome/free-regular-svg-icons"
 import { faUserAlt, faUserFriends } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./useAuth"
 
 const Navigation = () => {
+	const pathname = useLocation().pathname
 	const { loggedIn } = useAuth()
-	const { side } = useParams()
 	const navigate = useNavigate()
 	return loggedIn ? (
 		<>
@@ -26,7 +26,8 @@ const Navigation = () => {
 					<li className="nav-item" onClick={() => navigate("/chat")}>
 						<Link
 							className={`nav-link p-0 py-xl-3 ${
-								side === undefined || side === "chat"
+								pathname === "/" ||
+								pathname.indexOf("chat") !== -1
 									? "active"
 									: ""
 							}`}
@@ -43,7 +44,9 @@ const Navigation = () => {
 					>
 						<Link
 							className={`nav-link p-0 py-xl-3 ${
-								side === "contacts" ? "active" : ""
+								pathname.indexOf("contacts") !== -1
+									? "active"
+									: ""
 							}`}
 							title="Contacts"
 						>
@@ -58,7 +61,9 @@ const Navigation = () => {
 					>
 						<Link
 							className={`nav-link p-0 py-xl-3 ${
-								side === "profile" ? "active" : ""
+								pathname.indexOf("profile") !== -1
+									? "active"
+									: ""
 							}`}
 							title="Profile"
 						>

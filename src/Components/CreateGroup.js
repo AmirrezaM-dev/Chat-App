@@ -1,4 +1,4 @@
-import { Col, Modal, Row, Form, Button } from "react-bootstrap"
+import { Col, Modal, Row, Form, Button, InputGroup } from "react-bootstrap"
 import { useMain } from "./useMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faSearch } from "@fortawesome/free-solid-svg-icons"
@@ -104,25 +104,23 @@ const CreateGroup = () => {
 					</Col>
 				</Row>
 				<Row
-					className="d-none pt-2"
+					className="d-block pt-2"
 					data-step={2}
 					data-title="Add Group Members"
 				>
 					<Col sm={12} className="px-0">
 						{/* Search Start */}
 						<Form className="form-inline w-100 px-2 pb-2 border-bottom">
-							<div className="input-group w-100 bg-light">
-								<input
+							<InputGroup className="bg-light w-100">
+								<Form.Control
 									type="text"
-									className="form-control form-control-md search border-right-0 transparent-bg pe-0"
+									className="form-control form-control-md border-end-0 bg-transparent pe-0"
 									placeholder="Search"
 								/>
-								<div className="input-group-append">
-									<div className="input-group-text transparent-bg border-left-0 cursor-pointer">
-										<FontAwesomeIcon icon={faSearch} />
-									</div>
-								</div>
-							</div>
+								<InputGroup.Text className="bg-transparent border-start-0">
+									<FontAwesomeIcon icon={faSearch} />
+								</InputGroup.Text>
+							</InputGroup>
 						</Form>
 						{/* Search End */}
 					</Col>

@@ -60,9 +60,11 @@ const AuthProvider = ({ children }) => {
 	const authApi = axios.create({
 		baseURL: process.env.REACT_APP_ENV_SERVER_URL,
 		withCredentials: true,
-		headers: {
-			Authorization: `Bearer ${cookies.get("cs")}`,
-		},
+		headers: cookies.get("cs")
+			? {
+					Authorization: `Bearer ${cookies.get("cs")}`,
+			  }
+			: {},
 	})
 	const loginHandler = (response) => {
 		if (response?.data) {
@@ -87,47 +89,72 @@ const AuthProvider = ({ children }) => {
 				title: "Something went wrong",
 			})
 	}
+	const loginCatchHandler = (e) => {
+		if (e.config.url !== "/api/users/get/") {
+			if (e.response && e.response.data && e.response.data.message)
+				Toast.fire({
+					icon: "error",
+					title: e.response.data.message,
+				})
+			else
+				Toast.fire({
+					icon: "error",
+					title: "Something went wrong",
+				})
+			setLoggedIn(false)
+			setValidator((validator) => {
+				return {
+					...validator,
+					email: false,
+					emailFeedback:
+						e?.response.data.message &&
+						e.response.data.message === "Email already exists"
+							? e.response.data.message
+							: "Invalid Credentials",
+					password:
+						e?.response.data.message &&
+						e.response.data.message !== "Email already exists"
+							? false
+							: undefined,
+					passwordFeedback:
+						e?.response.data.message &&
+						e.response.data.message !== "Email already exists"
+							? "Invalid Credentials"
+							: "",
+				}
+			})
+		} else {
+			if (
+				pathname.indexOf("signin") === -1 &&
+				pathname.indexOf("signup") === -1
+			)
+				navigate("/signin")
+		}
+	}
 	useEffect(() => {
 		if (loggedIn === undefined && !loadingLogin) {
 			authApi
 				.get(`/api/users/get/`)
 				.then(loginHandler)
-				.catch(() => {
-					if (
-						pathname.indexOf("signin") === -1 &&
-						pathname.indexOf("signup") === -1
-					)
-						navigate("/signin")
-					setLoggedIn(false)
-				})
+				.catch(loginCatchHandler)
 				.finally(() => {
 					setFirstLogin(true)
 				})
 		}
+		// if (!loggedIn && !loadingLogin) setValidator({})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [authApi, loadingLogin, loggedIn, navigate, pathname, user])
+	}, [authApi, loadingLogin, loggedIn, pathname, user])
+	useEffect(() => {
+		setValidator({})
+	}, [pathname])
+
 	const login = (formData) => {
 		if (!loadingLogin) {
 			setLoadingLogin(true)
 			authApi
 				.post(`/api/users/login/`, formData)
 				.then(loginHandler)
-				.catch((e) => {
-					if (
-						e.response &&
-						e.response.data &&
-						e.response.data.message
-					)
-						Toast.fire({
-							icon: "error",
-							title: e.response.data.message,
-						})
-					else
-						Toast.fire({
-							icon: "error",
-							title: "Something went wrong",
-						})
-				})
+				.catch(loginCatchHandler)
 				.finally(() => {
 					setLoadingLogin(false)
 				})
@@ -139,22 +166,7 @@ const AuthProvider = ({ children }) => {
 			authApi
 				.post(`/api/users/register/`, formData)
 				.then(loginHandler)
-				.catch((e) => {
-					if (
-						e.response &&
-						e.response.data &&
-						e.response.data.message
-					)
-						Toast.fire({
-							icon: "error",
-							title: e.response.data.message,
-						})
-					else
-						Toast.fire({
-							icon: "error",
-							title: "Something went wrong",
-						})
-				})
+				.catch(loginCatchHandler)
 				.finally(() => {
 					setLoadingLogin(false)
 				})
