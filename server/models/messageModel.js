@@ -17,15 +17,25 @@ const messageSchema = mongoose.Schema(
 		},
 		type: {
 			type: String,
+			default: "message",
 			// message
 			// file
 		},
-		isForwarding: {
+		isForwarded: {
 			type: Boolean,
+			default: false,
+		},
+		isEdited: {
+			type: Boolean,
+			default: false,
 		},
 		replyId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Message",
+		},
+		status: {
+			type: String,
+			default: "unread",
 		},
 	},
 	{ timestamps: true }

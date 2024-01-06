@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useMain } from "./useMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBell, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons"
-import { Dropdown } from "react-bootstrap"
+import { Dropdown, Nav } from "react-bootstrap"
 import { useAuth } from "./useAuth"
 
 const SideBarDropDownOptions = () => {
@@ -13,10 +13,11 @@ const SideBarDropDownOptions = () => {
 		setShowInviteOthers,
 	} = useMain()
 	const { logout } = useAuth()
+	const navigate = useNavigate()
 	return (
-		<ul className="nav flex-nowrap">
-			<li
-				className="nav-item list-inline-item me-1"
+		<Nav className="flex-nowrap">
+			<Nav.Item
+				className="list-inline-item me-1"
 				onClick={() => {
 					setShowNotifications(true)
 				}}
@@ -27,16 +28,19 @@ const SideBarDropDownOptions = () => {
 				>
 					<FontAwesomeIcon icon={faBell} />
 				</Link>
-			</li>
-			<li className="nav-item list-inline-item me-0">
+			</Nav.Item>
+			<Nav.Item className="list-inline-item me-0">
 				<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
 					<Dropdown.Toggle
+						variant=""
 						className="nav-link text-muted px-1 py-0"
-						as={Link}
 					>
 						<FontAwesomeIcon icon={faEllipsisVertical} />
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
+						<Dropdown.Item onClick={() => navigate("/chat/me")}>
+							Saved Message
+						</Dropdown.Item>
 						<Dropdown.Item onClick={() => setShowNewChat(true)}>
 							New Chat
 						</Dropdown.Item>
@@ -51,8 +55,8 @@ const SideBarDropDownOptions = () => {
 						<Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown>
-			</li>
-		</ul>
+			</Nav.Item>
+		</Nav>
 	)
 }
 

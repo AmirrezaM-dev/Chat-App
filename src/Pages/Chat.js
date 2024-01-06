@@ -6,6 +6,7 @@ import {
 	Form,
 	InputGroup,
 	ListGroup,
+	Nav,
 } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -35,7 +36,8 @@ import {
 	faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons"
 import { faSquareCheck } from "@fortawesome/free-regular-svg-icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useAuth } from "../Components/useAuth"
 const Chat = () => {
 	// const config = {
 	// 	delegate: "a",
@@ -59,8 +61,18 @@ const Chat = () => {
 	// }
 
 	const { id } = useParams()
+	const { loadedChats, setLoadedChats, authApi } = useAuth()
 	const [showSearch, setShowSearch] = useState(false)
 	const [showInfo, setShowInfo] = useState(false)
+	const [chatName, setChatName] = useState("")
+	useEffect(() => {
+		authApi.post("/api/message/getMessages", { id }).then((response) => {
+			setChatName(response.data.fullname)
+			setLoadedChats((loadedChats) => {
+				return { ...loadedChats, [id]: response.data.Messages }
+			})
+		})
+	}, [])
 
 	return (
 		<div className="chats d-flex">
@@ -86,13 +98,13 @@ const Chat = () => {
 								</div>
 								<div className="media-body align-self-center ">
 									<h6 className="text-truncate mb-0">
-										Catherine Richardson
+										{chatName}
 									</h6>
 									<small className="text-muted">Online</small>
 								</div>
 							</div>
 							{/* Chat Options */}
-							<ul className="nav flex-nowrap">
+							<Nav className="flex-nowrap">
 								<li
 									className="nav-item list-inline-item d-none d-sm-block me-1"
 									onClick={() =>
@@ -101,12 +113,7 @@ const Chat = () => {
 										)
 									}
 								>
-									<Link
-										className="nav-link text-muted px-1"
-										data-toggle="collapse"
-										data-target="#searchCollapse"
-										aria-expanded="false"
-									>
+									<Link className="nav-link text-muted px-1">
 										<FontAwesomeIcon icon={faSearch} />
 									</Link>
 								</li>
@@ -168,7 +175,7 @@ const Chat = () => {
 									</Dropdown>
 								</li>
 								<li className="nav-item list-inline-item d-sm-none me-0"></li>
-							</ul>
+							</Nav>
 						</div>
 						{/* Chat Header End*/}
 						{/* Search Start */}
@@ -177,7 +184,7 @@ const Chat = () => {
 							className="border-bottom px-3"
 						>
 							<div className="container-xl py-2 px-0 px-md-3">
-								<InputGroup className="mb-3">
+								<InputGroup>
 									<Form.Control
 										type="text"
 										className="form-control form-control-md border-end-0 bg-transparent pe-0"
@@ -794,7 +801,7 @@ const Chat = () => {
 							{/* Chat Info Header Start */}
 							<div className="chat-info-header px-2">
 								<div className="container-fluid">
-									<ul className="nav justify-content-between align-items-center">
+									<Nav className="justify-content-between align-items-center">
 										{/* Sidebar Title Start */}
 										<li className="text-center">
 											<h5 className="text-truncate mb-0">
@@ -812,7 +819,7 @@ const Chat = () => {
 											</Link>
 										</li>
 										{/* Close Sidebar End */}
-									</ul>
+									</Nav>
 								</div>
 							</div>
 							{/* Chat Info Header End  */}
@@ -857,14 +864,7 @@ const Chat = () => {
 								{/* User Profile End */}
 								{/* User Information Start */}
 								<div className="chat-info-group">
-									<Link
-										className="chat-info-group-header"
-										data-toggle="collapse"
-										href="#profile-info"
-										role="button"
-										aria-expanded="true"
-										aria-controls="profile-info"
-									>
+									<Link className="chat-info-group-header">
 										<h6 className="mb-0">
 											User Information
 										</h6>
@@ -916,14 +916,7 @@ const Chat = () => {
 								{/* User Information End */}
 								{/* Shared Media Start */}
 								<div className="chat-info-group">
-									<Link
-										className="chat-info-group-header"
-										data-toggle="collapse"
-										href="#shared-media"
-										role="button"
-										aria-expanded="true"
-										aria-controls="shared-media"
-									>
+									<Link className="chat-info-group-header">
 										<h6 className="mb-0">Last Media</h6>
 										<FontAwesomeIcon icon={faImage} />
 									</Link>
@@ -968,14 +961,7 @@ const Chat = () => {
 								{/* Shared Media End */}
 								{/* Shared Files Start */}
 								<div className="chat-info-group">
-									<Link
-										className="chat-info-group-header"
-										data-toggle="collapse"
-										href="#shared-files"
-										role="button"
-										aria-expanded="true"
-										aria-controls="shared-files"
-									>
+									<Link className="chat-info-group-header">
 										<h6 className="mb-0">Documents</h6>
 										<FontAwesomeIcon icon={faFile} />
 									</Link>

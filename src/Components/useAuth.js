@@ -141,12 +141,10 @@ const AuthProvider = ({ children }) => {
 					setFirstLogin(true)
 				})
 		}
+		setValidator({})
 		// if (!loggedIn && !loadingLogin) setValidator({})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [authApi, loadingLogin, loggedIn, pathname, user])
-	useEffect(() => {
-		setValidator({})
-	}, [pathname])
+	}, [loadingLogin, loggedIn, pathname, user])
 
 	const login = (formData) => {
 		if (!loadingLogin) {
@@ -196,6 +194,25 @@ const AuthProvider = ({ children }) => {
 				})
 		}
 	}
+
+	const [chats, setChats] = useState([])
+	const [filterChats, setFilterChats] = useState("All Chats")
+	const [loadedChats, setLoadedChats] = useState({})
+	useEffect(() => {
+		authApi.post("/api/message/getChats").then((response) => {
+			setChats(response.data.Chats)
+		})
+		const getChatsInterval = setInterval(() => {
+			authApi.post("/api/message/getChats").then((response) => {
+				setChats(response.data.Chats)
+			})
+		}, 1000)
+		return () => {
+			clearInterval(getChatsInterval)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	return (
 		<AuthContent.Provider
 			value={{
@@ -215,6 +232,12 @@ const AuthProvider = ({ children }) => {
 				validator,
 				setValidator,
 				regExEmail,
+				chats,
+				setChats,
+				filterChats,
+				setFilterChats,
+				loadedChats,
+				setLoadedChats,
 			}}
 		>
 			{children}

@@ -15,7 +15,8 @@ const login = asyncHandler(async (req, res) => {
 			await Token.findOneAndDelete({ lt: req.cookies.lt, active: true })
 			res.clearCookie("lt")
 		}
-		const email = req.body.email.toLowerCase(), password = req.body.password
+		const email = req.body.email.toLowerCase(),
+			password = req.body.password
 		const user = await User.findOne({ email })
 		if (user && (await bcrypt.compare(password, user.password))) {
 			const token = generateToken(user._id)
@@ -31,12 +32,13 @@ const login = asyncHandler(async (req, res) => {
 				secure: true,
 			})
 
-			const { fullname } = user
+			const { _id, fullname } = user
 
 			res.status(200).json({
+				_id,
 				fullname,
 				email,
-				csrfToken
+				csrfToken,
 			})
 		} else {
 			res.status(400)
@@ -44,17 +46,19 @@ const login = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		res.status(422)
-		if (error.message === "Invalid credentials") throw new Error(error.message)
+		if (error.message === "Invalid credentials")
+			throw new Error(error.message)
 		else throw new Error("Something went wrong")
 	}
 })
 
 const get = asyncHandler(async (req, res) => {
 	try {
-		const { fullname, email } = await User.findById(req.user.id)
+		const { fullname, email, _id } = await User.findById(req.user.id)
 		res.status(200).json({
+			_id,
 			fullname,
-			email
+			email,
 		})
 	} catch (error) {
 		res.status(422)

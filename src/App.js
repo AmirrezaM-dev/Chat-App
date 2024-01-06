@@ -1,4 +1,10 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom"
+import {
+	Routes,
+	Route,
+	useLocation,
+	useNavigate,
+	useRoutes,
+} from "react-router-dom"
 import SignIn from "./Pages/SignIn"
 import SignUp from "./Pages/SignUp"
 import Forgot from "./Pages/Forgot"
@@ -7,7 +13,6 @@ import CreateGroup from "./Components/CreateGroup"
 import InviteOthers from "./Components/InviteOthers"
 import Notifications from "./Components/Notifications"
 import Navigation from "./Components/Navigation"
-import Sidebar from "./Components/Sidebar"
 import { useAuth } from "./Components/useAuth"
 import { useEffect } from "react"
 import Chat from "./Pages/Chat"
@@ -16,6 +21,7 @@ import Contacts from "./Pages/Contacts"
 import Profile from "./Pages/Profile"
 import Preloader from "./Pages/Preloader"
 import { useMain } from "./Components/useMain"
+import Sidebar from "./Components/Sidebar"
 
 const App = () => {
 	const { showPreloader } = useMain()
@@ -54,18 +60,36 @@ const App = () => {
 			}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loggedIn, pathname])
+	const SideBar = () =>
+		useRoutes(
+			[].concat(
+				[
+					"/",
+					"/chat",
+					"/chat/:id",
+					"/contacts",
+					"/contacts/:id",
+					"/profile",
+				].map((path) => ({
+					path: path,
+					element: <Sidebar />,
+				}))
+			)
+		)
 	return !firstLogin || showPreloader ? (
 		<Preloader />
 	) : (
 		<>
 			<Navigation />
-			<Sidebar />
+			<SideBar />
 			<main className={`main main-visible`}>
 				<Routes>
 					<Route path={"/signin"} element={<SignIn />} />
 					<Route path={"/signup"} element={<SignUp />} />
 					<Route path={"/forgot"} element={<Forgot />} />
-					<Route path={"/chat"} element={<ChatStart />} />
+					{["/", "/chat"].map((path) => {
+						return <Route path={path} element={<ChatStart />} />
+					})}
 					<Route path={"/chat/:id"} element={<Chat />} />
 					<Route path={"/contacts"} element={<Contacts />} />
 					<Route path={"/contacts/:id"} element={<Contacts />} />

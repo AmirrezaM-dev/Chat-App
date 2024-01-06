@@ -1,4 +1,3 @@
-import React from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
 import "./assets/webfonts/inter/inter.css"
@@ -11,13 +10,13 @@ import AuthProvider from "./Components/useAuth"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
-	<React.StrictMode>
-		<Router>
-			<MainComponent>
-				<AuthProvider>
-					<App />
-				</AuthProvider>
-			</MainComponent>
-		</Router>
-	</React.StrictMode>
+	//<React.StrictMode>
+	<Router>
+		<MainComponent>
+			<AuthProvider>
+				<App />
+			</AuthProvider>
+		</MainComponent>
+	</Router>
+	//</React.StrictMode>
 )
