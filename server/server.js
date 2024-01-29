@@ -16,26 +16,30 @@ server.once("close", function () {
 	require("dotenv").config({ path: ".env" })
 	express.Router()
 	const cors = require("cors")
-	const origins = [process.env.FRONT_END_URL]
-	const CORS = {
-		origin: origins,
-		credentials: true,
-	}
-	console.log({
-		origin: "https://chat-app-7x83.onrender.com",
-		credentials: true,
-	})
 	const { errorHandler } = require("./middlewares/errorMiddleware")
 	const connectDB = require("./configs/db")
 	const app = express()
 	const cookieParser = require("cookie-parser")
-	const cookie = require("cookie")
+	const origins = [process.env.FRONT_END_URL]
+	// const CORS = {
+	// 	origin: origins,
+	// 	credentials: true,
+	// }
+	// console.log({
+	// 	origin: "https://chat-app-7x83.onrender.com",
+	// 	credentials: true,
+	// })
 
 	connectDB()
 
 	app.use(cookieParser())
 
-	app.use(cors(CORS))
+	app.use(
+		cors({
+			origin: origins,
+			credentials: true,
+		})
+	)
 
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: false }))
@@ -44,8 +48,7 @@ server.once("close", function () {
 	app.use("/api/message", require("./routes/messageRoutes"))
 
 	app.use(errorHandler)
-
-	const Server = app.listen(port, () => {
+	app.listen(port, () => {
 		console.log(`Server started on port ${port}`)
 	})
 
