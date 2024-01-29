@@ -87,8 +87,14 @@ const App = () => {
 					<Route path={"/signin"} element={<SignIn />} />
 					<Route path={"/signup"} element={<SignUp />} />
 					<Route path={"/forgot"} element={<Forgot />} />
-					{["/", "/chat"].map((path) => {
-						return <Route path={path} element={<ChatStart />} />
+					{["/", "/chat"].map((path, i) => {
+						return (
+							<Route
+								key={i}
+								path={path}
+								element={<ChatStart />}
+							/>
+						)
 					})}
 					<Route path={"/chat/:id"} element={<Chat />} />
 					<Route path={"/contacts"} element={<Contacts />} />

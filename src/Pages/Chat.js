@@ -25,9 +25,6 @@ import {
 	faFile,
 	faMailForward,
 	faBan,
-	faVolumeMute,
-	faTrash,
-	faArchive,
 	faLocation,
 	faUserPlus,
 	faCircleInfo,
@@ -38,6 +35,10 @@ import {
 import { faSquareCheck } from "@fortawesome/free-regular-svg-icons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../Components/useAuth"
+import Preloader from "./Preloader"
+import ChatOptions from "../Components/ChatOptions"
+import MessageOptions from "../Components/MessageOptions"
+import { useChat } from "../Components/useChat"
 const Chat = () => {
 	// const config = {
 	// 	delegate: "a",
@@ -61,22 +62,31 @@ const Chat = () => {
 	// }
 
 	const { id } = useParams()
-	const { loadedChats, setLoadedChats, authApi } = useAuth()
+	const { authApi, user } = useAuth()
+	const { loadedChats, setLoadedChats } = useChat()
 	const [showSearch, setShowSearch] = useState(false)
 	const [showInfo, setShowInfo] = useState(false)
-	const [chatName, setChatName] = useState("")
 	useEffect(() => {
 		authApi.post("/api/message/getMessages", { id }).then((response) => {
-			setChatName(response.data.fullname)
 			setLoadedChats((loadedChats) => {
-				return { ...loadedChats, [id]: response.data.Messages }
+				return {
+					...loadedChats,
+					// messages
+					[id]: response.data.Messages,
+					// chat info (name, avatar, ...)
+					["info-" + id]: {
+						...loadedChats["info-" + id],
+						fullname: response.data.OtherUser.fullname,
+					},
+				}
 			})
 		})
-	}, [])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [id])
 
 	return (
 		<div className="chats d-flex">
-			{id ? (
+			{id && loadedChats?.[id] ? (
 				<>
 					<div className="chat-body">
 						{/* Chat Header Start*/}
@@ -90,7 +100,7 @@ const Chat = () => {
 							</Link>
 							{/* Chat participant's Name */}
 							<div className="media chat-name align-items-center text-truncate">
-								<div className="avatar avatar-online d-none d-sm-inline-block me-3">
+								<div className="avatar /*avatar-online*/ d-none d-sm-inline-block me-3">
 									<img
 										src={require("../assets/media/avatar/2.png")}
 										alt=""
@@ -98,84 +108,17 @@ const Chat = () => {
 								</div>
 								<div className="media-body align-self-center ">
 									<h6 className="text-truncate mb-0">
-										{chatName}
+										{loadedChats["info-" + id].fullname}
 									</h6>
-									<small className="text-muted">Online</small>
+									{/* <small className="text-muted">Online</small> */}
 								</div>
 							</div>
 							{/* Chat Options */}
-							<Nav className="flex-nowrap">
-								<li
-									className="nav-item list-inline-item d-none d-sm-block me-1"
-									onClick={() =>
-										setShowSearch(
-											(showSearch) => !showSearch
-										)
-									}
-								>
-									<Link className="nav-link text-muted px-1">
-										<FontAwesomeIcon icon={faSearch} />
-									</Link>
-								</li>
-
-								<li className="nav-item list-inline-item d-none d-sm-block me-0">
-									<Dropdown
-										className="nav-link px-1"
-										// drop="start"
-									>
-										<Dropdown.Toggle
-											as={Link}
-											className="text-secondary"
-										>
-											<FontAwesomeIcon
-												icon={faEllipsisVertical}
-											/>
-										</Dropdown.Toggle>
-										<Dropdown.Menu>
-											<Dropdown.Item
-												onClick={() => {
-													setShowInfo(true)
-												}}
-											>
-												<FontAwesomeIcon
-													icon={faInfoCircle}
-													className="me-2"
-												/>
-												View Info
-											</Dropdown.Item>
-											<Dropdown.Item>
-												<FontAwesomeIcon
-													icon={faVolumeMute}
-													className="me-2"
-												/>
-												Mute Notifications
-											</Dropdown.Item>
-											<Dropdown.Item>
-												<FontAwesomeIcon
-													icon={faArchive}
-													className="me-2"
-												/>
-												Archive
-											</Dropdown.Item>
-											<Dropdown.Item>
-												<FontAwesomeIcon
-													icon={faTrash}
-													className="me-2"
-												/>
-												Delete
-											</Dropdown.Item>
-											<Dropdown.Item className="text-danger">
-												<FontAwesomeIcon
-													icon={faBan}
-													className="me-2"
-												/>
-												Block
-											</Dropdown.Item>
-										</Dropdown.Menu>
-									</Dropdown>
-								</li>
-								<li className="nav-item list-inline-item d-sm-none me-0"></li>
-							</Nav>
+							<ChatOptions
+								setShowSearch={setShowSearch}
+								setShowInfo={setShowInfo}
+							/>
+							{/* Chat Options */}
 						</div>
 						{/* Chat Header End*/}
 						{/* Search Start */}
@@ -198,10 +141,35 @@ const Chat = () => {
 						</Collapse>
 						{/* Search End */}
 						{/* Chat Content Start*/}
-						<div className="chat-content p-2" id="messageBody">
+						<div className="chat-content p-2">
 							<div className="container">
+								<div
+									className="message-divider sticky-top pb-2"
+									data-label="Freaking Date bla bla 99/99/99"
+								>
+									&nbsp;
+								</div>
 								{/* Message Day Start */}
 								<div className="message-day">
+									{loadedChats[id].map((chat, i) => {
+										return (
+											<div
+												key={i}
+												className={`message ${
+													user._id === chat.sender
+														? "self"
+														: ""
+												}`}
+											>
+												<div className="message-wrapper">
+													<div className="message-content">
+														<span>{chat.text}</span>
+													</div>
+												</div>
+												<MessageOptions chat={chat} />
+											</div>
+										)
+									})}
 									<div
 										className="message-divider sticky-top pb-2"
 										data-label="Yesterday"
@@ -1184,7 +1152,7 @@ const Chat = () => {
 					</div>
 				</>
 			) : (
-				<></>
+				<Preloader />
 			)}
 		</div>
 	)

@@ -16,23 +16,22 @@ server.once("close", function () {
 	require("dotenv").config({ path: ".env" })
 	express.Router()
 	const cors = require("cors")
+	const origins = [process.env.FRONT_END_URL]
+	const CORS = {
+		origin: origins,
+		credentials: true,
+	}
 	const { errorHandler } = require("./middlewares/errorMiddleware")
 	const connectDB = require("./configs/db")
 	const app = express()
 	const cookieParser = require("cookie-parser")
-	const origins = [process.env.FRONT_END_URL]
-	console.log(process.env.FRONT_END_URL)
+	const cookie = require("cookie")
 
 	connectDB()
 
 	app.use(cookieParser())
 
-	app.use(
-		cors({
-			origin: origins,
-			credentials: true,
-		})
-	)
+	app.use(cors(CORS))
 
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: false }))
@@ -41,7 +40,31 @@ server.once("close", function () {
 	app.use("/api/message", require("./routes/messageRoutes"))
 
 	app.use(errorHandler)
-	app.listen(port, () => {
+
+	const Server = app.listen(port, () => {
 		console.log(`Server started on port ${port}`)
+	})
+
+	const io = require("socket.io")(Server, {
+		cors: CORS,
+	})
+
+	// global.io = io
+	// global.io.emit("getFrontend", "Global message value")
+
+	io.on("connection", (socket) => {
+		// const cookies = cookie.parse(socket.request.headers.cookie)
+		console.log(`User with id (${socket.id}) connected`)
+
+		// socket.on("emit-name", (value) => {})
+		socket.on("getBackend", (value, callback) => {
+			console.log(value) // 1
+			socket.emit("getFrontend", value)
+			callback("callback " + value)
+		})
+
+		socket.on("disconnect", () => {
+			console.log(`User with id (${socket.id}) disconnected`)
+		})
 	})
 })

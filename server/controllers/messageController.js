@@ -1,7 +1,9 @@
 const asyncHandler = require("express-async-handler")
 const Message = require("../models/messageModel")
+const User = require("../models/userModel")
 
 const getChats = asyncHandler(async (req, res) => {
+	console.log(req.cookies)
 	try {
 		const Chats = await Message.aggregate([
 			{
@@ -78,18 +80,13 @@ const getChats = asyncHandler(async (req, res) => {
 const getMessages = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.body
+		const OtherUser = await User.findById(id).select(
+			"fullname username avatar"
+		)
 		const Messages = await Message.find({
-			$or: [
-				{
-					$and: [{ sender: req.user._id }, { receiver: id }],
-				},
-				{
-					$and: [{ sender: id }, { receiver: req.user._id }],
-				},
-			],
-		}).sort({ createdAt: -1 })
-		console.log(Messages)
-		res.status(200).json({ Messages })
+			$or: [{ sender: id }, { receiver: id }],
+		})
+		res.status(200).json({ Messages, OtherUser })
 	} catch (error) {
 		res.status(422)
 		throw new Error(`Something went wrong ${error}`)

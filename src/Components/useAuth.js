@@ -68,13 +68,14 @@ const AuthProvider = ({ children }) => {
 	})
 	const loginHandler = (response) => {
 		if (response?.data) {
+			// if (response.data?.csrfToken)
+			// 	cookies.set("cs", response.data.csrfToken, {
+			// 		path: "/",
+			// 		sameSite: "Strict",
+			// 		// secure: true,
+			// 	})
+
 			setUser(response.data)
-			if (response.data?.csrfToken)
-				cookies.set("cs", response.data.csrfToken, {
-					path: "/",
-					sameSite: "Strict",
-					secure: true,
-				})
 			setLoggedIn(true)
 			setFormData(defaultFormData)
 			setValidator({})
@@ -131,21 +132,6 @@ const AuthProvider = ({ children }) => {
 				navigate("/signin")
 		}
 	}
-	useEffect(() => {
-		if (loggedIn === undefined && !loadingLogin) {
-			authApi
-				.get(`/api/users/get/`)
-				.then(loginHandler)
-				.catch(loginCatchHandler)
-				.finally(() => {
-					setFirstLogin(true)
-				})
-		}
-		setValidator({})
-		// if (!loggedIn && !loadingLogin) setValidator({})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loadingLogin, loggedIn, pathname, user])
-
 	const login = (formData) => {
 		if (!loadingLogin) {
 			setLoadingLogin(true)
@@ -195,23 +181,20 @@ const AuthProvider = ({ children }) => {
 		}
 	}
 
-	const [chats, setChats] = useState([])
-	const [filterChats, setFilterChats] = useState("All Chats")
-	const [loadedChats, setLoadedChats] = useState({})
 	useEffect(() => {
-		authApi.post("/api/message/getChats").then((response) => {
-			setChats(response.data.Chats)
-		})
-		const getChatsInterval = setInterval(() => {
-			authApi.post("/api/message/getChats").then((response) => {
-				setChats(response.data.Chats)
-			})
-		}, 1000)
-		return () => {
-			clearInterval(getChatsInterval)
+		if (loggedIn === undefined) {
+			authApi
+				.get(`/api/users/get/`)
+				.then(loginHandler)
+				.catch(loginCatchHandler)
+				.finally(() => {
+					setFirstLogin(true)
+				})
 		}
+		setValidator({})
+		// if (!loggedIn && !loadingLogin) setValidator({})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [loadingLogin, loggedIn, pathname, user])
 
 	return (
 		<AuthContent.Provider
@@ -232,12 +215,6 @@ const AuthProvider = ({ children }) => {
 				validator,
 				setValidator,
 				regExEmail,
-				chats,
-				setChats,
-				filterChats,
-				setFilterChats,
-				loadedChats,
-				setLoadedChats,
 			}}
 		>
 			{children}

@@ -21,6 +21,13 @@ const userSchema = mongoose.Schema(
 			type: String,
 			required: [true, "Please fill the password field"],
 		},
+		isConnected: {
+			type: Boolean,
+			default: false,
+		},
+		socketID: {
+			type: String,
+		},
 	},
 	{ timestamps: true }
 )

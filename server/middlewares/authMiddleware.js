@@ -48,14 +48,17 @@ const jwtCP = asyncHandler(async (req, res, next) => {
 
 const csrfP = asyncHandler(async (req, res, next) => {
 	if (
-		!req.headers.authorization ||
-		!req.headers.authorization.startsWith("Bearer")
+		!req.cookies.cs &&
+		(!req.headers.authorization ||
+			!req.headers.authorization.startsWith("Bearer"))
 	) {
 		res.status(401)
 		throw new Error("Bad credentials")
 	}
 	try {
-		const token = req.headers.authorization.split(" ")[1]
+		const token = req.cookies.cs
+			? req.cookies.cs
+			: req.headers.authorization.split(" ")[1]
 		if (csrf.verify(req.csrfSecret.cs, token)) {
 			next()
 		} else {

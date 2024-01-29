@@ -2,38 +2,15 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { useAuth } from "./useAuth"
 import ChatSidebarHeader from "./ChatSidebarHeader"
 import SidebarChatTemplates from "./SidebarChatTemplates"
+import { useMain } from "./useMain"
+import { useChat } from "./useChat"
 
 const ChatSidebar = () => {
-	const { user, chats } = useAuth()
+	const { user } = useAuth()
+	const { timeSince } = useMain()
+	const { chats } = useChat()
 	const { id } = useParams()
 	const navigate = useNavigate()
-	const timeSince = (date) => {
-		const second = Math.floor((new Date() - date) / 1000)
-		const days = second / 86400
-		const hours = second / 3600
-		const seconds = second / 60
-		if (days > 1) {
-			return new Date(date).toLocaleString("en-US", {
-				year: "2-digit",
-				month: "2-digit",
-				day: "2-digit",
-				hour: "2-digit",
-				minute: "2-digit",
-				timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-			})
-		} else if (hours > 1) {
-			return (
-				Math.floor(hours) +
-				` hour${Math.floor(hours) === 1 ? "" : "s"} ago`
-			)
-		} else if (seconds > 1) {
-			return (
-				Math.floor(seconds) +
-				` minute${Math.floor(seconds) === 1 ? "" : "s"} ago`
-			)
-		}
-		return "Just now"
-	}
 
 	return (
 		<div className="d-flex flex-column h-100">
@@ -76,9 +53,7 @@ const ChatSidebar = () => {
 													{otherUser.fullname}
 												</h6>
 												<div className="chat-time">
-													{timeSince(
-														new Date(chat.createdAt)
-													)}
+													{timeSince(chat.createdAt)}
 												</div>
 											</div>
 											<div className="contacts-texts">

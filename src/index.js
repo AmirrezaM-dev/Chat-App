@@ -7,6 +7,7 @@ import App from "./App"
 import { HashRouter as Router } from "react-router-dom"
 import MainComponent from "./Components/useMain"
 import AuthProvider from "./Components/useAuth"
+import ChatComponent from "./Components/useChat"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
@@ -14,7 +15,9 @@ root.render(
 	<Router>
 		<MainComponent>
 			<AuthProvider>
-				<App />
+				<ChatComponent>
+					<App />
+				</ChatComponent>
 			</AuthProvider>
 		</MainComponent>
 	</Router>
