@@ -8,6 +8,7 @@ const errorHandler = (err, req, res) => {
 				message: err.message,
 			})
 	}
+	console.log("Something went wrong" + err.message)
 }
 
 module.exports = { errorHandler }
