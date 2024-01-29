@@ -21,6 +21,7 @@ server.once("close", function () {
 		origin: origins,
 		credentials: true,
 	}
+	console.log(CORS)
 	const { errorHandler } = require("./middlewares/errorMiddleware")
 	const connectDB = require("./configs/db")
 	const app = express()
