@@ -21,7 +21,10 @@ server.once("close", function () {
 		origin: origins,
 		credentials: true,
 	}
-	console.log(CORS)
+	console.log({
+		origin: "https://chat-app-7x83.onrender.com",
+		credentials: true,
+	})
 	const { errorHandler } = require("./middlewares/errorMiddleware")
 	const connectDB = require("./configs/db")
 	const app = express()
@@ -43,9 +46,7 @@ server.once("close", function () {
 	app.use(errorHandler)
 
 	const Server = app.listen(port, () => {
-		console.log(
-			`Server started on port ${port} with cors : ${CORS.toString()}`
-		)
+		console.log(`Server started on port ${port}`)
 	})
 
 	// const io = require("socket.io")(Server, {
