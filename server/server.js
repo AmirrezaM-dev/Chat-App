@@ -45,26 +45,26 @@ server.once("close", function () {
 		console.log(`Server started on port ${port}`)
 	})
 
-	const io = require("socket.io")(Server, {
-		cors: CORS,
-	})
+	// const io = require("socket.io")(Server, {
+	// 	cors: CORS,
+	// })
 
-	// global.io = io
-	// global.io.emit("getFrontend", "Global message value")
+	// // global.io = io
+	// // global.io.emit("getFrontend", "Global message value")
 
-	io.on("connection", (socket) => {
-		// const cookies = cookie.parse(socket.request.headers.cookie)
-		console.log(`User with id (${socket.id}) connected`)
+	// io.on("connection", (socket) => {
+	// 	// const cookies = cookie.parse(socket.request.headers.cookie)
+	// 	console.log(`User with id (${socket.id}) connected`)
 
-		// socket.on("emit-name", (value) => {})
-		socket.on("getBackend", (value, callback) => {
-			console.log(value) // 1
-			socket.emit("getFrontend", value)
-			callback("callback " + value)
-		})
+	// 	// socket.on("emit-name", (value) => {})
+	// 	socket.on("getBackend", (value, callback) => {
+	// 		console.log(value) // 1
+	// 		socket.emit("getFrontend", value)
+	// 		callback("callback " + value)
+	// 	})
 
-		socket.on("disconnect", () => {
-			console.log(`User with id (${socket.id}) disconnected`)
-		})
-	})
+	// 	socket.on("disconnect", () => {
+	// 		console.log(`User with id (${socket.id}) disconnected`)
+	// 	})
+	// })
 })
