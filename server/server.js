@@ -43,7 +43,9 @@ server.once("close", function () {
 	app.use(errorHandler)
 
 	const Server = app.listen(port, () => {
-		console.log(`Server started on port ${port}`)
+		console.log(
+			`Server started on port ${port} with cors : ${CORS.toString()}`
+		)
 	})
 
 	// const io = require("socket.io")(Server, {
