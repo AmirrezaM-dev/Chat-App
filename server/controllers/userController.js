@@ -32,13 +32,6 @@ const login = asyncHandler(async (req, res) => {
 				httpOnly: true,
 				secure: true,
 			})
-			res.cookie("cs", csrfToken, {
-				path: "/",
-				sameSite: "strict",
-				maxAge: 99999999,
-				httpOnly: true,
-				secure: true,
-			})
 
 			const { _id, fullname } = user
 
@@ -46,7 +39,7 @@ const login = asyncHandler(async (req, res) => {
 				_id,
 				fullname,
 				email,
-				// csrfToken,
+				csrfToken,
 			})
 		} else {
 			res.status(400)

@@ -68,12 +68,12 @@ const AuthProvider = ({ children }) => {
 	})
 	const loginHandler = (response) => {
 		if (response?.data) {
-			// if (response.data?.csrfToken)
-			// 	cookies.set("cs", response.data.csrfToken, {
-			// 		path: "/",
-			// 		sameSite: "Strict",
-			// 		// secure: true,
-			// 	})
+			if (response.data?.csrfToken)
+				cookies.set("cs", response.data.csrfToken, {
+					path: "/",
+					sameSite: "Strict",
+					// secure: true,
+				})
 
 			setUser(response.data)
 			setLoggedIn(true)

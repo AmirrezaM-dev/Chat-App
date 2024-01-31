@@ -3,7 +3,6 @@ const Message = require("../models/messageModel")
 const User = require("../models/userModel")
 
 const getChats = asyncHandler(async (req, res) => {
-	console.log(req.cookies)
 	try {
 		const Chats = await Message.aggregate([
 			{

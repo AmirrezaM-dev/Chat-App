@@ -21,25 +21,16 @@ server.once("close", function () {
 	const app = express()
 	const cookieParser = require("cookie-parser")
 	const origins = [process.env.FRONT_END_URL]
-	// const CORS = {
-	// 	origin: origins,
-	// 	credentials: true,
-	// }
-	// console.log({
-	// 	origin: "https://chat-app-7x83.onrender.com",
-	// 	credentials: true,
-	// })
+	const CORS = {
+		origin: origins,
+		credentials: true,
+	}
 
 	connectDB()
 
 	app.use(cookieParser())
 
-	app.use(
-		cors({
-			origin: origins,
-			credentials: true,
-		})
-	)
+	app.use(cors(CORS))
 
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: false }))
@@ -48,30 +39,30 @@ server.once("close", function () {
 	app.use("/api/message", require("./routes/messageRoutes"))
 
 	app.use(errorHandler)
-	app.listen(port, () => {
+	const Server = app.listen(port, () => {
 		console.log(`Server started on port ${port}`)
 	})
 
-	// const io = require("socket.io")(Server, {
-	// 	cors: CORS,
-	// })
+	const io = require("socket.io")(Server, {
+		cors: CORS,
+	})
 
-	// // global.io = io
-	// // global.io.emit("getFrontend", "Global message value")
+	// global.io = io
+	// global.io.emit("getFrontend", "Global message value")
 
-	// io.on("connection", (socket) => {
-	// 	// const cookies = cookie.parse(socket.request.headers.cookie)
-	// 	console.log(`User with id (${socket.id}) connected`)
+	io.on("connection", (socket) => {
+		// const cookies = cookie.parse(socket.request.headers.cookie)
+		console.log(`User with id (${socket.id}) connected`)
 
-	// 	// socket.on("emit-name", (value) => {})
-	// 	socket.on("getBackend", (value, callback) => {
-	// 		console.log(value) // 1
-	// 		socket.emit("getFrontend", value)
-	// 		callback("callback " + value)
-	// 	})
+		// socket.on("emit-name", (value) => {})
+		socket.on("getBackend", (value, callback) => {
+			console.log(value) // 1
+			socket.emit("getFrontend", value)
+			callback("callback " + value)
+		})
 
-	// 	socket.on("disconnect", () => {
-	// 		console.log(`User with id (${socket.id}) disconnected`)
-	// 	})
-	// })
+		socket.on("disconnect", () => {
+			console.log(`User with id (${socket.id}) disconnected`)
+		})
+	})
 })

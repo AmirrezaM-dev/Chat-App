@@ -1,14 +1,11 @@
-const errorHandler = (err, req, res) => {
-	if (process.env.NODE_ENV === "development") console.log(`${err}`)
+const errorHandler = (err, req, res, next) => {
+	if (err) console.log(`error: ${err}`)
+	const statusCode = res.statusCode ? res.statusCode : 500
 	if (res) {
-		const statusCode = res.statusCode ? res.statusCode : 500
-		if (res.status) res.status(statusCode)
-		if (res.json)
-			res.json({
-				message: err.message,
-			})
+		res.status(statusCode)
+		res.json({
+			message: err.message,
+		})
 	}
-	console.log("Something went wrong" + err.message)
 }
-
 module.exports = { errorHandler }
