@@ -32,7 +32,7 @@ const ChatComponent = ({ children }) => {
 				setLoadedChats({})
 			})
 			Socket.on("receiveMessage", (message) => {
-				console.log(message)
+				// Set or update the chat list after a message is received.
 				setChats((chats) => {
 					return [
 						...chats.filter(
@@ -47,6 +47,7 @@ const ChatComponent = ({ children }) => {
 						},
 					]
 				})
+				//Set or update the chat related to the received message.
 				setLoadedChats((loadedChats) => {
 					return {
 						...loadedChats,
