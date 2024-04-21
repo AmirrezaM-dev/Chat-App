@@ -22,6 +22,8 @@ import Profile from "./Pages/Profile"
 import Preloader from "./Pages/Preloader"
 import { useMain } from "./Components/useMain"
 import Sidebar from "./Components/Sidebar"
+import DeleteMessage from "./Components/DeleteMessage"
+import EditMessage from "./Components/EditMessage"
 
 const App = () => {
 	const { showPreloader } = useMain()
@@ -105,6 +107,8 @@ const App = () => {
 			<StartNewChat />
 			<CreateGroup />
 			<InviteOthers />
+			<EditMessage />
+			<DeleteMessage />
 			<Notifications />
 		</>
 	)

@@ -17,6 +17,14 @@ server.once("close", function () {
 	express.Router()
 	const cors = require("cors")
 	const { errorHandler } = require("./middlewares/errorMiddleware")
+	const {
+		socketAuthMiddleware,
+	} = require("./middlewares/socketAuthMiddleware")
+	const {
+		socketDisconnect,
+		socketSendMessage,
+		socketCheckConnection,
+	} = require("./controllers/socketController")
 	const connectDB = require("./configs/db")
 	const app = express()
 	const cookieParser = require("cookie-parser")
@@ -37,32 +45,33 @@ server.once("close", function () {
 
 	app.use("/api/users", require("./routes/userRoutes"))
 	app.use("/api/message", require("./routes/messageRoutes"))
+	app.use("/api/contact", require("./routes/messageRoutes"))
 
 	app.use(errorHandler)
-	const Server = app.listen(port, () => {
+	const SharedServerForSocketIo = app.listen(port, () => {
 		console.log(`Server started on port ${port}`)
 	})
 
-	const io = require("socket.io")(Server, {
+	const io = require("socket.io")(SharedServerForSocketIo, {
 		cors: CORS,
 	})
 
-	// global.io = io
-	// global.io.emit("getFrontend", "Global message value")
+	global.io = io
+	global.io.emit("getFrontend", "Global message value")
 
-	io.on("connection", (socket) => {
-		// const cookies = cookie.parse(socket.request.headers.cookie)
+	io.use(socketAuthMiddleware)
+
+	io.on("connection", async (socket) => {
 		console.log(`User with id (${socket.id}) connected`)
-
-		// socket.on("emit-name", (value) => {})
-		socket.on("getBackend", (value, callback) => {
-			console.log(value) // 1
-			socket.emit("getFrontend", value)
-			callback("callback " + value)
+		socket.on("sendMessage", (data, callback) => {
+			socketSendMessage(socket, data, callback, io)
 		})
-
-		socket.on("disconnect", () => {
-			console.log(`User with id (${socket.id}) disconnected`)
+		socket.on("checkConnection", (callback) => {
+			socketCheckConnection(socket, callback)
 		})
+		socket.on("Disconnect", () => {
+			socket.disconnect()
+		})
+		socket.on("disconnect", () => socketDisconnect(socket))
 	})
 })

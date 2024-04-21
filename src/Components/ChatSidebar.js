@@ -4,6 +4,9 @@ import ChatSidebarHeader from "./ChatSidebarHeader"
 import SidebarChatTemplates from "./SidebarChatTemplates"
 import { useMain } from "./useMain"
 import { useChat } from "./useChat"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBookmark } from "@fortawesome/free-solid-svg-icons"
+import { Button } from "react-bootstrap"
 
 const ChatSidebar = () => {
 	const { user } = useAuth()
@@ -41,16 +44,36 @@ const ChatSidebar = () => {
 									}
 								>
 									<Link className="contacts-link">
-										<div className="avatar avatar-online">
-											<img
-												src={otherUser.avatar}
-												alt=""
-											/>
-										</div>
+										{otherUser._id === user._id ? (
+											<Button
+												disabled
+												className={`avatar opacity-100 rounded-circle ${
+													id === otherUser._id
+														? "border-white"
+														: "border-dark"
+												}`}
+												variant=""
+											>
+												<FontAwesomeIcon
+													icon={faBookmark}
+												/>
+											</Button>
+										) : otherUser?.avatar ? (
+											<div className="avatar avatar-online">
+												<img
+													src={otherUser.avatar}
+													alt=""
+												/>
+											</div>
+										) : (
+											<></>
+										)}
 										<div className="contacts-content">
 											<div className="contacts-info">
 												<h6 className="chat-name text-truncate">
-													{otherUser.fullname}
+													{otherUser._id === user._id
+														? "Saved Messages"
+														: otherUser.fullname}
 												</h6>
 												<div className="chat-time">
 													{timeSince(chat.createdAt)}

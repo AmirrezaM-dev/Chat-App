@@ -12,7 +12,7 @@ const SideBarDropDownOptions = () => {
 		setShowCreateGroup,
 		setShowInviteOthers,
 	} = useMain()
-	const { logout } = useAuth()
+	const { user, logout } = useAuth()
 	const navigate = useNavigate()
 	return (
 		<Nav className="flex-nowrap">
@@ -38,7 +38,9 @@ const SideBarDropDownOptions = () => {
 						<FontAwesomeIcon icon={faEllipsisVertical} />
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
-						<Dropdown.Item onClick={() => navigate("/chat/me")}>
+						<Dropdown.Item
+							onClick={() => navigate("/chat/" + user._id)}
+						>
 							Saved Message
 						</Dropdown.Item>
 						<Dropdown.Item onClick={() => setShowNewChat(true)}>

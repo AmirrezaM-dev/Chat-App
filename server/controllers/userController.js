@@ -1,11 +1,11 @@
-const asyncHandler = require("express-async-handler")
+const expressAsyncHandler = require("express-async-handler")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const User = require("../models/userModel")
 const csrf = require("csrf")()
 const Token = require("../models/tokenModel")
 
-const login = asyncHandler(async (req, res) => {
+const login = expressAsyncHandler(async (req, res) => {
 	try {
 		if (!req.body?.email && !req.body?.password) {
 			res.status(400)
@@ -53,7 +53,7 @@ const login = asyncHandler(async (req, res) => {
 	}
 })
 
-const get = asyncHandler(async (req, res) => {
+const get = expressAsyncHandler(async (req, res) => {
 	try {
 		const { fullname, email, _id } = await User.findById(req.user.id)
 		res.status(200).json({
@@ -62,12 +62,13 @@ const get = asyncHandler(async (req, res) => {
 			email,
 		})
 	} catch (error) {
+		console.log(error)
 		res.status(422)
 		throw new Error(`Something went wrong`)
 	}
 })
 
-const logout = asyncHandler(async (req, res) => {
+const logout = expressAsyncHandler(async (req, res) => {
 	if (req.cookies.lt) {
 		await Token.findOneAndDelete({ lt: req.cookies.lt, active: true })
 		res.clearCookie("lt")
@@ -75,7 +76,7 @@ const logout = asyncHandler(async (req, res) => {
 	}
 })
 
-const register = asyncHandler(async (req, res) => {
+const register = expressAsyncHandler(async (req, res) => {
 	if (!req.body?.email && !req.body?.password) {
 		res.status(400)
 		throw new Error("Please fill all fields")

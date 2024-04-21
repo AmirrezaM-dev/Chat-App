@@ -1,17 +1,55 @@
 import { createContext, useContext, useState } from "react"
+import Swal from "sweetalert2"
 
 const MainContent = createContext()
-
 export function useMain() {
 	return useContext(MainContent)
 }
 
 const MainComponent = ({ children }) => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top-end",
+		showConfirmButton: false,
+		timer: 3000,
+		timerProgressBar: true,
+		didOpen: (toast) => {
+			toast.addEventListener("mouseenter", Swal.stopTimer)
+			toast.addEventListener("mouseleave", Swal.resumeTimer)
+		},
+	})
 	const [showNewChat, setShowNewChat] = useState(false)
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
 	const [showPreloader, setShowPreloader] = useState(false)
+	const [showDeleteMessage, setShowDeleteMessage] = useState(false)
+	const [showEditMessage, setShowEditMessage] = useState(false)
+	const copyText = (text) => {
+		var TempText = document.createElement("input")
+		TempText.value = text
+		document.body.appendChild(TempText)
+		TempText.select()
+		document.execCommand("copy")
+		document.body.removeChild(TempText)
+		Toast.fire({
+			icon: "success",
+			title: "Message copied",
+			timer: 1000,
+		})
+	}
+
+	const formatDate = (date) => {
+		var d = new Date(date),
+			month = "" + (d.getMonth() + 1),
+			day = "" + d.getDate(),
+			year = d.getFullYear()
+
+		if (month.length < 2) month = "0" + month
+		if (day.length < 2) day = "0" + day
+
+		return [year, month, day].join("-")
+	}
 	const timeSince = (date) => {
 		const second = Math.floor((new Date() - new Date(date)) / 1000)
 		const days = second / 86400
@@ -50,9 +88,16 @@ const MainComponent = ({ children }) => {
 				setShowCreateGroup,
 				showInviteOthers,
 				setShowInviteOthers,
+				showDeleteMessage,
+				setShowDeleteMessage,
+				showEditMessage,
+				setShowEditMessage,
 				showPreloader,
 				setShowPreloader,
 				timeSince,
+				formatDate,
+				copyText,
+				Toast,
 			}}
 		>
 			{children}

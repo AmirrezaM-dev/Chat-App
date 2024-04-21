@@ -1,9 +1,22 @@
 const express = require("express")
 const router = express.Router()
-const { getChats, getMessages } = require("../controllers/messageController")
-const { jwtCP, csrfP } = require("../middlewares/authMiddleware")
+const {
+	getChatsAndContacts,
+	getMessages,
+	deleteMessage,
+	editMessage,
+} = require("../controllers/messageController")
+const {
+	jsonWebTokenAndCsrfProtection,
+} = require("../middlewares/authMiddleware")
 
-router.get("/getChats", [jwtCP, csrfP], getChats)
-router.post("/getMessages", [jwtCP, csrfP], getMessages)
+router.get(
+	"/getChatsAndContacts",
+	[jsonWebTokenAndCsrfProtection],
+	getChatsAndContacts
+)
+router.post("/editMessage", [jsonWebTokenAndCsrfProtection], editMessage)
+router.post("/deleteMessage", [jsonWebTokenAndCsrfProtection], deleteMessage)
+router.post("/getMessages", [jsonWebTokenAndCsrfProtection], getMessages)
 
 module.exports = router

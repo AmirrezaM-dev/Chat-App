@@ -1,11 +1,15 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons"
+import { faAt, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { Form, InputGroup } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
+import { useChat } from "./useChat"
 
 const ContactsSidebar = () => {
+	const { contacts } = useChat()
+	const navigate = useNavigate()
+	const { id } = useParams()
 	return (
 		<div className="d-flex flex-column h-100">
 			<div className="hide-scrollbar" id="friendsList">
@@ -43,433 +47,58 @@ const ContactsSidebar = () => {
 					data-friends-list=""
 				>
 					{/* Item Series Start */}
-					<li>
+					{/* <li>
 						<small className="font-weight-medium text-uppercase text-muted">
 							A
 						</small>
-					</li>
+					</li> */}
 					{/* Item Series End */}
 					{/* friends Item Start */}
-					<li className="contacts-item active">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Albert K. Johansen
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										San Fransisco, CA
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Alice R. Botello
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Brentwood, NY
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							b
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Brittany K. Williams
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Scranton, PA
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							C
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Christopher Garcia
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Riverside, CA
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Casey Mcbride
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Zephyr, NC
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							G
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Gemma Mendez
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Frederick, MD
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							k
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Katelyn Valdez
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Jackson, TN
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Katherine Schneider
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Saginaw, MI
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							m
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Maizie Edwards
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Greensboro, NC
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
-					{/* friends Item End */}
-					{/* Item Series Start */}
-					<li>
-						<small className="font-weight-medium text-uppercase text-muted">
-							s
-						</small>
-					</li>
-					{/* Item Series End */}
-					{/* friends Item Start */}
-					<li className="contacts-item">
-						<Link className="contacts-link">
-							<div className="avatar">
-								<img
-									src={require("../assets/media/avatar/3.png")}
-									alt=""
-								/>
-							</div>
-							<div className="contacts-content">
-								<div className="contacts-info">
-									<h6 className="chat-name text-truncate">
-										Susan K. Taylor
-									</h6>
-								</div>
-								<div className="contacts-texts">
-									{/* Default :: Inline SVG */}
-									<svg
-										className="hw-16 text-muted me-1"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fillRule="evenodd"
-											d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-											clipRule="evenodd"
-										/>
-									</svg>
-									{/* Alternate :: External File link */}
-									{/* <img class="injectable hw-16 text-muted me-1" src="./../../assets/media/heroicons/solid/location-marker.svg" alt=""> */}
-									<p className="text-muted mb-0">
-										Centerville, VA
-									</p>
-								</div>
-							</div>
-						</Link>
-					</li>
+					{contacts.map((val, i) => {
+						const contact = val.contactUser[0]
+						return (
+							<li
+								key={i}
+								className={`contacts-item ${
+									id === val._id ? "active" : ""
+								}`}
+								onClick={() => {
+									navigate("/contacts/" + val._id)
+								}}
+							>
+								<Link className="contacts-link">
+									{contact.avatar ? (
+										<div className="avatar">
+											<img src={contact.avatar} alt="" />
+										</div>
+									) : (
+										<></>
+									)}
+									<div className="contacts-content">
+										{contact?.fullname ? (
+											<div className="contacts-info">
+												<h6 className="chat-name text-truncate">
+													{contact.fullname}
+												</h6>
+											</div>
+										) : (
+											<></>
+										)}
+										{contact.username ? (
+											<div className="contacts-texts">
+												<FontAwesomeIcon icon={faAt} />
+												<p className="text-muted ms-2 mb-0">
+													{contact.username}
+												</p>
+											</div>
+										) : (
+											<></>
+										)}
+									</div>
+								</Link>
+							</li>
+						)
+					})}
 					{/* friends Item End */}
 				</ul>
 				{/* Friends Contact List End */}

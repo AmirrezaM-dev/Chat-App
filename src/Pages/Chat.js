@@ -12,7 +12,6 @@ import { Link, useParams } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
 	faCopy,
-	faEllipsis,
 	faEllipsisVertical,
 	faPencil,
 	faReply,
@@ -31,14 +30,15 @@ import {
 	faImage,
 	faFileExcel,
 	faFilePowerpoint,
+	faBookmark,
 } from "@fortawesome/free-solid-svg-icons"
-import { faSquareCheck } from "@fortawesome/free-regular-svg-icons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../Components/useAuth"
 import Preloader from "./Preloader"
 import ChatOptions from "../Components/ChatOptions"
 import MessageOptions from "../Components/MessageOptions"
 import { useChat } from "../Components/useChat"
+import { useMain } from "../Components/useMain"
 const Chat = () => {
 	// const config = {
 	// 	delegate: "a",
@@ -60,30 +60,108 @@ const Chat = () => {
 	// 		},
 	// 	},
 	// }
-
+	const { formatDate } = useMain()
+	const [messageInput, setMessageInput] = useState({})
 	const { id } = useParams()
-	const { authApi, user } = useAuth()
-	const { loadedChats, setLoadedChats } = useChat()
+	const { authApi, user, Socket } = useAuth()
+	const { loadedChats, setLoadedChats, setChats } = useChat()
 	const [showSearch, setShowSearch] = useState(false)
 	const [showInfo, setShowInfo] = useState(false)
+	const [sortedChatsWithDate, setSortedChatsWithDate] = useState()
+	const [groupedChatsWithDate, setGroupedChatsWithDate] = useState()
 	useEffect(() => {
-		authApi.post("/api/message/getMessages", { id }).then((response) => {
-			setLoadedChats((loadedChats) => {
-				return {
-					...loadedChats,
-					// messages
-					[id]: response.data.Messages,
-					// chat info (name, avatar, ...)
-					["info-" + id]: {
-						...loadedChats["info-" + id],
-						fullname: response.data.OtherUser.fullname,
-					},
-				}
-			})
-		})
+		if (!loadedChats[id])
+			authApi
+				.post("/api/message/getMessages", { id })
+				.then((response) => {
+					setLoadedChats((loadedChats) => {
+						return {
+							...loadedChats,
+							// messages
+							[id]: response.data.Messages,
+							// chat info (name, avatar, ...)
+							["info-" + id]: {
+								...loadedChats["info-" + id],
+								...response?.data?.OtherUser,
+							},
+						}
+					})
+				})
+				.catch((e) => {
+					if (e?.response?.data?.message)
+						switch (e.response.data.message) {
+							case "Invalid url":
+								console.log(1)
+								break
+							case "User not found":
+								console.log(2)
+								break
+							default:
+						}
+					console.log(e.response.data.message)
+				})
+		else
+			setSortedChatsWithDate(
+				loadedChats[id].reduce((groups, loadedChatsId) => {
+					const date = formatDate(loadedChatsId.createdAt)
+					if (!groups[date]) {
+						groups[date] = []
+					}
+					groups[date].push(loadedChatsId)
+					return groups
+				}, {})
+			)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id])
+	}, [id, loadedChats[id]])
+	useEffect(() => {
+		if (sortedChatsWithDate)
+			setGroupedChatsWithDate(
+				Object.keys(sortedChatsWithDate).map((date) => {
+					return {
+						date,
+						messages: sortedChatsWithDate[date],
+					}
+				})
+			)
+	}, [sortedChatsWithDate, id])
 
+	const sendMessage = () => {
+		Socket.emit(
+			"sendMessage",
+			{ text: messageInput[id], receiver: id },
+			(message) => {
+				setChats((chats) => {
+					return [
+						...chats.filter(
+							(val) =>
+								(val.receiver_user[0]._id !== id &&
+									val.sender_user[0]._id !== id) ||
+								(id === user._id &&
+									val.receiver_user[0]._id !==
+										val.sender_user[0]._id)
+						),
+						{
+							...message,
+							receiver_user: [message.receiver_user],
+							sender_user: [message.sender_user],
+						},
+					]
+				})
+				setLoadedChats((loadedChats) => {
+					return {
+						...loadedChats,
+						[id]: [...loadedChats[id], message],
+					}
+				})
+				setMessageInput((messageInput) => {
+					return {
+						...messageInput,
+						[id]: "",
+					}
+				})
+			}
+		)
+	}
 	return (
 		<div className="chats d-flex">
 			{id && loadedChats?.[id] ? (
@@ -100,16 +178,38 @@ const Chat = () => {
 							</Link>
 							{/* Chat participant's Name */}
 							<div className="media chat-name align-items-center text-truncate">
-								<div className="avatar /*avatar-online*/ d-none d-sm-inline-block me-3">
-									<img
-										src={require("../assets/media/avatar/2.png")}
-										alt=""
-									/>
-								</div>
+								{user._id === id ? (
+									<Button
+										disabled
+										className="opacity-100 rounded-circle me-2"
+										variant=""
+									>
+										<FontAwesomeIcon icon={faBookmark} />
+									</Button>
+								) : loadedChats["info-" + id]?.avatar ? (
+									<div className="avatar /*avatar-online*/ d-none d-sm-inline-block me-3">
+										<img
+											src={
+												loadedChats["info-" + id].avatar
+											}
+											alt=""
+										/>
+									</div>
+								) : (
+									<></>
+								)}
 								<div className="media-body align-self-center ">
-									<h6 className="text-truncate mb-0">
-										{loadedChats["info-" + id].fullname}
-									</h6>
+									{loadedChats["info-" + id]?.fullname ||
+									user._id === id ? (
+										<h6 className="text-truncate mb-0">
+											{user._id === id
+												? "Saved Messages"
+												: loadedChats["info-" + id]
+														.fullname}
+										</h6>
+									) : (
+										<></>
+									)}
 									{/* <small className="text-muted">Online</small> */}
 								</div>
 							</div>
@@ -143,541 +243,75 @@ const Chat = () => {
 						{/* Chat Content Start*/}
 						<div className="chat-content p-2">
 							<div className="container">
-								<div
-									className="message-divider sticky-top pb-2"
-									data-label="Freaking Date bla bla 99/99/99"
-								>
-									&nbsp;
-								</div>
-								{/* Message Day Start */}
-								<div className="message-day">
-									{loadedChats[id].map((chat, i) => {
-										return (
-											<div
-												key={i}
-												className={`message ${
-													user._id === chat.sender
-														? "self"
-														: ""
-												}`}
-											>
-												<div className="message-wrapper">
-													<div className="message-content">
-														<span>{chat.text}</span>
-													</div>
-												</div>
-												<MessageOptions chat={chat} />
-											</div>
-										)
-									})}
-									<div
-										className="message-divider sticky-top pb-2"
-										data-label="Yesterday"
-									>
-										&nbsp;
-									</div>
-									{/* Received Message Start */}
-									<div className="message">
-										<div className="message-wrapper">
-											<div className="message-content">
-												<span>
-													I have to give a
-													presentation on global
-													warming on Friday, and I am
-													so nervous.
-												</span>
-											</div>
-										</div>
-										<div className="message-options">
-											<div className="avatar avatar-sm">
-												<img
-													alt=""
-													src={require("../assets/media/avatar/6.png")}
-												/>
-											</div>
-											<span className="message-date">
-												9:12am
-											</span>
-											<span className="message-status">
-												Seen
-											</span>
-											<span className="message-status">
-												Edited
-											</span>
-											<Dropdown>
-												<Dropdown.Toggle as={Link}>
-													<FontAwesomeIcon
-														icon={faEllipsis}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faSquareCheck}
-															className="me-2"
-														/>
-														Select
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faReply}
-															className="me-2"
-														/>
-														Reply
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faShare}
-															className="me-2"
-														/>
-														Forward
-													</Dropdown.Item>
-													<Dropdown.Item className="text-info">
-														<FontAwesomeIcon
-															icon={faPencil}
-															className="me-2"
-														/>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item className="text-primary">
-														<FontAwesomeIcon
-															icon={faCopy}
-															className="me-2"
-														/>
-														Copy
-													</Dropdown.Item>
-													<Dropdown.Item className="text-danger">
-														<FontAwesomeIcon
-															icon={faX}
-															className="me-2"
-														/>
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-									</div>
-									{/* Received Message End */}
-									{/* Self Message Start */}
-									<div className="message self">
-										<div className="message-wrapper">
-											<div className="message-content">
-												<span>
-													First of all, you need to
-													understand the subject
-													matter thoroughly. You need
-													to know what is global
-													warming, what causes global
-													warming, and what people
-													should do to abate the
-													effects of global warming.
-												</span>
-											</div>
-										</div>
-										<div className="message-options">
-											<div className="avatar avatar-sm">
-												<img
-													alt=""
-													src={require("../assets/media/avatar/6.png")}
-												/>
-											</div>
-											<span className="message-date">
-												9:12am
-											</span>
-											<span className="message-status">
-												Seen
-											</span>
-											<span className="message-status">
-												Edited
-											</span>
-											<Dropdown>
-												<Dropdown.Toggle as={Link}>
-													<FontAwesomeIcon
-														icon={faEllipsis}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faSquareCheck}
-															className="me-2"
-														/>
-														Select
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faReply}
-															className="me-2"
-														/>
-														Reply
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faShare}
-															className="me-2"
-														/>
-														Forward
-													</Dropdown.Item>
-													<Dropdown.Item className="text-info">
-														<FontAwesomeIcon
-															icon={faPencil}
-															className="me-2"
-														/>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item className="text-primary">
-														<FontAwesomeIcon
-															icon={faCopy}
-															className="me-2"
-														/>
-														Copy
-													</Dropdown.Item>
-													<Dropdown.Item className="text-danger">
-														<FontAwesomeIcon
-															icon={faX}
-															className="me-2"
-														/>
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-									</div>
-									{/* Self Message End */}
-									{/* Message Start */}
-									<div className="message">
-										<div className="message-wrapper">
-											<div className="message-content">
-												<div className="document">
-													<Button
-														disabled
-														className="btn-icon rounded-circle text-light me-2 opacity-100"
+								{groupedChatsWithDate ? (
+									groupedChatsWithDate.map(
+										(group, groupIndex) => {
+											return (
+												<div
+													className="message-day"
+													key={groupIndex}
+												>
+													<div
+														className="message-divider sticky-top pb-2"
+														data-label={
+															formatDate(
+																new Date()
+															) === group.date
+																? "Today"
+																: formatDate(
+																		new Date().setDate(
+																			new Date().getDate() -
+																				1
+																		)
+																  ) ===
+																  group.date
+																? "Yesterday"
+																: group.date
+														}
 													>
-														<FontAwesomeIcon
-															className="hw-24"
-															icon={faFile}
-														/>
-													</Button>
-													<div className="document-body">
-														<h6>
-															<Link
-																className="text-reset"
-																title="global-warming-data-2020.xlxs"
-															>
-																global-warming-data-2020.xlxs
-															</Link>
-														</h6>
-														<ul className="list-inline small mb-0">
-															<li className="list-inline-item">
-																<span className="text-muted">
-																	79.2 KB
-																</span>
-															</li>
-															<li className="list-inline-item">
-																<span className="text-muted text-uppercase">
-																	xlxs
-																</span>
-															</li>
-														</ul>
+														&nbsp;
 													</div>
+													{group.messages.map(
+														(message, i) => {
+															return (
+																<div
+																	key={i}
+																	className={`message ${
+																		user._id ===
+																		message.sender
+																			? "self"
+																			: ""
+																	}`}
+																>
+																	<div className="message-wrapper">
+																		<div className="message-content">
+																			<span>
+																				{
+																					message.text
+																				}
+																			</span>
+																		</div>
+																	</div>
+																	<MessageOptions
+																		chatId={
+																			id
+																		}
+																		message={
+																			message
+																		}
+																	/>
+																</div>
+															)
+														}
+													)}
 												</div>
-											</div>
-										</div>
-										<div className="message-options">
-											<div className="avatar avatar-sm">
-												<img
-													alt=""
-													src={require("../assets/media/avatar/6.png")}
-												/>
-											</div>
-											<span className="message-date">
-												9:12am
-											</span>
-											<Dropdown>
-												<Dropdown.Toggle as={Link}>
-													<FontAwesomeIcon
-														icon={faEllipsis}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faSquareCheck}
-															className="me-2"
-														/>
-														Select
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faReply}
-															className="me-2"
-														/>
-														Reply
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faShare}
-															className="me-2"
-														/>
-														Forward
-													</Dropdown.Item>
-													<Dropdown.Item className="text-info">
-														<FontAwesomeIcon
-															icon={faPencil}
-															className="me-2"
-														/>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item className="text-primary">
-														<FontAwesomeIcon
-															icon={faCopy}
-															className="me-2"
-														/>
-														Copy
-													</Dropdown.Item>
-													<Dropdown.Item className="text-danger">
-														<FontAwesomeIcon
-															icon={faX}
-															className="me-2"
-														/>
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-									</div>
-									{/* Message End */}
-								</div>
-								{/* Message Day End */}
-								{/* Message Day Start */}
-								<div className="message-day">
-									<div
-										className="message-divider sticky-top pb-2"
-										data-label="Today"
-									>
-										&nbsp;
-									</div>
-									{/* Self Message Start */}
-									<div className="message self">
-										<div className="message-wrapper">
-											<div className="message-content">
-												<span>
-													Good idea! By the way, do
-													you have any facts to back
-													you up? For example, change
-													of climate, yearly
-													disasters…
-												</span>
-											</div>
-										</div>
-										<div className="message-options">
-											<div className="avatar avatar-sm">
-												<img
-													alt=""
-													src={require("../assets/media/avatar/6.png")}
-												/>
-											</div>
-											<span className="message-date">
-												9:12am
-											</span>
-											<span className="message-status">
-												Edited
-											</span>
-											<Dropdown>
-												<Dropdown.Toggle as={Link}>
-													<FontAwesomeIcon
-														icon={faEllipsis}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faSquareCheck}
-															className="me-2"
-														/>
-														Select
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faReply}
-															className="me-2"
-														/>
-														Reply
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faShare}
-															className="me-2"
-														/>
-														Forward
-													</Dropdown.Item>
-													<Dropdown.Item className="text-info">
-														<FontAwesomeIcon
-															icon={faPencil}
-															className="me-2"
-														/>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item className="text-primary">
-														<FontAwesomeIcon
-															icon={faCopy}
-															className="me-2"
-														/>
-														Copy
-													</Dropdown.Item>
-													<Dropdown.Item className="text-danger">
-														<FontAwesomeIcon
-															icon={faX}
-															className="me-2"
-														/>
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-									</div>
-									{/* Self Message End */}
-									{/* Received Message Start */}
-									<div className="message">
-										<div className="message-wrapper">
-											<div className="message-content">
-												<h6>
-													I have shared some photos,
-													Please have a look.
-												</h6>
-												<div className="form-row">
-													<div className="col">
-														{/* <LightBoxGallery
-															className="popup-gallery"
-															config={config}
-														>
-															<GalleryItem
-																href="http://farm9.staticflickr.com/8242/8558295633_f34a55c1c6_b.jpg"
-																title="The Cleaner"
-															>
-																<img
-																	src="http://farm9.staticflickr.com/8242/8558295633_f34a55c1c6_s.jpg"
-																	width="75"
-																	height="75"
-																	alt=""
-																/>
-															</GalleryItem>
-															<GalleryItem
-																href="http://farm9.staticflickr.com/8382/8558295631_0f56c1284f_b.jpg"
-																title="The Cleaner"
-															>
-																<img
-																	src="http://farm9.staticflickr.com/8382/8558295631_0f56c1284f_s.jpg"
-																	width="75"
-																	height="75"
-																	alt=""
-																/>
-															</GalleryItem>
-														</LightBoxGallery> */}
-														<Link
-															className="popup-media"
-															href="../../assets/media/shared-photos/01.jpg"
-														>
-															<img
-																className="img-fluid rounded"
-																src={require("../assets/media/shared-photos/01.jpg")}
-																alt=""
-															/>
-														</Link>
-													</div>
-													<div className="col">
-														<Link
-															className="popup-media"
-															href="../../assets/media/shared-photos/02.jpg"
-														>
-															<img
-																className="img-fluid rounded"
-																src={require("../assets/media/shared-photos/02.jpg")}
-																alt=""
-															/>
-														</Link>
-													</div>
-													<div className="col">
-														<Link
-															className="popup-media"
-															href="../../assets/media/shared-photos/03.jpg"
-														>
-															<img
-																className="img-fluid rounded"
-																src={require("../assets/media/shared-photos/03.jpg")}
-																alt=""
-															/>
-														</Link>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div className="message-options">
-											<div className="avatar avatar-sm">
-												<img
-													alt=""
-													src={require("../assets/media/avatar/6.png")}
-												/>
-											</div>
-											<span className="message-date">
-												9:12am
-											</span>
-											<Dropdown>
-												<Dropdown.Toggle as={Link}>
-													<FontAwesomeIcon
-														icon={faEllipsis}
-													/>
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faSquareCheck}
-															className="me-2"
-														/>
-														Select
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faReply}
-															className="me-2"
-														/>
-														Reply
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FontAwesomeIcon
-															icon={faShare}
-															className="me-2"
-														/>
-														Forward
-													</Dropdown.Item>
-													<Dropdown.Item className="text-info">
-														<FontAwesomeIcon
-															icon={faPencil}
-															className="me-2"
-														/>
-														Edit
-													</Dropdown.Item>
-													<Dropdown.Item className="text-primary">
-														<FontAwesomeIcon
-															icon={faCopy}
-															className="me-2"
-														/>
-														Copy
-													</Dropdown.Item>
-													<Dropdown.Item className="text-danger">
-														<FontAwesomeIcon
-															icon={faX}
-															className="me-2"
-														/>
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</div>
-									</div>
-									{/* Received Message End */}
-								</div>
-								{/* Message Day End */}
+											)
+										}
+									)
+								) : (
+									<></>
+								)}
+								{/* Chat Sample 2 */}
 							</div>
 							{/* Scroll to finish */}
 							<div className="chat-finished" id="chat-finished" />
@@ -746,11 +380,20 @@ const Chat = () => {
 							<textarea
 								className="form-control"
 								rows={1}
+								value={messageInput[id] ? messageInput[id] : ""}
+								onChange={(e) =>
+									setMessageInput((messageInput) => {
+										return {
+											...messageInput,
+											[id]: e.target.value,
+										}
+									})
+								}
 								placeholder="Type your message here..."
 							/>
 							<Button
-								disabled
 								className="btn-icon send-icon rounded-circle text-light mb-1 opacity-100"
+								onClick={sendMessage}
 							>
 								<FontAwesomeIcon
 									className="hw-24"

@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
 import axios from "axios"
-import Swal from "sweetalert2"
 import { useLocation, useNavigate } from "react-router-dom"
 import Cookies from "universal-cookie"
 import { useMain } from "./useMain"
+import { io } from "socket.io-client"
 
 const AuthContent = React.createContext()
 
@@ -12,9 +12,26 @@ export function useAuth() {
 }
 
 const AuthProvider = ({ children }) => {
-	const { setShowPreloader } = useMain()
-	const pathname = useLocation().pathname
 	const cookies = new Cookies(null, { path: "/" })
+	const [temporaryAuthCookie, setTemporaryAuthCookie] = useState()
+	const [Socket, setSocket] = useState(
+		io(process.env.REACT_APP_ENV_SERVER_URL, {
+			autoConnect: false,
+			withCredentials: true,
+			extraHeaders:
+				cookies.get("cs") || temporaryAuthCookie
+					? {
+							Authorization: `Bearer ${
+								cookies.get("cs")
+									? cookies.get("cs")
+									: temporaryAuthCookie
+							}`,
+					  }
+					: {},
+		})
+	)
+	const { setShowPreloader, Toast } = useMain()
+	const pathname = useLocation().pathname
 	const [firstLogin, setFirstLogin] = useState(false)
 	const defaultFormData = {
 		fullname: "",
@@ -43,37 +60,32 @@ const AuthProvider = ({ children }) => {
 			})
 	}
 	const navigate = useNavigate()
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top-end",
-		showConfirmButton: false,
-		timer: 3000,
-		timerProgressBar: true,
-		didOpen: (toast) => {
-			toast.addEventListener("mouseenter", Swal.stopTimer)
-			toast.addEventListener("mouseleave", Swal.resumeTimer)
-		},
-	})
 	const [user, setUser] = useState({})
 	const [loadingLogin, setLoadingLogin] = useState(false)
 	const [loggedIn, setLoggedIn] = useState()
 	const authApi = axios.create({
 		baseURL: process.env.REACT_APP_ENV_SERVER_URL,
 		withCredentials: true,
-		headers: cookies.get("cs")
-			? {
-					Authorization: `Bearer ${cookies.get("cs")}`,
-			  }
-			: {},
+		headers:
+			cookies.get("cs") || temporaryAuthCookie
+				? {
+						Authorization: `Bearer ${
+							cookies.get("cs")
+								? cookies.get("cs")
+								: temporaryAuthCookie
+						}`,
+				  }
+				: {},
 	})
 	const loginHandler = (response) => {
 		if (response?.data) {
-			if (response.data?.csrfToken)
+			if (response.data?.csrfToken) {
 				cookies.set("cs", response.data.csrfToken, {
 					path: "/",
 					sameSite: "Strict",
 					// secure: true,
 				})
+			}
 
 			setUser(response.data)
 			setLoggedIn(true)
@@ -163,9 +175,13 @@ const AuthProvider = ({ children }) => {
 			authApi
 				.get(`/api/users/logout/`)
 				.then(() => {
+					Socket.emit("checkConnection", (isConnected) => {
+						if (isConnected) Socket.emit("Disconnect")
+					})
 					setUser({})
 					setLoggedIn(false)
 					cookies.remove("cs")
+					setTemporaryAuthCookie(undefined)
 					navigate("/signin")
 				})
 				.catch(() => {
@@ -182,7 +198,28 @@ const AuthProvider = ({ children }) => {
 	}
 
 	useEffect(() => {
+		if (loggedIn)
+			setSocket(
+				io(process.env.REACT_APP_ENV_SERVER_URL, {
+					autoConnect: false,
+					withCredentials: true,
+					extraHeaders:
+						cookies.get("cs") || temporaryAuthCookie
+							? {
+									Authorization: `Bearer ${
+										cookies.get("cs")
+											? cookies.get("cs")
+											: temporaryAuthCookie
+									}`,
+							  }
+							: {},
+				})
+			)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [temporaryAuthCookie, loggedIn])
+	useEffect(() => {
 		if (loggedIn === undefined) {
+			if (cookies.get("cs")) setTemporaryAuthCookie(cookies.get("cs"))
 			authApi
 				.get(`/api/users/get/`)
 				.then(loginHandler)
@@ -215,6 +252,8 @@ const AuthProvider = ({ children }) => {
 				validator,
 				setValidator,
 				regExEmail,
+				temporaryAuthCookie,
+				Socket,
 			}}
 		>
 			{children}

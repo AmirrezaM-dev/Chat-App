@@ -1,18 +1,17 @@
-const asyncHandler = require("express-async-handler")
+const expressAsyncHandler = require("express-async-handler")
 const Message = require("../models/messageModel")
 const User = require("../models/userModel")
+const Contact = require("../models/contactModel")
 
-const getChats = asyncHandler(async (req, res) => {
+const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 	try {
 		const Chats = await Message.aggregate([
 			{
 				$match: {
-					$expr: {
-						$or: [
-							{ sender: req.user.id },
-							{ receiver: req.user.id },
-						],
-					},
+					$or: [
+						{ receiver: { $eq: req.user._id } },
+						{ sender: { $eq: req.user._id } },
+					],
 				},
 			},
 			{
@@ -70,26 +69,118 @@ const getChats = asyncHandler(async (req, res) => {
 				},
 			},
 		])
-		res.status(200).json({ Chats })
+		const Contacts = await Contact.aggregate([
+			{
+				$match: {
+					relatedUser: req.user._id,
+				},
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "contactUser",
+					foreignField: "_id",
+					as: "contactUser",
+				},
+			},
+			{
+				$project: {
+					"contactUser._id": 1,
+					"contactUser.fullname": 1,
+					"contactUser.username": 1,
+					"contactUser.avatar": 1,
+				},
+			},
+		])
+		// const Contacts = await Contact.find({ relatedUser: req.user.id })
+		res.status(200).json({ Chats, Contacts })
 	} catch (error) {
 		res.status(422)
 		throw new Error(`Something went wrong ${error}`)
 	}
 })
-const getMessages = asyncHandler(async (req, res) => {
+const getMessages = expressAsyncHandler(async (req, res) => {
+	const { id } = req.body
+	if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+		res.status(422)
+		throw new Error(`Invalid url`)
+	} else
+		try {
+			const OtherUser = await User.findById(id).select(
+				"fullname username avatar"
+			)
+			if (OtherUser) {
+				let Messages
+				if (id !== req.user.id) {
+					// not saved messages
+					Messages = await Message.find({
+						$or: [
+							{
+								$and: [
+									{ sender: id },
+									{ receiver: req.user._id },
+								],
+							},
+							{
+								$and: [
+									{ sender: req.user._id },
+									{ receiver: id },
+								],
+							},
+						],
+					})
+				} else {
+					// saved messages
+					Messages = await Message.find({
+						$and: [{ sender: id }, { receiver: id }],
+					})
+				}
+				res.status(200).json({ Messages, OtherUser })
+			} else {
+				res.status(422)
+				throw new Error(`User not found`)
+			}
+		} catch (error) {
+			console.log(error)
+			res.status(422)
+			throw new Error(`Something went wrong`)
+		}
+})
+const editMessage = expressAsyncHandler(async (req, res) => {
+	try {
+		const { id, text } = req.body
+		const updated = await Message.updateOne(
+			{
+				_id: id,
+				$or: [{ receiver: req.user._id }, { sender: req.user._id }],
+			},
+			{ text }
+		)
+		if (updated.modifiedCount) res.status(200).json({ success: true })
+		else res.status(401).json({ success: false })
+	} catch (error) {
+		res.status(422)
+		throw new Error(`Something went wrong ${error}`)
+	}
+})
+const deleteMessage = expressAsyncHandler(async (req, res) => {
 	try {
 		const { id } = req.body
-		const OtherUser = await User.findById(id).select(
-			"fullname username avatar"
-		)
-		const Messages = await Message.find({
-			$or: [{ sender: id }, { receiver: id }],
+		const deleted = await Message.deleteOne({
+			_id: id,
+			$or: [{ receiver: req.user._id }, { sender: req.user._id }],
 		})
-		res.status(200).json({ Messages, OtherUser })
+		if (deleted.deletedCount) res.status(200).json({ success: true })
+		else res.status(401).json({ success: false })
 	} catch (error) {
 		res.status(422)
 		throw new Error(`Something went wrong ${error}`)
 	}
 })
 
-module.exports = { getChats, getMessages }
+module.exports = {
+	getChatsAndContacts,
+	getMessages,
+	deleteMessage,
+	editMessage,
+}

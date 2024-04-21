@@ -12,25 +12,34 @@ import {
 	faSquareCheck,
 	faX,
 } from "@fortawesome/free-solid-svg-icons"
+import { useChat } from "./useChat"
 
-const MessageOptions = ({ chat }) => {
-	const { timeSince } = useMain()
+const MessageOptions = ({ message, chatId }) => {
+	const { timeSince, setShowDeleteMessage, setShowEditMessage, copyText } =
+		useMain()
 	const { user } = useAuth()
+	const { loadedChats } = useChat()
 	return (
 		<div className="message-options">
-			<div className="avatar avatar-sm">
-				<img alt="" src={user.avatar} />
-			</div>
-			<span className="message-date">{timeSince(chat.createdAt)}</span>
+			{chatId !== user._id && loadedChats["info-" + chatId]?.avatar ? (
+				<div className="avatar avatar-sm">
+					<img alt="" src={loadedChats["info-" + chatId].avatar} />
+				</div>
+			) : (
+				<></>
+			)}
+			<span className="message-date">{timeSince(message.createdAt)}</span>
 			<span
 				className={`message-status ${
-					chat.status !== "read" ? "d-none" : ""
+					message.status !== "read" ? "d-none" : ""
 				}`}
 			>
 				Seen
 			</span>
 			<span
-				className={`message-status ${!chat.isEdited ? "d-none" : ""}`}
+				className={`message-status ${
+					!message.isEdited ? "d-none" : ""
+				}`}
 			>
 				Edited
 			</span>
@@ -54,15 +63,34 @@ const MessageOptions = ({ chat }) => {
 						<FontAwesomeIcon icon={faShare} className="me-2" />
 						Forward
 					</Dropdown.Item>
-					<Dropdown.Item className="text-info">
+					<Dropdown.Item
+						className="text-info"
+						onClick={() =>
+							setShowEditMessage({
+								message,
+								chatId,
+							})
+						}
+					>
 						<FontAwesomeIcon icon={faPencil} className="me-2" />
 						Edit
 					</Dropdown.Item>
-					<Dropdown.Item className="text-primary">
+					<Dropdown.Item
+						className="text-primary"
+						onClick={() => copyText(message.text)}
+					>
 						<FontAwesomeIcon icon={faCopy} className="me-2" />
 						Copy
 					</Dropdown.Item>
-					<Dropdown.Item className="text-danger">
+					<Dropdown.Item
+						className="text-danger"
+						onClick={() =>
+							setShowDeleteMessage({
+								message,
+								chatId,
+							})
+						}
+					>
 						<FontAwesomeIcon icon={faX} className="me-2" />
 						Delete
 					</Dropdown.Item>

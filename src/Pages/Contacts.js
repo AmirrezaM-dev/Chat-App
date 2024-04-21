@@ -1,35 +1,74 @@
 import {
 	faArrowLeft,
+	faBan,
 	faEllipsisVertical,
 	faMessage,
+	faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Dropdown } from "react-bootstrap"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { useChat } from "../Components/useChat"
 const Contacts = () => {
 	const navigate = useNavigate()
-	return (
+	const { contacts } = useChat()
+	const { id } = useParams()
+	const contact = contacts
+		? contacts.filter((val) => val._id === id).length
+			? contacts.filter((val) => val._id === id)[0]
+			: undefined
+		: undefined
+	return id && contacts.filter((val) => val._id === id).length ? (
 		<div className="friends px-0 py-2 p-xl-3 d-block">
 			<div className="container-xl">
 				<div className="row">
 					<div className="col">
 						<div className="card card-body card-bg-1 mb-3">
 							<div className="d-flex flex-column align-items-center">
-								<div className="avatar avatar-lg mb-3">
-									<img
-										className="avatar-img"
-										src={require("../assets/media/avatar/3.png")}
-										alt=""
-									/>
-								</div>
+								{contact?.avatar ? (
+									<div className="avatar avatar-lg mb-3">
+										<img
+											className="avatar-img"
+											src={require(contact.avatar)}
+											alt=""
+										/>
+									</div>
+								) : (
+									<></>
+								)}
 								<div className="d-flex flex-column align-items-center">
-									<h5 className="mb-1">
-										Catherine Richardson
-									</h5>
+									{contact?.fullname ? (
+										<h5 className="mb-1">
+											{contact.fullname}
+										</h5>
+									) : (
+										<></>
+									)}
 									{/* <p class="text-white rounded px-2 bg-primary">+01-202-265462</p> */}
 									<div className="d-flex mt-2">
-										<Button className="btn-icon rounded-circle text-light mx-2">
+										<Button
+											className="btn-icon rounded-circle text-light mx-2"
+											onClick={() =>
+												navigate(
+													"/chat/" +
+														contact?.contactUser[0]
+															?._id
+												)
+											}
+										>
 											<FontAwesomeIcon icon={faMessage} />
+										</Button>
+										<Button
+											variant="warning"
+											className="btn-icon rounded-circle text-light mx-2"
+										>
+											<FontAwesomeIcon icon={faTrash} />
+										</Button>
+										<Button
+											variant="danger"
+											className="btn-icon rounded-circle text-light mx-2"
+										>
+											<FontAwesomeIcon icon={faBan} />
 										</Button>
 									</div>
 								</div>
@@ -350,6 +389,8 @@ const Contacts = () => {
 				</div>
 			</div>
 		</div>
+	) : (
+		<></>
 	)
 }
 

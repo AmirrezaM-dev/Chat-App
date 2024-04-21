@@ -6,11 +6,13 @@ const {
 	get,
 	logout,
 } = require("../controllers/userController")
-const { jwtCP, csrfP } = require("../middlewares/authMiddleware")
+const {
+	jsonWebTokenAndCsrfProtection,
+} = require("../middlewares/authMiddleware")
 
 router.post("/register", register)
 router.post("/login", login)
-router.get("/logout", [jwtCP, csrfP], logout)
-router.get("/get", [jwtCP, csrfP], get)
+router.get("/logout", [jsonWebTokenAndCsrfProtection], logout)
+router.get("/get", [jsonWebTokenAndCsrfProtection], get)
 
 module.exports = router
