@@ -36,6 +36,39 @@ const socketSendMessage = expressAsyncHandler(
 		})
 	}
 )
+const socketDeleteMessage = expressAsyncHandler(
+	async (socket, data, callback, io) => {
+		const { id } = data
+		const message = await Message.findOne({
+			_id: id,
+			$or: [{ receiver: socket.user.id }, { sender: socket.user.id }],
+		})
+		const deleted = await Message.deleteOne({
+			_id: id,
+			$or: [{ receiver: socket.user.id }, { sender: socket.user.id }],
+		})
+		if (message.receiver.toString() !== socket.user.id.toString()) {
+			const Receiver = await User.findById(message.receiver).select(
+				"-password"
+			)
+			const Sender = await User.findById(socket.user.id).select(
+				"-password"
+			)
+			const sender = Sender.id,
+				receiver = Receiver.id
+			const receiverSocketID = Receiver.socketID
+			io.to(receiverSocketID).emit("deleteMessage", {
+				...message._doc,
+				sender,
+				receiver,
+				receiver_user: Receiver,
+				sender_user: Sender,
+			})
+		}
+		if (deleted.deletedCount) callback({ success: true })
+		else callback({ success: false })
+	}
+)
 const socketDisconnect = expressAsyncHandler(async (socket) => {
 	try {
 		await User.updateOne({ socketID: socket.id }, { isConnected: false })
@@ -53,4 +86,9 @@ const socketCheckConnection = expressAsyncHandler(async (socket, callback) => {
 	}
 })
 
-module.exports = { socketSendMessage, socketDisconnect, socketCheckConnection }
+module.exports = {
+	socketSendMessage,
+	socketDeleteMessage,
+	socketDisconnect,
+	socketCheckConnection,
+}

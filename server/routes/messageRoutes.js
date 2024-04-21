@@ -3,7 +3,6 @@ const router = express.Router()
 const {
 	getChatsAndContacts,
 	getMessages,
-	deleteMessage,
 	editMessage,
 } = require("../controllers/messageController")
 const {
@@ -16,7 +15,6 @@ router.get(
 	getChatsAndContacts
 )
 router.post("/editMessage", [jsonWebTokenAndCsrfProtection], editMessage)
-router.post("/deleteMessage", [jsonWebTokenAndCsrfProtection], deleteMessage)
 router.post("/getMessages", [jsonWebTokenAndCsrfProtection], getMessages)
 
 module.exports = router

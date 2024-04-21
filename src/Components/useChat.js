@@ -57,6 +57,76 @@ const ChatComponent = ({ children }) => {
 					}
 				})
 			})
+			Socket.on("deleteMessage", (message) => {
+				//Remove the deleted message from loaded chats
+				setLoadedChats((loadedChats) => {
+					if (
+						// the reason that we have the setChats inside of setLoadedChats is, now we have access to old loadedChats so we can get required informations
+						// if its the last message which is going to be deleted then we remove the chat from chat list since there is no more message left after delete.
+						loadedChats[message.sender].filter(
+							(val) => val._id !== message._id
+						).length === 0
+					) {
+						setChats((chats) => {
+							return [
+								...chats.filter(
+									(val) =>
+										val.receiver_user[0]._id !==
+											message.receiver &&
+										val.sender_user[0]._id !==
+											message.sender
+								),
+							]
+						})
+					} else {
+						// if it wasn't the last message, find the last message after deletion and update the chat list
+						setChats((chats) => {
+							return [
+								...chats.map((val) => {
+									if (
+										// if its related chat to the message
+										val.receiver_user[0]._id ===
+											message.receiver &&
+										val.sender_user[0]._id ===
+											message.sender
+									) {
+										return {
+											...loadedChats[
+												message.sender
+											].filter(
+												// exclude the deleted message so we can get the last message
+												(val) => val._id !== message._id
+											)[
+												loadedChats[
+													message.sender
+												].filter(
+													// exclude the deleted message so we can get the actual length of array of messages
+													(val) =>
+														val._id !== message._id
+												).length - 1
+											],
+											receiver_user: [
+												message.receiver_user,
+											],
+											sender_user: [message.sender_user],
+										}
+									} else {
+										return val
+									}
+								}),
+							]
+						})
+					}
+					return {
+						...loadedChats,
+						[message.sender]: [
+							...loadedChats[message.sender].filter(
+								(val) => val._id !== message._id
+							),
+						],
+					}
+				})
+			})
 			const CurrentSocket = Socket
 			return () => {
 				CurrentSocket.off("connect", () => {})

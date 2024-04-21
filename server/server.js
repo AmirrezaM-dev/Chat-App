@@ -23,6 +23,7 @@ server.once("close", function () {
 	const {
 		socketDisconnect,
 		socketSendMessage,
+		socketDeleteMessage,
 		socketCheckConnection,
 	} = require("./controllers/socketController")
 	const connectDB = require("./configs/db")
@@ -65,6 +66,9 @@ server.once("close", function () {
 		console.log(`User with id (${socket.id}) connected`)
 		socket.on("sendMessage", (data, callback) => {
 			socketSendMessage(socket, data, callback, io)
+		})
+		socket.on("deleteMessage", (data, callback) => {
+			socketDeleteMessage(socket, data, callback, io)
 		})
 		socket.on("checkConnection", (callback) => {
 			socketCheckConnection(socket, callback)

@@ -7,18 +7,19 @@ import { useAuth } from "./useAuth"
 import { useChat } from "./useChat"
 const DeleteMessage = () => {
 	const { showDeleteMessage, setShowDeleteMessage } = useMain()
-	const { user, authApi } = useAuth()
+	const { user, Socket } = useAuth()
 	const { loadedChats, setLoadedChats, setChats } = useChat()
 	const [deleteForEveryone, setDeleteForEveryone] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const deleteMessage = () => {
 		setIsDeleting(true)
-		authApi
-			.post("/api/message/deleteMessage", {
+		Socket.emit(
+			"deleteMessage",
+			{
 				id: showDeleteMessage.message._id,
-			})
-			.then((response) => {
-				if (response.data.success) {
+			},
+			(response) => {
+				if (response.success) {
 					setLoadedChats((loadedChats) => {
 						return {
 							...loadedChats,
@@ -74,7 +75,8 @@ const DeleteMessage = () => {
 						})
 					setShowDeleteMessage(false)
 				}
-			})
+			}
+		)
 	}
 	useEffect(() => {
 		setIsDeleting(false)
