@@ -68,11 +68,11 @@ const socketDeleteMessage = expressAsyncHandler(
 					deletedMessage.sender
 				).select("-password")
 				if (deleteForEveryone) {
-					const OtherUserSokectID =
+					const OtherUserSocketID =
 						socket.user.id === message.sender
 							? Receiver.socketID
 							: Sender.socketID
-					io.to(OtherUserSokectID).emit("deleteMessage", {
+					io.to(OtherUserSocketID).emit("deleteMessage", {
 						...deletedMessage._doc,
 						receiver_user: Receiver,
 						sender_user: Sender,
@@ -83,7 +83,49 @@ const socketDeleteMessage = expressAsyncHandler(
 				callback({ success: false })
 			}
 		} catch (error) {
+			callback({ success: false })
 			console.log(error)
+			throw new Error(`Something went wrong ${error}`)
+		}
+	}
+)
+const socketEditMessage = expressAsyncHandler(
+	async (socket, data, callback, io) => {
+		try {
+			const { id, text } = data
+			const updatedMesssage = await Message.findOneAndUpdate(
+				{
+					_id: id,
+					$or: [
+						{ receiver: socket.user.id },
+						{ sender: socket.user.id },
+					],
+				},
+				{ text },
+				{ new: true }
+			)
+			if (updatedMesssage) {
+				const Receiver = await User.findById(
+					updatedMesssage.receiver
+				).select("-password")
+				const Sender = await User.findById(
+					updatedMesssage.sender
+				).select("-password")
+				const OtherUserSocketID =
+					socket.user.id === updatedMesssage.sender.toString()
+						? Receiver.socketID
+						: Sender.socketID
+				io.to(OtherUserSocketID).emit("editMessage", {
+					...updatedMesssage._doc,
+					receiver_user: Receiver,
+					sender_user: Sender,
+				})
+				callback({ success: true })
+			} else callback({ success: false })
+		} catch (error) {
+			callback({ success: false })
+			console.log(error)
+			throw new Error(`Something went wrong ${error}`)
 		}
 	}
 )
@@ -107,6 +149,7 @@ const socketCheckConnection = expressAsyncHandler(async (socket, callback) => {
 module.exports = {
 	socketSendMessage,
 	socketDeleteMessage,
+	socketEditMessage,
 	socketDisconnect,
 	socketCheckConnection,
 }

@@ -130,6 +130,43 @@ const ChatComponent = ({ children }) => {
 					}
 				})
 			})
+			Socket.on("editMessage", (message) => {
+				const OtherUserID =
+					user._id === message.sender
+						? message.receiver
+						: message.sender
+				setLoadedChats((loadedChats) => {
+					const lastMessage = loadedChats[OtherUserID].sort(
+						(a, b) => a.createdAt - b.createdAt
+					)[loadedChats[OtherUserID].length - 1]
+					if (lastMessage._id === message._id)
+						setChats((chats) => {
+							return [
+								...chats.map((val) =>
+									val._id === message._id
+										? {
+												...val,
+												text: message.text,
+										  }
+										: val
+								),
+							]
+						})
+					return {
+						...loadedChats,
+						[OtherUserID]: [
+							...loadedChats[OtherUserID].map((val) =>
+								val._id === message._id
+									? {
+											...val,
+											text: message.text,
+									  }
+									: val
+							),
+						],
+					}
+				})
+			})
 			const CurrentSocket = Socket
 			return () => {
 				CurrentSocket.off("connect", () => {})

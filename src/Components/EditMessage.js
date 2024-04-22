@@ -7,18 +7,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSpinner } from "@fortawesome/free-solid-svg-icons"
 const EditMessage = () => {
 	const { showEditMessage, setShowEditMessage } = useMain()
-	const { authApi } = useAuth()
+	const { Socket } = useAuth()
 	const { loadedChats, setLoadedChats, setChats } = useChat()
 	const [isEditing, setIsEditing] = useState(false)
 	const editMessage = () => {
 		setIsEditing(true)
-		authApi
-			.post("/api/message/editMessage", {
+		Socket.emit(
+			"editMessage",
+			{
 				id: showEditMessage.message._id,
 				text: showEditMessage.message.text,
-			})
-			.then((response) => {
-				if (response.data.success) {
+			},
+			(response) => {
+				if (response.success) {
 					setLoadedChats((loadedChats) => {
 						return {
 							...loadedChats,
@@ -57,7 +58,8 @@ const EditMessage = () => {
 						})
 					setShowEditMessage(false)
 				}
-			})
+			}
+		)
 	}
 	useEffect(() => {
 		setIsEditing(false)

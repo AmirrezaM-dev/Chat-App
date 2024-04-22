@@ -162,26 +162,8 @@ const getMessages = expressAsyncHandler(async (req, res) => {
 			throw new Error(`Something went wrong`)
 		}
 })
-const editMessage = expressAsyncHandler(async (req, res) => {
-	try {
-		const { id, text } = req.body
-		const updated = await Message.updateOne(
-			{
-				_id: id,
-				$or: [{ receiver: req.user._id }, { sender: req.user._id }],
-			},
-			{ text }
-		)
-		if (updated.modifiedCount) res.status(200).json({ success: true })
-		else res.status(401).json({ success: false })
-	} catch (error) {
-		res.status(422)
-		throw new Error(`Something went wrong ${error}`)
-	}
-})
 
 module.exports = {
 	getChatsAndContacts,
 	getMessages,
-	editMessage,
 }
