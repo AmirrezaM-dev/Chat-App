@@ -67,38 +67,6 @@ const DeleteMessage = () => {
 							})
 						})
 					}
-					// if (lastMessage._id === showDeleteMessage.message._id)
-					// 	setChats((chats) => {
-					// 		const allChatsExceptTheRelatedChat = chats.filter(
-					// 			(val) =>
-					// 				showDeleteMessage.chatId !== user._id
-					// 					? val.receiver_user[0]._id !==
-					// 							showDeleteMessage.chatId &&
-					// 					  val.sender_user[0]._id !==
-					// 							showDeleteMessage.chatId
-					// 					: val.receiver_user[0]._id !==
-					// 					  val.sender_user[0]._id
-					// 		)
-
-					// 		return penultimateMessage
-					// 			? [
-					// 					...allChatsExceptTheRelatedChat,
-					// 					{
-					// 						...penultimateMessage,
-					// 						sender_user: [
-					// 							{
-					// 								...lastMessage.sender_user,
-					// 							},
-					// 						],
-					// 						receiver_user: [
-					// 							{
-					// 								...lastMessage.receiver_user,
-					// 							},
-					// 						],
-					// 					},
-					// 			  ]
-					// 			: [...allChatsExceptTheRelatedChat]
-					// 	})
 					setShowDeleteMessage(false)
 				}
 			}
