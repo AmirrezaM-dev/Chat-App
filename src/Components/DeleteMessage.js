@@ -7,12 +7,16 @@ import { useAuth } from "./useAuth"
 import { useChat } from "./useChat"
 const DeleteMessage = () => {
 	const { showDeleteMessage, setShowDeleteMessage } = useMain()
-	const { Socket } = useAuth()
+	const { Socket, user } = useAuth()
 	const { loadedChats, setLoadedChats, setChats } = useChat()
 	const [deleteForEveryone, setDeleteForEveryone] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const deleteMessage = () => {
 		setIsDeleting(true)
+		const OtherUserId =
+			user._id === showDeleteMessage.message.sender
+				? showDeleteMessage.message.receiver
+				: showDeleteMessage.message.sender
 		Socket.emit(
 			"deleteMessage",
 			{
@@ -37,10 +41,8 @@ const DeleteMessage = () => {
 						setChats((chats) => {
 							return chats.map((chat) => {
 								if (
-									chat.receiver_user[0]._id ===
-										showDeleteMessage.message.receiver &&
-									chat.sender_user[0]._id ===
-										showDeleteMessage.message.sender
+									chat.receiver_user[0]._id === OtherUserId ||
+									chat.sender_user[0]._id === OtherUserId
 								) {
 									const allMessagesExceptDeleteMessage =
 										loadedChats[showDeleteMessage.chatId]
@@ -71,14 +73,14 @@ const DeleteMessage = () => {
 						setChats((chats) => {
 							return chats.filter(
 								(chat) =>
-									chat.receiver_user[0]._id !==
-										showDeleteMessage.message.receiver &&
-									chat.sender_user[0]._id !==
-										showDeleteMessage.message.sender
+									chat.receiver_user[0]._id !== user._id &&
+									chat.sender_user[0]._id !== user._id
 							)
 						})
 					}
 					setShowDeleteMessage(false)
+				} else {
+					console.log("Deleting Message Failed")
 				}
 			}
 		)
