@@ -7,7 +7,7 @@ import { useAuth } from "./useAuth"
 import { useChat } from "./useChat"
 const DeleteMessage = () => {
 	const { showDeleteMessage, setShowDeleteMessage } = useMain()
-	const { user, Socket } = useAuth()
+	const { Socket } = useAuth()
 	const { loadedChats, setLoadedChats, setChats } = useChat()
 	const [deleteForEveryone, setDeleteForEveryone] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
@@ -32,47 +32,73 @@ const DeleteMessage = () => {
 							],
 						}
 					})
-					const lastMessage = loadedChats[
-						showDeleteMessage.chatId
-					].sort((a, b) => a.createdAt - b.createdAt)[
-						loadedChats[showDeleteMessage.chatId].length - 1
-					]
-					const penultimateMessage = loadedChats[
-						showDeleteMessage.chatId
-					].sort((a, b) => a.createdAt - b.createdAt)[
-						loadedChats[showDeleteMessage.chatId].length - 2
-					]
-					if (lastMessage._id === showDeleteMessage.message._id)
+					if (loadedChats[showDeleteMessage.chatId].length > 1) {
 						setChats((chats) => {
-							const allChatsExceptTheRelatedChat = chats.filter(
-								(val) =>
-									showDeleteMessage.chatId !== user._id
-										? val.receiver_user[0]._id !==
-												showDeleteMessage.chatId &&
-										  val.sender_user[0]._id !==
-												showDeleteMessage.chatId
-										: val.receiver_user[0]._id !==
-										  val.sender_user[0]._id
-							)
-							return penultimateMessage
-								? [
-										...allChatsExceptTheRelatedChat,
-										{
-											...penultimateMessage,
-											sender_user: [
-												{
-													_id: penultimateMessage.sender,
-												},
-											],
-											receiver_user: [
-												{
-													_id: penultimateMessage.receiver,
-												},
-											],
-										},
-								  ]
-								: [...allChatsExceptTheRelatedChat]
+							return chats.map((chat) => {
+								if (
+									chat.receiver_user[0]._id ===
+										showDeleteMessage.message.receiver &&
+									chat.sender_user[0]._id ===
+										showDeleteMessage.message.sender
+								) {
+									const allMessagesExceptDeleteMessage =
+										loadedChats[showDeleteMessage.chatId]
+											.sort(
+												(a, b) =>
+													a.createdAt - b.createdAt
+											)
+											.filter(
+												(val) =>
+													val._id !==
+													showDeleteMessage.message
+														._id
+											)
+									return {
+										...allMessagesExceptDeleteMessage[
+											allMessagesExceptDeleteMessage.length -
+												1
+										],
+										receiver_user: chat.receiver_user,
+										sender_user: chat.sender_user,
+									}
+								} else {
+									return chat
+								}
+							})
 						})
+					}
+					// if (lastMessage._id === showDeleteMessage.message._id)
+					// 	setChats((chats) => {
+					// 		const allChatsExceptTheRelatedChat = chats.filter(
+					// 			(val) =>
+					// 				showDeleteMessage.chatId !== user._id
+					// 					? val.receiver_user[0]._id !==
+					// 							showDeleteMessage.chatId &&
+					// 					  val.sender_user[0]._id !==
+					// 							showDeleteMessage.chatId
+					// 					: val.receiver_user[0]._id !==
+					// 					  val.sender_user[0]._id
+					// 		)
+
+					// 		return penultimateMessage
+					// 			? [
+					// 					...allChatsExceptTheRelatedChat,
+					// 					{
+					// 						...penultimateMessage,
+					// 						sender_user: [
+					// 							{
+					// 								...lastMessage.sender_user,
+					// 							},
+					// 						],
+					// 						receiver_user: [
+					// 							{
+					// 								...lastMessage.receiver_user,
+					// 							},
+					// 						],
+					// 					},
+					// 			  ]
+					// 			: [...allChatsExceptTheRelatedChat]
+					// 	})
 					setShowDeleteMessage(false)
 				}
 			}
