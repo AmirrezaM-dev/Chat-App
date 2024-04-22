@@ -9,7 +9,7 @@ export function useChat() {
 }
 
 const ChatComponent = ({ children }) => {
-	const { authApi, loggedIn, Socket } = useAuth()
+	const { authApi, loggedIn, Socket, user } = useAuth()
 	const { setShowPreloader } = useMain()
 	const [chats, setChats] = useState([])
 	const [contacts, setContacts] = useState([])
@@ -58,17 +58,20 @@ const ChatComponent = ({ children }) => {
 				})
 			})
 			Socket.on("deleteMessage", (message) => {
+				const OtherUserID =
+					user._id === message.sender
+						? message.receiver
+						: message.sender
 				//Remove the deleted message from loaded chats
 				setLoadedChats((loadedChats) => {
 					if (
 						// If the loaded messages related to the chat are undefined, or (next line)
-						!loadedChats[message.sender] ||
+						!loadedChats[OtherUserID] ||
 						// the reason that we have the setChats inside of setLoadedChats is, now we have access to old loadedChats so we can get required informations
 						// if its the last message which is going to be deleted then we remove the chat from chat list since there is no more message left after delete.
-						loadedChats[message.sender]
-							.sort((a, b) => a.createdAt - b.createdAt)
-							.filter((val) => val._id !== message._id).length ===
-							0
+						loadedChats[OtherUserID].sort(
+							(a, b) => a.createdAt - b.createdAt
+						).filter((val) => val._id !== message._id).length === 0
 					) {
 						setChats((chats) => {
 							return [
@@ -93,20 +96,15 @@ const ChatComponent = ({ children }) => {
 										val.sender_user[0]._id ===
 											message.sender
 									) {
-										return {
-											...loadedChats[
-												message.sender
-											].filter(
+										const getLastMessageFromLoadedChats =
+											loadedChats[OtherUserID].filter(
 												// exclude the deleted message so we can get the last message
 												(val) => val._id !== message._id
-											)[
-												loadedChats[
-													message.sender
-												].filter(
-													// exclude the deleted message so we can get the actual length of array of messages
-													(val) =>
-														val._id !== message._id
-												).length - 1
+											)
+										return {
+											...getLastMessageFromLoadedChats[
+												getLastMessageFromLoadedChats.length -
+													1
 											],
 											receiver_user: [
 												message.receiver_user,
@@ -122,9 +120,9 @@ const ChatComponent = ({ children }) => {
 					}
 					return {
 						...loadedChats,
-						[message.sender]: loadedChats[message.sender]
+						[OtherUserID]: loadedChats[OtherUserID]
 							? [
-									...loadedChats[message.sender].filter(
+									...loadedChats[OtherUserID].filter(
 										(val) => val._id !== message._id
 									),
 							  ]
