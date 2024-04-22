@@ -29,6 +29,18 @@ const messageSchema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		isDeleted: {
+			type: Boolean,
+			default: false,
+		},
+		isSenderDeleted: {
+			type: Boolean,
+			default: false,
+		},
+		isReceiverDeleted: {
+			type: Boolean,
+			default: false,
+		},
 		replyId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Message",
