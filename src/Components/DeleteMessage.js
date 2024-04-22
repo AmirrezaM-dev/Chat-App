@@ -16,7 +16,8 @@ const DeleteMessage = () => {
 		Socket.emit(
 			"deleteMessage",
 			{
-				id: showDeleteMessage.message._id,
+				message: showDeleteMessage.message,
+				deleteForEveryone,
 			},
 			(response) => {
 				if (response.success) {
@@ -65,6 +66,16 @@ const DeleteMessage = () => {
 									return chat
 								}
 							})
+						})
+					} else {
+						setChats((chats) => {
+							return chats.filter(
+								(chat) =>
+									chat.receiver_user[0]._id !==
+										showDeleteMessage.message.receiver &&
+									chat.sender_user[0]._id !==
+										showDeleteMessage.message.sender
+							)
 						})
 					}
 					setShowDeleteMessage(false)
