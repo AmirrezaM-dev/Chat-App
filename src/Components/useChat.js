@@ -61,12 +61,14 @@ const ChatComponent = ({ children }) => {
 				//Remove the deleted message from loaded chats
 				setLoadedChats((loadedChats) => {
 					if (
+						// If the loaded messages related to the chat are undefined, or (next line)
+						!loadedChats[message.sender] ||
 						// the reason that we have the setChats inside of setLoadedChats is, now we have access to old loadedChats so we can get required informations
 						// if its the last message which is going to be deleted then we remove the chat from chat list since there is no more message left after delete.
 						loadedChats[message.sender]
 							.sort((a, b) => a.createdAt - b.createdAt)
 							.filter((val) => val._id !== message._id).length ===
-						0
+							0
 					) {
 						setChats((chats) => {
 							return [
@@ -120,11 +122,13 @@ const ChatComponent = ({ children }) => {
 					}
 					return {
 						...loadedChats,
-						[message.sender]: [
-							...loadedChats[message.sender].filter(
-								(val) => val._id !== message._id
-							),
-						],
+						[message.sender]: loadedChats[message.sender]
+							? [
+									...loadedChats[message.sender].filter(
+										(val) => val._id !== message._id
+									),
+							  ]
+							: [],
 					}
 				})
 			})
