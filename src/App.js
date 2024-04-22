@@ -23,6 +23,7 @@ import Preloader from "./Pages/Preloader"
 import { useMain } from "./Components/useMain"
 import Sidebar from "./Components/Sidebar"
 import DeleteMessage from "./Components/DeleteMessage"
+import DeleteAllMessage from "./Components/DeleteAllMessages"
 import EditMessage from "./Components/EditMessage"
 
 const App = () => {
@@ -109,6 +110,7 @@ const App = () => {
 			<InviteOthers />
 			<EditMessage />
 			<DeleteMessage />
+			<DeleteAllMessage />
 			<Notifications />
 		</>
 	)

@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
 const Message = require("../models/messageModel")
+const ObjectId = require("mongoose").Types.ObjectId
 
 const socketSendMessage = expressAsyncHandler(
 	async (socket, data, callback, io) => {
@@ -89,6 +90,105 @@ const socketDeleteMessage = expressAsyncHandler(
 		}
 	}
 )
+const socketDeleteAllMessages = expressAsyncHandler(
+	async (socket, data, callback, io) => {
+		try {
+			const { OtherUserID, deleteForEveryone } = data
+			await Message.updateMany(
+				{
+					$or: [
+						{
+							receiver: socket.user.id,
+							isReceiverDeleted: { $ne: true },
+						},
+						{
+							sender: socket.user.id,
+							isSenderDeleted: { $ne: true },
+						},
+						{
+							receiver: socket.user.id,
+							sender: socket.user.id,
+							isDeleted: { $ne: true },
+						},
+					],
+				},
+				[
+					{
+						$set: {
+							isReceiverDeleted: {
+								$or: [
+									{
+										$eq: [
+											"$receiver",
+											new ObjectId(socket.user.id),
+										],
+									},
+									{
+										$eq: ["$isReceiverDeleted", true],
+									},
+								],
+							},
+							isSenderDeleted: {
+								$or: [
+									{
+										$eq: [
+											"$sender",
+											new ObjectId(socket.user.id),
+										],
+									},
+									{
+										$eq: ["$isSenderDeleted", true],
+									},
+								],
+							},
+							isDeleted: {
+								$or: [
+									{
+										$and: [
+											{
+												$eq: [
+													"$sender",
+													new ObjectId(
+														socket.user.id
+													),
+												],
+											},
+											{
+												$eq: [
+													"$receiver",
+													new ObjectId(
+														socket.user.id
+													),
+												],
+											},
+										],
+									},
+									{
+										$eq: [deleteForEveryone, true],
+									},
+									{
+										$eq: ["$isDeleted", true],
+									},
+								],
+							},
+						},
+					},
+				]
+			)
+			if (deleteForEveryone) {
+				const OtherUser = await User.findById(OtherUserID)
+				io.to(OtherUser.socketID).emit("deleteAllMessages", {
+					OtherUserID: socket.user.id,
+				})
+			}
+			callback({ success: true })
+		} catch (error) {
+			callback({ success: false })
+			console.log(error)
+			throw new Error(`Something went wrong ${error}`)
+		}
+	}
+)
 const socketEditMessage = expressAsyncHandler(
 	async (socket, data, callback, io) => {
 		try {
@@ -149,6 +249,7 @@ const socketCheckConnection = expressAsyncHandler(async (socket, callback) => {
 module.exports = {
 	socketSendMessage,
 	socketDeleteMessage,
+	socketDeleteAllMessages,
 	socketEditMessage,
 	socketDisconnect,
 	socketCheckConnection,

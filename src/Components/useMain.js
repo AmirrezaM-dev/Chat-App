@@ -25,6 +25,7 @@ const MainComponent = ({ children }) => {
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
 	const [showPreloader, setShowPreloader] = useState(false)
 	const [showDeleteMessage, setShowDeleteMessage] = useState(false)
+	const [showDeleteAllMessage, setShowDeleteAllMessage] = useState(false)
 	const [showEditMessage, setShowEditMessage] = useState(false)
 	const copyText = (text) => {
 		var TempText = document.createElement("input")
@@ -93,6 +94,8 @@ const MainComponent = ({ children }) => {
 				setShowInviteOthers,
 				showDeleteMessage,
 				setShowDeleteMessage,
+				showDeleteAllMessage,
+				setShowDeleteAllMessage,
 				showEditMessage,
 				setShowEditMessage,
 				showPreloader,

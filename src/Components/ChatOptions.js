@@ -9,9 +9,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Dropdown, Nav } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
+import { useMain } from "./useMain"
 
 const ChatOptions = ({ setShowSearch, setShowInfo }) => {
+	const { id } = useParams()
+	const { setShowDeleteAllMessage } = useMain()
 	return (
 		<Nav className="flex-nowrap">
 			<li
@@ -57,7 +60,11 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 							/>
 							Archive
 						</Dropdown.Item>
-						<Dropdown.Item>
+						<Dropdown.Item
+							onClick={() => {
+								setShowDeleteAllMessage({ id })
+							}}
+						>
 							<FontAwesomeIcon icon={faTrash} className="me-2" />
 							Delete
 						</Dropdown.Item>

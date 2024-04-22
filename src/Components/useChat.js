@@ -130,6 +130,22 @@ const ChatComponent = ({ children }) => {
 					}
 				})
 			})
+			Socket.on("deleteAllMessages", (data) => {
+				const { OtherUserID } = data
+				setLoadedChats((loadedChats) => {
+					return {
+						...loadedChats,
+						[OtherUserID]: [],
+					}
+				})
+				setChats((chats) => {
+					return chats.filter(
+						(chat) =>
+							chat.receiver_user[0]._id !== OtherUserID &&
+							chat.sender_user[0]._id !== OtherUserID
+					)
+				})
+			})
 			Socket.on("editMessage", (message) => {
 				const OtherUserID =
 					user._id === message.sender

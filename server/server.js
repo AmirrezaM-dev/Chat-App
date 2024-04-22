@@ -24,6 +24,7 @@ server.once("close", function () {
 		socketDisconnect,
 		socketSendMessage,
 		socketDeleteMessage,
+		socketDeleteAllMessages,
 		socketEditMessage,
 		socketCheckConnection,
 	} = require("./controllers/socketController")
@@ -70,6 +71,9 @@ server.once("close", function () {
 		})
 		socket.on("deleteMessage", (data, callback) => {
 			socketDeleteMessage(socket, data, callback, io)
+		})
+		socket.on("deleteAllMessages", (data, callback) => {
+			socketDeleteAllMessages(socket, data, callback, io)
 		})
 		socket.on("editMessage", (data, callback) => {
 			socketEditMessage(socket, data, callback, io)

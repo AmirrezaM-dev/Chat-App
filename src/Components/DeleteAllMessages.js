@@ -5,22 +5,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { useAuth } from "./useAuth"
 import { useChat } from "./useChat"
-const DeleteMessage = () => {
-	const { showDeleteMessage, setShowDeleteMessage } = useMain()
-	const { Socket, user } = useAuth()
-	const { loadedChats, setLoadedChats, setChats } = useChat()
+const DeleteAllMessages = () => {
+	const { showDeleteAllMessage, setShowDeleteAllMessage } = useMain()
+	const { Socket } = useAuth()
+	const { setLoadedChats, setChats } = useChat()
 	const [deleteForEveryone, setDeleteForEveryone] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const deleteMessage = () => {
 		setIsDeleting(true)
-		const OtherUserId =
-			user._id === showDeleteMessage.message.sender
-				? showDeleteMessage.message.receiver
-				: showDeleteMessage.message.sender
+		const OtherUserID = showDeleteAllMessage.id
 		Socket.emit(
 			"deleteAllMessages",
 			{
-				message: showDeleteMessage.message,
+				OtherUserID,
 				deleteForEveryone,
 			},
 			(response) => {
@@ -28,57 +25,17 @@ const DeleteMessage = () => {
 					setLoadedChats((loadedChats) => {
 						return {
 							...loadedChats,
-							[showDeleteMessage.chatId]: [
-								...loadedChats[showDeleteMessage.chatId].filter(
-									(val) =>
-										val._id !==
-										showDeleteMessage.message._id
-								),
-							],
+							[OtherUserID]: [],
 						}
 					})
-					if (loadedChats[showDeleteMessage.chatId].length > 1) {
-						setChats((chats) => {
-							return chats.map((chat) => {
-								if (
-									chat.receiver_user[0]._id === OtherUserId ||
-									chat.sender_user[0]._id === OtherUserId
-								) {
-									const allMessagesExceptDeleteMessage =
-										loadedChats[showDeleteMessage.chatId]
-											.sort(
-												(a, b) =>
-													a.createdAt - b.createdAt
-											)
-											.filter(
-												(val) =>
-													val._id !==
-													showDeleteMessage.message
-														._id
-											)
-									return {
-										...allMessagesExceptDeleteMessage[
-											allMessagesExceptDeleteMessage.length -
-												1
-										],
-										receiver_user: chat.receiver_user,
-										sender_user: chat.sender_user,
-									}
-								} else {
-									return chat
-								}
-							})
-						})
-					} else {
-						setChats((chats) => {
-							return chats.filter(
-								(chat) =>
-									chat.receiver_user[0]._id !== user._id &&
-									chat.sender_user[0]._id !== user._id
-							)
-						})
-					}
-					setShowDeleteMessage(false)
+					setChats((chats) => {
+						return chats.filter(
+							(chat) =>
+								chat.receiver_user[0]._id !== OtherUserID &&
+								chat.sender_user[0]._id !== OtherUserID
+						)
+					})
+					setShowDeleteAllMessage(false)
 				} else {
 					console.log("Deleting Message Failed")
 				}
@@ -87,18 +44,18 @@ const DeleteMessage = () => {
 	}
 	useEffect(() => {
 		setIsDeleting(false)
-	}, [showDeleteMessage])
+	}, [showDeleteAllMessage])
 
 	return (
 		<Modal
-			show={showDeleteMessage !== false}
+			show={showDeleteAllMessage !== false}
 			onHide={() => {
-				setShowDeleteMessage(false)
+				setShowDeleteAllMessage(false)
 			}}
 			backdrop={isDeleting ? "static" : "none"}
 		>
 			<Modal.Header closeButton={!isDeleting}>
-				<Modal.Title>Do you want to delete this message?</Modal.Title>
+				<Modal.Title>Do you want to delete all messages?</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="py-0">
 				<Form>
@@ -139,7 +96,7 @@ const DeleteMessage = () => {
 				<Button
 					variant="outline-secondary"
 					className="me-auto"
-					onClick={() => setShowDeleteMessage(false)}
+					onClick={() => setShowDeleteAllMessage(false)}
 					disabled={isDeleting}
 				>
 					Cancel
@@ -161,4 +118,4 @@ const DeleteMessage = () => {
 	)
 }
 
-export default DeleteMessage
+export default DeleteAllMessages
