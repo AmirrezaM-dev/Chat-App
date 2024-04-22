@@ -18,6 +18,7 @@ const MainComponent = ({ children }) => {
 			toast.addEventListener("mouseleave", Swal.resumeTimer)
 		},
 	})
+	const [filterChats, setFilterChats] = useState("All Chats")
 	const [showNewChat, setShowNewChat] = useState(false)
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
@@ -80,6 +81,8 @@ const MainComponent = ({ children }) => {
 	return (
 		<MainContent.Provider
 			value={{
+				filterChats,
+				setFilterChats,
 				showNewChat,
 				setShowNewChat,
 				showNotifications,

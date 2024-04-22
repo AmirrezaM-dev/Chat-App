@@ -46,10 +46,14 @@ const SideBarDropDownOptions = () => {
 						<Dropdown.Item onClick={() => setShowNewChat(true)}>
 							New Chat
 						</Dropdown.Item>
-						<Dropdown.Item onClick={() => setShowCreateGroup(true)}>
+						<Dropdown.Item
+							disabled
+							onClick={() => setShowCreateGroup(true)}
+						>
 							Create Group
 						</Dropdown.Item>
 						<Dropdown.Item
+							disabled
 							onClick={() => setShowInviteOthers(true)}
 						>
 							Invite Others

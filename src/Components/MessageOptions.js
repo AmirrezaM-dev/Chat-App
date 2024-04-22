@@ -48,33 +48,37 @@ const MessageOptions = ({ message, chatId }) => {
 					<FontAwesomeIcon icon={faEllipsis} />
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
-					<Dropdown.Item>
+					<Dropdown.Item disabled>
 						<FontAwesomeIcon
 							icon={faSquareCheck}
 							className="me-2"
 						/>
 						Select
 					</Dropdown.Item>
-					<Dropdown.Item>
+					<Dropdown.Item disabled>
 						<FontAwesomeIcon icon={faReply} className="me-2" />
 						Reply
 					</Dropdown.Item>
-					<Dropdown.Item>
+					<Dropdown.Item disabled>
 						<FontAwesomeIcon icon={faShare} className="me-2" />
 						Forward
 					</Dropdown.Item>
-					<Dropdown.Item
-						className="text-info"
-						onClick={() =>
-							setShowEditMessage({
-								message,
-								chatId,
-							})
-						}
-					>
-						<FontAwesomeIcon icon={faPencil} className="me-2" />
-						Edit
-					</Dropdown.Item>
+					{message.sender === user._id ? (
+						<Dropdown.Item
+							className="text-info"
+							onClick={() =>
+								setShowEditMessage({
+									message,
+									chatId,
+								})
+							}
+						>
+							<FontAwesomeIcon icon={faPencil} className="me-2" />
+							Edit
+						</Dropdown.Item>
+					) : (
+						<></>
+					)}
 					<Dropdown.Item
 						className="text-primary"
 						onClick={() => copyText(message.text)}

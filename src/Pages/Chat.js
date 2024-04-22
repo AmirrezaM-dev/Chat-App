@@ -11,14 +11,9 @@ import {
 import { Link, useParams } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-	faCopy,
 	faEllipsisVertical,
-	faPencil,
-	faReply,
 	faSearch,
-	faShare,
 	faX,
-	faInfoCircle,
 	faArrowLeft,
 	faPaperclip,
 	faFile,
@@ -31,6 +26,7 @@ import {
 	faFileExcel,
 	faFilePowerpoint,
 	faBookmark,
+	faMapLocation,
 } from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../Components/useAuth"
@@ -332,47 +328,26 @@ const Chat = () => {
 										/>
 									</Dropdown.Toggle>
 									<Dropdown.Menu>
-										<Dropdown.Item>
+										<Dropdown.Item disabled>
 											<FontAwesomeIcon
-												icon={faInfoCircle}
+												icon={faFile}
 												className="me-2"
 											/>
-											Select
+											File
 										</Dropdown.Item>
-										<Dropdown.Item>
+										<Dropdown.Item disabled>
 											<FontAwesomeIcon
-												icon={faReply}
+												icon={faImage}
 												className="me-2"
 											/>
-											Reply
+											Photo
 										</Dropdown.Item>
-										<Dropdown.Item>
+										<Dropdown.Item disabled>
 											<FontAwesomeIcon
-												icon={faShare}
+												icon={faMapLocation}
 												className="me-2"
 											/>
-											Forward
-										</Dropdown.Item>
-										<Dropdown.Item className="text-info">
-											<FontAwesomeIcon
-												icon={faPencil}
-												className="me-2"
-											/>
-											Edit
-										</Dropdown.Item>
-										<Dropdown.Item className="text-primary">
-											<FontAwesomeIcon
-												icon={faCopy}
-												className="me-2"
-											/>
-											Copy
-										</Dropdown.Item>
-										<Dropdown.Item className="text-danger">
-											<FontAwesomeIcon
-												icon={faX}
-												className="me-2"
-											/>
-											Delete
+											Location
 										</Dropdown.Item>
 									</Dropdown.Menu>
 								</Dropdown>

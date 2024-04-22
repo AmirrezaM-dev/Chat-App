@@ -43,14 +43,14 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 							/>
 							View Info
 						</Dropdown.Item>
-						<Dropdown.Item>
+						<Dropdown.Item disabled>
 							<FontAwesomeIcon
 								icon={faVolumeMute}
 								className="me-2"
 							/>
 							Mute Notifications
 						</Dropdown.Item>
-						<Dropdown.Item>
+						<Dropdown.Item disabled>
 							<FontAwesomeIcon
 								icon={faArchive}
 								className="me-2"
@@ -61,7 +61,7 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 							<FontAwesomeIcon icon={faTrash} className="me-2" />
 							Delete
 						</Dropdown.Item>
-						<Dropdown.Item className="text-danger">
+						<Dropdown.Item /*className="text-danger"*/ disabled>
 							<FontAwesomeIcon icon={faBan} className="me-2" />
 							Block
 						</Dropdown.Item>
