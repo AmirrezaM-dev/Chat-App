@@ -9,8 +9,16 @@ const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 			{
 				$match: {
 					$or: [
-						{ receiver: { $eq: req.user._id } },
-						{ sender: { $eq: req.user._id } },
+						{
+							receiver: { $eq: req.user._id },
+							isDeleted: false,
+							isReceiverDeleted: false,
+						},
+						{
+							sender: { $eq: req.user._id },
+							isDeleted: false,
+							isSenderDeleted: false,
+						},
 					],
 				},
 			},
@@ -92,7 +100,6 @@ const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 				},
 			},
 		])
-		// const Contacts = await Contact.find({ relatedUser: req.user.id })
 		res.status(200).json({ Chats, Contacts })
 	} catch (error) {
 		res.status(422)
@@ -114,17 +121,20 @@ const getMessages = expressAsyncHandler(async (req, res) => {
 				if (id !== req.user.id) {
 					// not saved messages
 					Messages = await Message.find({
+						isDeleted: false,
 						$or: [
 							{
 								$and: [
 									{ sender: id },
 									{ receiver: req.user._id },
+									{ isReceiverDeleted: false },
 								],
 							},
 							{
 								$and: [
 									{ sender: req.user._id },
 									{ receiver: id },
+									{ isSenderDeleted: false },
 								],
 							},
 						],
@@ -132,7 +142,13 @@ const getMessages = expressAsyncHandler(async (req, res) => {
 				} else {
 					// saved messages
 					Messages = await Message.find({
-						$and: [{ sender: id }, { receiver: id }],
+						$and: [
+							{ sender: id },
+							{ receiver: id },
+							{ isDeleted: false },
+							{ isSenderDeleted: false },
+							{ isReceiverDeleted: false },
+						],
 					})
 				}
 				res.status(200).json({ Messages, OtherUser })

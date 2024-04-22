@@ -38,35 +38,53 @@ const socketSendMessage = expressAsyncHandler(
 )
 const socketDeleteMessage = expressAsyncHandler(
 	async (socket, data, callback, io) => {
-		const { id } = data
-		const message = await Message.findOne({
-			_id: id,
-			$or: [{ receiver: socket.user.id }, { sender: socket.user.id }],
-		})
-		const deleted = await Message.deleteOne({
-			_id: id,
-			$or: [{ receiver: socket.user.id }, { sender: socket.user.id }],
-		})
-		if (message.receiver.toString() !== socket.user.id.toString()) {
-			const Receiver = await User.findById(message.receiver).select(
-				"-password"
+		try {
+			const { message, deleteForEveryone } = data
+			const { _id } = message
+			const deleteUpdateObject =
+				deleteForEveryone || message.sender === message.receiver
+					? { isDeleted: true }
+					: socket.user.id === message.sender
+					? { isSenderDeleted: true }
+					: {
+							isReceiverDeleted: true,
+					  }
+			const deletedMessage = await Message.findOneAndUpdate(
+				{
+					_id,
+					$or: [
+						{ receiver: socket.user.id },
+						{ sender: socket.user.id },
+					],
+				},
+				deleteUpdateObject,
+				{ new: true }
 			)
-			const Sender = await User.findById(socket.user.id).select(
-				"-password"
-			)
-			const sender = Sender.id,
-				receiver = Receiver.id
-			const receiverSocketID = Receiver.socketID
-			io.to(receiverSocketID).emit("deleteMessage", {
-				...message._doc,
-				sender,
-				receiver,
-				receiver_user: Receiver,
-				sender_user: Sender,
-			})
+			if (deletedMessage) {
+				const Receiver = await User.findById(
+					deletedMessage.receiver
+				).select("-password")
+				const Sender = await User.findById(
+					deletedMessage.sender
+				).select("-password")
+				if (deleteForEveryone) {
+					const OtherUserSokectID =
+						socket.user.id === message.sender
+							? Receiver.socketID
+							: Sender.socketID
+					io.to(OtherUserSokectID).emit("deleteMessage", {
+						...deletedMessage._doc,
+						receiver_user: Receiver,
+						sender_user: Sender,
+					})
+				}
+				callback({ success: true })
+			} else {
+				callback({ success: false })
+			}
+		} catch (error) {
+			console.log(error)
 		}
-		if (deleted.deletedCount) callback({ success: true })
-		else callback({ success: false })
 	}
 )
 const socketDisconnect = expressAsyncHandler(async (socket) => {
