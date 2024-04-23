@@ -20,13 +20,13 @@ import {
 	faMailForward,
 	faBan,
 	faLocation,
-	faUserPlus,
 	faCircleInfo,
 	faImage,
 	faFileExcel,
 	faFilePowerpoint,
 	faBookmark,
 	faMapLocation,
+	faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useState } from "react"
 import { useAuth } from "../Components/useAuth"
@@ -432,12 +432,10 @@ const Chat = () => {
 									{/* User Quick Options */}
 									<div className="d-flex align-items-center justify-content-center">
 										<Button
-											variant="outline-dark"
-											className="btn-icon rounded-circle mx-1"
+											variant="warning"
+											className="btn-icon rounded-circle mx-1 text-white"
 										>
-											<FontAwesomeIcon
-												icon={faUserPlus}
-											/>
+											<FontAwesomeIcon icon={faTrash} />
 										</Button>
 										<Button
 											variant="danger"

@@ -33,12 +33,13 @@ const login = expressAsyncHandler(async (req, res) => {
 				secure: true,
 			})
 
-			const { _id, fullname } = user
+			const { _id, fullname, username } = user
 
 			res.status(200).json({
 				_id,
 				fullname,
 				email,
+				username,
 				csrfToken,
 			})
 		} else {
@@ -55,12 +56,80 @@ const login = expressAsyncHandler(async (req, res) => {
 
 const get = expressAsyncHandler(async (req, res) => {
 	try {
-		const { fullname, email, _id } = await User.findById(req.user.id)
+		const { fullname, email, username, _id } = await User.findById(
+			req.user.id
+		).select("-password")
 		res.status(200).json({
 			_id,
 			fullname,
 			email,
+			username,
 		})
+	} catch (error) {
+		console.log(error)
+		res.status(422)
+		throw new Error(`Something went wrong`)
+	}
+})
+
+const saveProfile = expressAsyncHandler(async (req, res) => {
+	try {
+		if (!req.body?.email && !req.body?.username) {
+			res.status(400)
+			throw new Error("Please fill all fields")
+		}
+		const { fullname, username, email } = req.body
+		const usernameOrEmailExist = await User.findOne({
+			$or: [{ username }, { email }],
+			_id: { $ne: req.user.id },
+		})
+		if (usernameOrEmailExist) {
+			if (usernameOrEmailExist.username === username)
+				res.status(400).json({ error: "Username already exists" })
+			else if (usernameOrEmailExist.email === email)
+				res.status(400).json({ error: "Email already exists" })
+			else res.status(400).json({ error: "Something went wrong" })
+		} else {
+			const updatedUser = await User.findByIdAndUpdate(
+				req.user.id,
+				{
+					fullname,
+					username,
+					email,
+				},
+				{ new: true }
+			)
+			if (updatedUser)
+				res.status(200).json({
+					_id: updatedUser._id,
+					fullname: updatedUser.fullname,
+					email: updatedUser.email,
+					username: updatedUser.username,
+				})
+			else res.status(400).json({ error: "Something went wrong" })
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(422)
+		throw new Error(`Something went wrong`)
+	}
+})
+const savePassword = expressAsyncHandler(async (req, res) => {
+	try {
+		if (!req.body?.password && !req.body?.newPassword) {
+			res.status(400)
+			throw new Error("Please fill all fields")
+		}
+		const { password, newPassword } = req.body
+		const user = await User.findById(req.user.id)
+		if (user && (await bcrypt.compare(password, user.password))) {
+			const salt = await bcrypt.genSalt(10)
+			const hashedNewPassword = await bcrypt.hash(newPassword, salt)
+			await User.findByIdAndUpdate(req.user.id, {
+				password: hashedNewPassword,
+			})
+			res.status(200).json({})
+		} else res.status(400).json({ error: "Invalid password" })
 	} catch (error) {
 		console.log(error)
 		res.status(422)
@@ -110,4 +179,4 @@ const generateToken = (id) => {
 	})
 }
 
-module.exports = { register, login, logout, get }
+module.exports = { register, login, logout, get, saveProfile, savePassword }

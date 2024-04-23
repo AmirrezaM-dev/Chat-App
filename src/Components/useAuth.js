@@ -243,6 +243,7 @@ const AuthProvider = ({ children }) => {
 				loggedIn,
 				loadingLogin,
 				user,
+				setUser,
 				defaultFormData,
 				formData,
 				setFormData,
