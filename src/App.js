@@ -25,6 +25,8 @@ import Sidebar from "./Components/Sidebar"
 import DeleteMessage from "./Components/DeleteMessage"
 import DeleteAllMessage from "./Components/DeleteAllMessages"
 import EditMessage from "./Components/EditMessage"
+import AddContact from "./Components/AddContact"
+import DeleteContact from "./Components/DeleteContact"
 
 const App = () => {
 	const { showPreloader } = useMain()
@@ -105,11 +107,13 @@ const App = () => {
 					<Route path={"/profile"} element={<Profile />} />
 				</Routes>
 			</main>
+			<AddContact />
 			<StartNewChat />
 			<CreateGroup />
 			<InviteOthers />
 			<EditMessage />
 			<DeleteMessage />
+			<DeleteContact />
 			<DeleteAllMessage />
 			<Notifications />
 		</>

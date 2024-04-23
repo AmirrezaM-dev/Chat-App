@@ -21,6 +21,8 @@ const MainComponent = ({ children }) => {
 	const [filterChats, setFilterChats] = useState("All Chats")
 	const [showNewChat, setShowNewChat] = useState(false)
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
+	const [showAddContact, setShowAddContact] = useState(false)
+	const [showDeleteContact, setShowDeleteContact] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
 	const [showPreloader, setShowPreloader] = useState(false)
@@ -90,6 +92,8 @@ const MainComponent = ({ children }) => {
 				setShowNotifications,
 				showCreateGroup,
 				setShowCreateGroup,
+				showDeleteContact,
+				setShowDeleteContact,
 				showInviteOthers,
 				setShowInviteOthers,
 				showDeleteMessage,
@@ -100,6 +104,8 @@ const MainComponent = ({ children }) => {
 				setShowEditMessage,
 				showPreloader,
 				setShowPreloader,
+				showAddContact,
+				setShowAddContact,
 				timeSince,
 				formatDate,
 				copyText,

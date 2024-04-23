@@ -1,12 +1,14 @@
-import { faAt, faSearch } from "@fortawesome/free-solid-svg-icons"
+import { faAt, faSearch, faUserPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-import { Form, InputGroup } from "react-bootstrap"
+import { Button, Form, InputGroup } from "react-bootstrap"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
 import { useChat } from "./useChat"
+import { useMain } from "./useMain"
 
 const ContactsSidebar = () => {
+	const { setShowAddContact } = useMain()
 	const { contacts } = useChat()
 	const navigate = useNavigate()
 	const { id } = useParams()
@@ -53,6 +55,27 @@ const ContactsSidebar = () => {
 						</small>
 					</li> */}
 					{/* Item Series End */}
+					<li
+						className={`contacts-item`}
+						onClick={() => setShowAddContact(true)}
+					>
+						<Link className="contacts-link rounded-pill m-0 p-0 shadow">
+							<Button
+								variant="none"
+								className="m-2 rounded-circle border-0"
+							>
+								<FontAwesomeIcon icon={faUserPlus} />
+							</Button>
+
+							<div className="contacts-content">
+								<div className="contacts-info">
+									<h6 className="chat-name text-truncate">
+										New Contact
+									</h6>
+								</div>
+							</div>
+						</Link>
+					</li>
 					{/* friends Item Start */}
 					{contacts.map((val, i) => {
 						const contact = val.contactUser[0]

@@ -48,7 +48,7 @@ server.once("close", function () {
 
 	app.use("/api/users", require("./routes/userRoutes"))
 	app.use("/api/message", require("./routes/messageRoutes"))
-	app.use("/api/contact", require("./routes/messageRoutes"))
+	app.use("/api/contact", require("./routes/contactRoutes"))
 
 	app.use(errorHandler)
 	const SharedServerForSocketIo = app.listen(port, () => {
