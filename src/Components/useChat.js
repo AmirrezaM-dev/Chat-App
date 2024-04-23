@@ -13,6 +13,7 @@ const ChatComponent = ({ children }) => {
 	const { setShowPreloader } = useMain()
 	const [chats, setChats] = useState([])
 	const [contacts, setContacts] = useState([])
+	const [blocked, setBlocked] = useState([])
 	const [filterChats, setFilterChats] = useState("All Chats")
 	const [loadedChats, setLoadedChats] = useState({})
 	useEffect(() => {
@@ -23,6 +24,7 @@ const ChatComponent = ({ children }) => {
 				.then((response) => {
 					setChats(response.data.Chats)
 					setContacts(response.data.Contacts)
+					setBlocked(response.data.Blocked)
 				})
 				.finally(() => {
 					setShowPreloader(false)
@@ -204,6 +206,8 @@ const ChatComponent = ({ children }) => {
 				setFilterChats,
 				loadedChats,
 				setLoadedChats,
+				blocked,
+				setBlocked,
 			}}
 		>
 			{children}

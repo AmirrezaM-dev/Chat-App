@@ -5,6 +5,7 @@ import {
 	faMessage,
 	faSignature,
 	faTrash,
+	faUnlockKeyhole,
 	faUserAlt,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -14,14 +15,21 @@ import { useChat } from "../Components/useChat"
 import { useMain } from "../Components/useMain"
 const Contacts = () => {
 	const navigate = useNavigate()
-	const { setShowDeleteContact } = useMain()
-	const { contacts } = useChat()
+	const { setShowDeleteContact, setShowBlockContact } = useMain()
+	const { contacts, blocked } = useChat()
 	const { id } = useParams()
 	const contact = contacts
 		? contacts.filter((val) => val._id === id).length
 			? contacts.filter((val) => val._id === id)[0]
 			: undefined
 		: undefined
+	const isUserBlocked = blocked.filter(
+		(val) => val?.blacklistUser?.[0]?._id === contact?.contactUser?.[0]?._id
+	).length
+		? true
+		: false
+	console.log(blocked)
+	console.log(isUserBlocked)
 	return id && contacts.filter((val) => val._id === id).length ? (
 		<div className="friends px-0 py-2 p-xl-3 d-block">
 			<div className="container-xl">
@@ -72,10 +80,26 @@ const Contacts = () => {
 											<FontAwesomeIcon icon={faTrash} />
 										</Button>
 										<Button
-											variant="danger"
+											variant={
+												isUserBlocked
+													? "info"
+													: "danger"
+											}
 											className="btn-icon rounded-circle text-light mx-2"
+											onClick={() => {
+												setShowBlockContact({
+													contact,
+													isUserBlocked,
+												})
+											}}
 										>
-											<FontAwesomeIcon icon={faBan} />
+											<FontAwesomeIcon
+												icon={
+													isUserBlocked
+														? faUnlockKeyhole
+														: faBan
+												}
+											/>
 										</Button>
 									</div>
 								</div>
@@ -100,7 +124,18 @@ const Contacts = () => {
 										>
 											Remove
 										</Dropdown.Item>
-										<Dropdown.Item>Block</Dropdown.Item>
+										<Dropdown.Item
+											onClick={() => {
+												setShowBlockContact({
+													contact,
+													isUserBlocked,
+												})
+											}}
+										>
+											{isUserBlocked
+												? "Unblock"
+												: "Block"}
+										</Dropdown.Item>
 									</Dropdown.Menu>
 								</Dropdown>
 							</div>

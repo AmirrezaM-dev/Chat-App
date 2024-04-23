@@ -27,6 +27,7 @@ import DeleteAllMessage from "./Components/DeleteAllMessages"
 import EditMessage from "./Components/EditMessage"
 import AddContact from "./Components/AddContact"
 import DeleteContact from "./Components/DeleteContact"
+import BlockContact from "./Components/BlockContact"
 
 const App = () => {
 	const { showPreloader } = useMain()
@@ -114,6 +115,7 @@ const App = () => {
 			<EditMessage />
 			<DeleteMessage />
 			<DeleteContact />
+			<BlockContact />
 			<DeleteAllMessage />
 			<Notifications />
 		</>

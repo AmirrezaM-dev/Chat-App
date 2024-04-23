@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler")
 const Message = require("../models/messageModel")
 const User = require("../models/userModel")
 const Contact = require("../models/contactModel")
+const Blacklist = require("../models/blacklistModel")
 
 const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 	try {
@@ -100,7 +101,30 @@ const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 				},
 			},
 		])
-		res.status(200).json({ Chats, Contacts })
+		const Blocked = await Blacklist.aggregate([
+			{
+				$match: {
+					relatedUser: req.user._id,
+				},
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "blacklistUser",
+					foreignField: "_id",
+					as: "blacklistUser",
+				},
+			},
+			{
+				$project: {
+					"blacklistUser._id": 1,
+					"blacklistUser.fullname": 1,
+					"blacklistUser.username": 1,
+					"blacklistUser.avatar": 1,
+				},
+			},
+		])
+		res.status(200).json({ Chats, Contacts, Blocked })
 	} catch (error) {
 		res.status(422)
 		throw new Error(`Something went wrong ${error}`)

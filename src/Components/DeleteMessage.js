@@ -18,7 +18,7 @@ const DeleteMessage = () => {
 				? showDeleteMessage.message.receiver
 				: showDeleteMessage.message.sender
 		Socket.emit(
-			"deleteAllMessages",
+			"deleteMessage",
 			{
 				message: showDeleteMessage.message,
 				deleteForEveryone,

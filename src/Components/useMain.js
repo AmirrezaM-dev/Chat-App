@@ -23,6 +23,7 @@ const MainComponent = ({ children }) => {
 	const [showCreateGroup, setShowCreateGroup] = useState(false)
 	const [showAddContact, setShowAddContact] = useState(false)
 	const [showDeleteContact, setShowDeleteContact] = useState(false)
+	const [showBlockContact, setShowBlockContact] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
 	const [showInviteOthers, setShowInviteOthers] = useState(false)
 	const [showPreloader, setShowPreloader] = useState(false)
@@ -94,6 +95,8 @@ const MainComponent = ({ children }) => {
 				setShowCreateGroup,
 				showDeleteContact,
 				setShowDeleteContact,
+				showBlockContact,
+				setShowBlockContact,
 				showInviteOthers,
 				setShowInviteOthers,
 				showDeleteMessage,

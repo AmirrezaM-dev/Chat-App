@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
 const Message = require("../models/messageModel")
+const Blacklist = require("../models/blacklistModel")
 const ObjectId = require("mongoose").Types.ObjectId
 
 const socketSendMessage = expressAsyncHandler(
@@ -10,6 +11,10 @@ const socketSendMessage = expressAsyncHandler(
 		const { text, isEdited, isForwarded, status, type, usersRelated } = data
 		const sender = Sender.id,
 			receiver = Receiver.id
+		const Blocked = await Blacklist.findOne({
+			relatedUser: Receiver._id,
+			blacklistUser: socket.user.id,
+		})
 		const message = await Message.create({
 			sender,
 			receiver,
@@ -19,8 +24,9 @@ const socketSendMessage = expressAsyncHandler(
 			status,
 			type,
 			usersRelated,
+			isReceiverDeleted: Blocked ? true : false,
 		})
-		if (Receiver.isConnected && sender !== receiver) {
+		if (Receiver.isConnected && sender !== receiver && !Blocked) {
 			const receiverSocketID = Receiver.socketID
 			io.to(receiverSocketID).emit("receiveMessage", {
 				...message._doc,
@@ -69,15 +75,23 @@ const socketDeleteMessage = expressAsyncHandler(
 					deletedMessage.sender
 				).select("-password")
 				if (deleteForEveryone) {
-					const OtherUserSocketID =
-						socket.user.id === message.sender
-							? Receiver.socketID
-							: Sender.socketID
-					io.to(OtherUserSocketID).emit("deleteMessage", {
-						...deletedMessage._doc,
-						receiver_user: Receiver,
-						sender_user: Sender,
+					const OtherUser =
+						socket.user.id === message.sender ? Receiver : Sender
+					const Blocked = await Blacklist.findOne({
+						relatedUser: OtherUser._id,
+						blacklistUser: socket.user.id,
 					})
+					if (
+						OtherUser.isConnected &&
+						Receiver._id.toString() !== Sender._id.toString() &&
+						!Blocked
+					) {
+						io.to(OtherUser.socketID).emit("deleteMessage", {
+							...deletedMessage._doc,
+							receiver_user: Receiver,
+							sender_user: Sender,
+						})
+					}
 				}
 				callback({ success: true })
 			} else {
@@ -177,9 +191,18 @@ const socketDeleteAllMessages = expressAsyncHandler(
 			)
 			if (deleteForEveryone) {
 				const OtherUser = await User.findById(OtherUserID)
-				io.to(OtherUser.socketID).emit("deleteAllMessages", {
-					OtherUserID: socket.user.id,
+				const Blocked = await Blacklist.findOne({
+					relatedUser: OtherUser._id,
+					blacklistUser: socket.user.id,
 				})
+				if (
+					OtherUser.isConnected &&
+					OtherUserID !== socket.user.id &&
+					!Blocked
+				)
+					io.to(OtherUser.socketID).emit("deleteAllMessages", {
+						OtherUserID: socket.user.id,
+					})
 			}
 			callback({ success: true })
 		} catch (error) {
@@ -211,15 +234,25 @@ const socketEditMessage = expressAsyncHandler(
 				const Sender = await User.findById(
 					updatedMesssage.sender
 				).select("-password")
-				const OtherUserSocketID =
+				const OtherUser =
 					socket.user.id === updatedMesssage.sender.toString()
-						? Receiver.socketID
-						: Sender.socketID
-				io.to(OtherUserSocketID).emit("editMessage", {
-					...updatedMesssage._doc,
-					receiver_user: Receiver,
-					sender_user: Sender,
+						? Receiver
+						: Sender
+				const Blocked = await Blacklist.findOne({
+					relatedUser: OtherUser._id,
+					blacklistUser: socket.user.id,
 				})
+				if (
+					OtherUser.isConnected &&
+					Receiver._id.toString() !== Sender._id.toString() &&
+					!Blocked
+				) {
+					io.to(OtherUser.socketID).emit("editMessage", {
+						...updatedMesssage._doc,
+						receiver_user: Receiver,
+						sender_user: Sender,
+					})
+				}
 				callback({ success: true })
 			} else callback({ success: false })
 		} catch (error) {
