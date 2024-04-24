@@ -4,9 +4,9 @@ Made with React.js, Node.js (Express.js), [Socket.io](https://socket.io/), Mongo
 
 Features:
 
-+ Sing Up
-+ Sign In
-+ Real-Time messaging using Socket.io framework
-+ Add/Remove/Block Contacts
-+ Send/Edit/Delete (+Delete All) Messages (Real-Time)
-+ Profile/Edit Profile (Fullname,Email,Username,Password,Avatar)
+-   Sing Up
+-   Sign In
+-   Real-Time messaging using Socket.io framework
+-   Add/Remove/Block Contacts
+-   Send/Edit/Delete (+Clear History) Messages (Real-Time)
+-   Profile/Edit Profile (Fullname,Email,Username,Password,Avatar)
