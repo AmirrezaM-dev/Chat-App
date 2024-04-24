@@ -21,11 +21,13 @@ const MessageOptions = ({ message, chatId, self }) => {
 	const { loadedChats } = useChat()
 	return (
 		<div className="message-options">
-			{self && user?.avatar ? (
+			{chatId !== user._id && self && user?.avatar ? (
 				<div className="avatar avatar-sm">
 					<img alt="" src={user.avatar} />
 				</div>
-			) : !self && loadedChats["info-" + chatId]?.avatar ? (
+			) : chatId !== user._id &&
+			  !self &&
+			  loadedChats["info-" + chatId]?.avatar ? (
 				<div className="avatar avatar-sm">
 					<img alt="" src={loadedChats["info-" + chatId].avatar} />
 				</div>

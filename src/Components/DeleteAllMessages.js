@@ -7,7 +7,7 @@ import { useAuth } from "./useAuth"
 import { useChat } from "./useChat"
 const DeleteAllMessages = () => {
 	const { showDeleteAllMessage, setShowDeleteAllMessage } = useMain()
-	const { Socket } = useAuth()
+	const { Socket, user } = useAuth()
 	const { setLoadedChats, setChats } = useChat()
 	const [deleteForEveryone, setDeleteForEveryone] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
@@ -22,19 +22,35 @@ const DeleteAllMessages = () => {
 			},
 			(response) => {
 				if (response.success) {
-					setLoadedChats((loadedChats) => {
-						return {
-							...loadedChats,
-							[OtherUserID]: [],
-						}
-					})
-					setChats((chats) => {
-						return chats.filter(
-							(chat) =>
-								chat.receiver_user[0]._id !== OtherUserID &&
-								chat.sender_user[0]._id !== OtherUserID
-						)
-					})
+					if (user._id !== OtherUserID) {
+						setLoadedChats((loadedChats) => {
+							return {
+								...loadedChats,
+								[OtherUserID]: [],
+							}
+						})
+						setChats((chats) => {
+							return chats.filter(
+								(chat) =>
+									chat.receiver_user[0]._id !== OtherUserID &&
+									chat.sender_user[0]._id !== OtherUserID
+							)
+						})
+					} else {
+						setLoadedChats((loadedChats) => {
+							return {
+								...loadedChats,
+								[OtherUserID]: [],
+							}
+						})
+						setChats((chats) => {
+							return chats.filter(
+								(chat) =>
+									chat.receiver_user[0]._id !==
+									chat.sender_user[0]._id
+							)
+						})
+					}
 					setShowDeleteAllMessage(false)
 				} else {
 					console.log("Deleting Message Failed")
@@ -57,41 +73,45 @@ const DeleteAllMessages = () => {
 			<Modal.Header closeButton={!isDeleting}>
 				<Modal.Title>Do you want to delete all messages?</Modal.Title>
 			</Modal.Header>
-			<Modal.Body className="py-0">
-				<Form>
-					<Row>
-						<Col sm={12}>
-							<div className="row">
-								<Col sm={12}>
-									<Form.Group
-										className="m-2"
-										onClick={() => {
-											if (!isDeleting)
-												setDeleteForEveryone(
-													(deleteForEveryone) =>
-														!deleteForEveryone
-												)
-										}}
-									>
-										<Form.Check
-											checked={deleteForEveryone}
-											onChange={() =>
-												setDeleteForEveryone(
-													(deleteForEveryone) =>
-														!deleteForEveryone
-												)
-											}
-											type="checkbox"
-											label={`Delete for everyone?`}
-											disabled={isDeleting}
-										/>
-									</Form.Group>
-								</Col>
-							</div>
-						</Col>
-					</Row>
-				</Form>
-			</Modal.Body>
+			{showDeleteAllMessage.id !== user._id ? (
+				<Modal.Body className="py-0">
+					<Form>
+						<Row>
+							<Col sm={12}>
+								<Row>
+									<Col sm={12}>
+										<Form.Group
+											className="m-2"
+											onClick={() => {
+												if (!isDeleting)
+													setDeleteForEveryone(
+														(deleteForEveryone) =>
+															!deleteForEveryone
+													)
+											}}
+										>
+											<Form.Check
+												checked={deleteForEveryone}
+												onChange={() =>
+													setDeleteForEveryone(
+														(deleteForEveryone) =>
+															!deleteForEveryone
+													)
+												}
+												type="checkbox"
+												label={`Delete for everyone?`}
+												disabled={isDeleting}
+											/>
+										</Form.Group>
+									</Col>
+								</Row>
+							</Col>
+						</Row>
+					</Form>
+				</Modal.Body>
+			) : (
+				<></>
+			)}
 			<Modal.Footer>
 				<Button
 					variant="outline-secondary"

@@ -108,103 +108,118 @@ const socketDeleteAllMessages = expressAsyncHandler(
 	async (socket, data, callback, io) => {
 		try {
 			const { OtherUserID, deleteForEveryone } = data
-			await Message.updateMany(
-				{
-					$or: [
-						{
-							receiver: socket.user.id,
-							isReceiverDeleted: { $ne: true },
-						},
-						{
-							sender: socket.user.id,
-							isSenderDeleted: { $ne: true },
-						},
-						{
-							receiver: socket.user.id,
-							sender: socket.user.id,
-							isDeleted: { $ne: true },
-						},
-					],
-				},
-				[
+			if (OtherUserID !== socket.user.id) {
+				await Message.updateMany(
 					{
-						$set: {
-							isReceiverDeleted: {
-								$or: [
-									{
-										$eq: [
-											"$receiver",
-											new ObjectId(socket.user.id),
-										],
-									},
-									{
-										$eq: ["$isReceiverDeleted", true],
-									},
-								],
+						$or: [
+							{
+								receiver: socket.user.id,
+								isReceiverDeleted: { $ne: true },
 							},
-							isSenderDeleted: {
-								$or: [
-									{
-										$eq: [
-											"$sender",
-											new ObjectId(socket.user.id),
-										],
-									},
-									{
-										$eq: ["$isSenderDeleted", true],
-									},
-								],
+							{
+								sender: socket.user.id,
+								isSenderDeleted: { $ne: true },
 							},
-							isDeleted: {
-								$or: [
-									{
-										$and: [
-											{
-												$eq: [
-													"$sender",
-													new ObjectId(
-														socket.user.id
-													),
-												],
-											},
-											{
-												$eq: [
-													"$receiver",
-													new ObjectId(
-														socket.user.id
-													),
-												],
-											},
-										],
-									},
-									{
-										$eq: [deleteForEveryone, true],
-									},
-									{
-										$eq: ["$isDeleted", true],
-									},
-								],
+							{
+								receiver: socket.user.id,
+								sender: socket.user.id,
+								isDeleted: { $ne: true },
+							},
+						],
+					},
+					[
+						{
+							$set: {
+								isReceiverDeleted: {
+									$or: [
+										{
+											$eq: [
+												"$receiver",
+												new ObjectId(socket.user.id),
+											],
+										},
+										{
+											$eq: ["$isReceiverDeleted", true],
+										},
+									],
+								},
+								isSenderDeleted: {
+									$or: [
+										{
+											$eq: [
+												"$sender",
+												new ObjectId(socket.user.id),
+											],
+										},
+										{
+											$eq: ["$isSenderDeleted", true],
+										},
+									],
+								},
+								isDeleted: {
+									$or: [
+										{
+											$and: [
+												{
+													$eq: [
+														"$sender",
+														new ObjectId(
+															socket.user.id
+														),
+													],
+												},
+												{
+													$eq: [
+														"$receiver",
+														new ObjectId(
+															socket.user.id
+														),
+													],
+												},
+											],
+										},
+										{
+											$eq: [deleteForEveryone, true],
+										},
+										{
+											$eq: ["$isDeleted", true],
+										},
+									],
+								},
 							},
 						},
-					},
-				]
-			)
-			if (deleteForEveryone) {
-				const OtherUser = await User.findById(OtherUserID)
-				const Blocked = await Blacklist.findOne({
-					relatedUser: OtherUser._id,
-					blacklistUser: socket.user.id,
-				})
-				if (
-					OtherUser.isConnected &&
-					OtherUserID !== socket.user.id &&
-					!Blocked
+					]
 				)
-					io.to(OtherUser.socketID).emit("deleteAllMessages", {
-						OtherUserID: socket.user.id,
+				if (deleteForEveryone) {
+					const OtherUser = await User.findById(OtherUserID)
+					const Blocked = await Blacklist.findOne({
+						relatedUser: OtherUser._id,
+						blacklistUser: socket.user.id,
 					})
+					if (
+						OtherUser.isConnected &&
+						OtherUserID !== socket.user.id &&
+						!Blocked
+					)
+						io.to(OtherUser.socketID).emit("deleteAllMessages", {
+							OtherUserID: socket.user.id,
+						})
+				}
+				callback({ success: true })
+			} else {
+				await Message.updateMany(
+					{
+						receiver: socket.user.id,
+						sender: socket.user.id,
+					},
+					{
+						isDeleted: true,
+						isSenderDeleted: true,
+						isReceiverDeleted: true,
+					}
+				)
+				callback({ success: true })
 			}
-			callback({ success: true })
 		} catch (error) {
 			callback({ success: false })
 			console.log(error)

@@ -15,9 +15,11 @@ import { Dropdown, Nav } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import { useMain } from "./useMain"
 import { useChat } from "./useChat"
+import { useAuth } from "./useAuth"
 
 const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 	const { id } = useParams()
+	const { user } = useAuth()
 	const { contacts, blocked } = useChat()
 	const contact = contacts.filter((val) => val?.contactUser?.[0]?._id === id)
 	const isUserBlocked = blocked.filter(
@@ -51,31 +53,38 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 						<FontAwesomeIcon icon={faEllipsisVertical} />
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
-						<Dropdown.Item
-							onClick={() => {
-								setShowInfo((showInfo) => !showInfo)
-							}}
-						>
-							<FontAwesomeIcon
-								icon={faInfoCircle}
-								className="me-2"
-							/>
-							View Info
-						</Dropdown.Item>
-						<Dropdown.Item disabled>
-							<FontAwesomeIcon
-								icon={faVolumeMute}
-								className="me-2"
-							/>
-							Mute Notifications
-						</Dropdown.Item>
-						<Dropdown.Item disabled>
-							<FontAwesomeIcon
-								icon={faArchive}
-								className="me-2"
-							/>
-							Archive
-						</Dropdown.Item>
+						{id !== user._id ? (
+							<>
+								<Dropdown.Item
+									onClick={() => {
+										setShowInfo((showInfo) => !showInfo)
+									}}
+								>
+									<FontAwesomeIcon
+										icon={faInfoCircle}
+										className="me-2"
+									/>
+									View Info
+								</Dropdown.Item>
+
+								<Dropdown.Item disabled>
+									<FontAwesomeIcon
+										icon={faVolumeMute}
+										className="me-2"
+									/>
+									Mute Notifications
+								</Dropdown.Item>
+								<Dropdown.Item disabled>
+									<FontAwesomeIcon
+										icon={faArchive}
+										className="me-2"
+									/>
+									Archive
+								</Dropdown.Item>
+							</>
+						) : (
+							<></>
+						)}
 						<Dropdown.Item
 							onClick={() => {
 								setShowDeleteAllMessage({ id })
@@ -84,41 +93,61 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 							<FontAwesomeIcon icon={faEraser} className="me-2" />
 							Clear History
 						</Dropdown.Item>
-						<Dropdown.Item
-							className={
-								contact.length ? "text-warning" : "text-success"
-							}
-							onClick={() =>
-								contact.length
-									? setShowDeleteContact(contact[0])
-									: setShowAddContact(id)
-							}
-						>
-							<FontAwesomeIcon
-								icon={contact.length ? faTrash : faUserPlus}
-								className="me-2"
-							/>
-							{contact.length
-								? "Delete contact"
-								: "Add to contacts"}
-						</Dropdown.Item>
-						<Dropdown.Item
-							className={
-								isUserBlocked ? "text-info" : "text-danger"
-							}
-							onClick={() =>
-								setShowBlockContact({
-									contact: contact.length ? contact[0] : id,
-									isUserBlocked,
-								})
-							}
-						>
-							<FontAwesomeIcon
-								icon={isUserBlocked ? faUnlockKeyhole : faBan}
-								className="me-2"
-							/>
-							{isUserBlocked ? "Unblock" : "Block"}
-						</Dropdown.Item>
+						{id !== user._id ? (
+							<>
+								<Dropdown.Item
+									className={
+										contact.length
+											? "text-warning"
+											: "text-success"
+									}
+									onClick={() =>
+										contact.length
+											? setShowDeleteContact(contact[0])
+											: setShowAddContact(id)
+									}
+								>
+									<FontAwesomeIcon
+										icon={
+											contact.length
+												? faTrash
+												: faUserPlus
+										}
+										className="me-2"
+									/>
+									{contact.length
+										? "Delete contact"
+										: "Add to contacts"}
+								</Dropdown.Item>
+								<Dropdown.Item
+									className={
+										isUserBlocked
+											? "text-info"
+											: "text-danger"
+									}
+									onClick={() =>
+										setShowBlockContact({
+											contact: contact.length
+												? contact[0]
+												: id,
+											isUserBlocked,
+										})
+									}
+								>
+									<FontAwesomeIcon
+										icon={
+											isUserBlocked
+												? faUnlockKeyhole
+												: faBan
+										}
+										className="me-2"
+									/>
+									{isUserBlocked ? "Unblock" : "Block"}
+								</Dropdown.Item>
+							</>
+						) : (
+							<></>
+						)}
 					</Dropdown.Menu>
 				</Dropdown>
 			</li>
