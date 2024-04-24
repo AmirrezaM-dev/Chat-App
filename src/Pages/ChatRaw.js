@@ -11,6 +11,7 @@ import {
 import { Link, useParams } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
+	faEllipsisVertical,
 	faSearch,
 	faX,
 	faArrowLeft,
@@ -20,6 +21,8 @@ import {
 	faBan,
 	faCircleInfo,
 	faImage,
+	faFileExcel,
+	faFilePowerpoint,
 	faBookmark,
 	faMapLocation,
 	faTrash,
@@ -528,6 +531,270 @@ const Chat = () => {
 									</div>
 								</div>
 								{/* User Information End */}
+								{/* Shared Media Start */}
+								<div className="chat-info-group">
+									<Link className="chat-info-group-header">
+										<h6 className="mb-0">Last Media</h6>
+										<FontAwesomeIcon icon={faImage} />
+									</Link>
+									<div
+										className="chat-info-group-body collapse show"
+										id="shared-media"
+									>
+										<div className="chat-info-group-content">
+											{/* Shared Media */}
+											<div className="form-row">
+												<div className="col-4 col-md-2 col-xl-4">
+													<Link>
+														<img
+															src={require("../assets/media/shared-photos/01.jpg")}
+															className="img-fluid rounded border"
+															alt=""
+														/>
+													</Link>
+												</div>
+												<div className="col-4 col-md-2 col-xl-4">
+													<Link>
+														<img
+															src={require("../assets/media/shared-photos/02.jpg")}
+															className="img-fluid rounded border"
+															alt=""
+														/>
+													</Link>
+												</div>
+												<div className="col-4 col-md-2 col-xl-4">
+													<Link>
+														<img
+															src={require("../assets/media/shared-photos/03.jpg")}
+															className="img-fluid rounded border"
+															alt=""
+														/>
+													</Link>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{/* Shared Media End */}
+								{/* Shared Files Start */}
+								<div className="chat-info-group">
+									<Link className="chat-info-group-header">
+										<h6 className="mb-0">Documents</h6>
+										<FontAwesomeIcon icon={faFile} />
+									</Link>
+									<div
+										className="chat-info-group-body collapse show"
+										id="shared-files"
+									>
+										<div className="chat-info-group-content list-item-has-padding">
+											{/* List Group Start */}
+											<ListGroup
+												variant="flush"
+												className="py-2"
+											>
+												{/* List Group Item Start */}
+												<ListGroup.Item>
+													<div className="document">
+														<Button
+															disabled
+															className="btn-icon rounded-circle text-light me-2 opacity-100"
+														>
+															<FontAwesomeIcon
+																icon={faFile}
+															/>
+														</Button>
+														<div className="document-body">
+															<h6 className="text-truncate">
+																<Link
+																	className="text-reset"
+																	title="effects-of-global-warming.docs"
+																>
+																	Effects-of-global-warming.docs
+																</Link>
+															</h6>
+															<ul className="list-inline small mb-0">
+																<li className="list-inline-item">
+																	<span className="text-muted">
+																		79.2 KB
+																	</span>
+																</li>
+																<li className="list-inline-item">
+																	<span className="text-muted text-uppercase">
+																		docs
+																	</span>
+																</li>
+															</ul>
+														</div>
+														<div className="document-options ms-1">
+															<Dropdown
+																className="nav-link px-1"
+																// drop="start"
+															>
+																<Dropdown.Toggle
+																	as={Link}
+																	className="text-secondary"
+																>
+																	<FontAwesomeIcon
+																		icon={
+																			faEllipsisVertical
+																		}
+																	/>
+																</Dropdown.Toggle>
+																<Dropdown.Menu>
+																	<Dropdown.Item>
+																		Download
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Share
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Delete
+																	</Dropdown.Item>
+																</Dropdown.Menu>
+															</Dropdown>
+														</div>
+													</div>
+												</ListGroup.Item>
+												{/* List Group Item End */}
+												{/* List Group Item Start */}
+												<ListGroup.Item>
+													<div className="document">
+														<Button
+															disabled
+															className="btn-icon rounded-circle text-light me-2 opacity-100"
+														>
+															<FontAwesomeIcon
+																icon={
+																	faFileExcel
+																}
+															/>
+														</Button>
+														<div className="document-body">
+															<h6 className="text-truncate">
+																<Link
+																	className="text-reset"
+																	title="global-warming-data-2020.xlxs"
+																>
+																	Global-warming-data-2020.xlxs
+																</Link>
+															</h6>
+															<ul className="list-inline small mb-0">
+																<li className="list-inline-item">
+																	<span className="text-muted">
+																		79.2 KB
+																	</span>
+																</li>
+																<li className="list-inline-item">
+																	<span className="text-muted text-uppercase">
+																		xlxs
+																	</span>
+																</li>
+															</ul>
+														</div>
+														<div className="document-options ms-1">
+															<Dropdown
+																className="nav-link px-1"
+																// drop="start"
+															>
+																<Dropdown.Toggle
+																	as={Link}
+																	className="text-secondary"
+																>
+																	<FontAwesomeIcon
+																		icon={
+																			faEllipsisVertical
+																		}
+																	/>
+																</Dropdown.Toggle>
+																<Dropdown.Menu>
+																	<Dropdown.Item>
+																		Download
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Share
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Delete
+																	</Dropdown.Item>
+																</Dropdown.Menu>
+															</Dropdown>
+														</div>
+													</div>
+												</ListGroup.Item>
+												{/* List Group Item End */}
+												{/* List Group Item Start */}
+												<ListGroup.Item>
+													<div className="document">
+														<Button
+															disabled
+															className="btn-icon rounded-circle text-light me-2 opacity-100"
+														>
+															<FontAwesomeIcon
+																icon={
+																	faFilePowerpoint
+																}
+															/>
+														</Button>
+														<div className="document-body">
+															<h6 className="text-truncate">
+																<Link
+																	className="text-reset"
+																	title="great-presentation-on global-warming-2020.ppt"
+																>
+																	Great-presentation-on
+																	global-warming-2020.ppt
+																</Link>
+															</h6>
+															<ul className="list-inline small mb-0">
+																<li className="list-inline-item">
+																	<span className="text-muted">
+																		79.2 KB
+																	</span>
+																</li>
+																<li className="list-inline-item">
+																	<span className="text-muted text-uppercase">
+																		ppt
+																	</span>
+																</li>
+															</ul>
+														</div>
+														<div className="document-options ms-1">
+															<Dropdown
+																className="nav-link px-1"
+																// drop="start"
+															>
+																<Dropdown.Toggle
+																	as={Link}
+																	className="text-secondary"
+																>
+																	<FontAwesomeIcon
+																		icon={
+																			faEllipsisVertical
+																		}
+																	/>
+																</Dropdown.Toggle>
+																<Dropdown.Menu>
+																	<Dropdown.Item>
+																		Download
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Share
+																	</Dropdown.Item>
+																	<Dropdown.Item>
+																		Delete
+																	</Dropdown.Item>
+																</Dropdown.Menu>
+															</Dropdown>
+														</div>
+													</div>
+												</ListGroup.Item>
+												{/* List Group Item End */}
+											</ListGroup>
+											{/* List Group End */}
+										</div>
+									</div>
+								</div>
+								{/* Shared Files End */}
 							</div>
 							{/* Chat Info Body Start  */}
 						</div>

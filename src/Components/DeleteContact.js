@@ -14,7 +14,7 @@ const DeleteContact = () => {
 		setIsDeleting(true)
 		authApi
 			.post("/api/contact/remove", { _id: showDeleteContact._id })
-			.then((response) => {
+			.then(() => {
 				setContacts((contacts) => {
 					return [
 						...contacts.filter(
@@ -30,6 +30,7 @@ const DeleteContact = () => {
 				setShowDeleteContact(false)
 			})
 			.catch((e) => {
+				console.log(e)
 				Toast.fire({
 					icon: "error",
 					title: "Something went wrong",

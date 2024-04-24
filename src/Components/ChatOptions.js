@@ -102,29 +102,23 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 								? "Delete contact"
 								: "Add to contacts"}
 						</Dropdown.Item>
-						{contact.length ? (
-							<Dropdown.Item
-								className={
-									isUserBlocked ? "text-info" : "text-danger"
-								}
-								onClick={() =>
-									setShowBlockContact({
-										contact: contact[0],
-										isUserBlocked,
-									})
-								}
-							>
-								<FontAwesomeIcon
-									icon={
-										isUserBlocked ? faUnlockKeyhole : faBan
-									}
-									className="me-2"
-								/>
-								{isUserBlocked ? "Unblock" : "Block"}
-							</Dropdown.Item>
-						) : (
-							<></>
-						)}
+						<Dropdown.Item
+							className={
+								isUserBlocked ? "text-info" : "text-danger"
+							}
+							onClick={() =>
+								setShowBlockContact({
+									contact: contact.length ? contact[0] : id,
+									isUserBlocked,
+								})
+							}
+						>
+							<FontAwesomeIcon
+								icon={isUserBlocked ? faUnlockKeyhole : faBan}
+								className="me-2"
+							/>
+							{isUserBlocked ? "Unblock" : "Block"}
+						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown>
 			</li>

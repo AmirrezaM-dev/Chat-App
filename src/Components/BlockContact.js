@@ -10,11 +10,14 @@ const BlockContact = () => {
 	const { authApi } = useAuth()
 	const { setBlocked } = useChat()
 	const [isBlocking, setIsBlocking] = useState(false)
-	const deleteContact = () => {
+	const blockContact = () => {
 		setIsBlocking(true)
+		const _id =
+			showBlockContact?.contact?.contactUser?.[0]?._id ||
+			showBlockContact.contact
 		authApi
 			.post("/api/contact/block", {
-				_id: showBlockContact.contact.contactUser[0]._id,
+				_id,
 				action: showBlockContact.isUserBlocked,
 			})
 			.then((response) => {
@@ -23,10 +26,7 @@ const BlockContact = () => {
 					if (showBlockContact.isUserBlocked)
 						return [
 							...blocked.filter(
-								(val) =>
-									val?.blacklistUser?.[0]?._id !==
-									showBlockContact?.contact?.contactUser?.[0]
-										?._id
+								(val) => val?.blacklistUser?.[0]?._id !== _id
 							),
 						]
 					else {
@@ -83,7 +83,7 @@ const BlockContact = () => {
 				<Button
 					variant={showBlockContact.isUserBlocked ? "info" : "danger"}
 					className="ms-auto"
-					onClick={deleteContact}
+					onClick={blockContact}
 					disabled={isBlocking}
 				>
 					{isBlocking ? (
