@@ -28,8 +28,6 @@ const Contacts = () => {
 	).length
 		? true
 		: false
-	console.log(blocked)
-	console.log(isUserBlocked)
 	return id && contacts.filter((val) => val._id === id).length ? (
 		<div className="friends px-0 py-2 p-xl-3 d-block">
 			<div className="container-xl">

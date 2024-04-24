@@ -43,7 +43,32 @@ const AddContact = () => {
 			}
 		}
 	}
-	return (
+	if (showAddContact !== false && showAddContact !== true) {
+		authApi
+			.post("/api/contact/add", { id: showAddContact })
+			.then((response) => {
+				setUsername("")
+				setShowAddContact(false)
+				setContacts((contacts) => {
+					return [...contacts, { ...response.data }]
+				})
+				Toast.fire({
+					icon: "success",
+					title: "Successfully added",
+					timer: 1000,
+				})
+			})
+			.catch((e) => {
+				console.log(e)
+				setUsernameValidator(
+					e?.response?.data?.error || "Something went wrong"
+				)
+			})
+			.finally(() => {
+				setIsSending(false)
+			})
+	}
+	return showAddContact === true || showAddContact === false ? (
 		<Modal
 			show={showAddContact}
 			onHide={() => {
@@ -96,6 +121,8 @@ const AddContact = () => {
 				</Modal.Footer>
 			</Form>
 		</Modal>
+	) : (
+		<></>
 	)
 }
 

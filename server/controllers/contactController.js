@@ -4,8 +4,10 @@ const Contact = require("../models/contactModel")
 const Blacklist = require("../models/blacklistModel")
 
 const add = expressAsyncHandler(async (req, res) => {
-	const { username } = req.body
-	const OtherUser = await User.findOne({ username })
+	const { username, id } = req.body
+	const OtherUser = username
+		? await User.findOne({ username })
+		: await User.findOne({ _id: id })
 	if (OtherUser) {
 		const contactExist = await Contact.findOne({
 			contactUser: OtherUser._id,

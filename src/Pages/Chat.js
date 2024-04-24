@@ -158,6 +158,7 @@ const Chat = () => {
 			}
 		)
 	}
+
 	return (
 		<div className="chats d-flex">
 			{id && loadedChats?.[id] ? (
