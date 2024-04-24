@@ -304,6 +304,12 @@ const Chat = () => {
 																		message={
 																			message
 																		}
+																		self={
+																			user._id ===
+																			message.sender
+																				? true
+																				: false
+																		}
 																	/>
 																</div>
 															)

@@ -16,6 +16,7 @@ server.once("close", function () {
 	require("dotenv").config({ path: ".env" })
 	express.Router()
 	const cors = require("cors")
+	const path = require("path")
 	const { errorHandler } = require("./middlewares/errorMiddleware")
 	const {
 		socketAuthMiddleware,
@@ -49,6 +50,17 @@ server.once("close", function () {
 	app.use("/api/users", require("./routes/userRoutes"))
 	app.use("/api/message", require("./routes/messageRoutes"))
 	app.use("/api/contact", require("./routes/contactRoutes"))
+	// Serve static files from the 'images' directory
+	app.use("/uploads", express.static(path.join(__dirname, "images")))
+
+	// Define a route to handle GET requests for images
+	app.get("/uploads/:imageName", (req, res) => {
+		const { imageName } = req.params
+		const imagePath = path.join(__dirname, "uploads", imageName)
+
+		// Send the image file as the response
+		res.sendFile(imagePath)
+	})
 
 	app.use(errorHandler)
 	const SharedServerForSocketIo = app.listen(port, () => {

@@ -14,14 +14,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { useChat } from "./useChat"
 
-const MessageOptions = ({ message, chatId }) => {
+const MessageOptions = ({ message, chatId, self }) => {
 	const { timeSince, setShowDeleteMessage, setShowEditMessage, copyText } =
 		useMain()
 	const { user } = useAuth()
 	const { loadedChats } = useChat()
 	return (
 		<div className="message-options">
-			{chatId !== user._id && loadedChats["info-" + chatId]?.avatar ? (
+			{self && user?.avatar ? (
+				<div className="avatar avatar-sm">
+					<img alt="" src={user.avatar} />
+				</div>
+			) : !self && loadedChats["info-" + chatId]?.avatar ? (
 				<div className="avatar avatar-sm">
 					<img alt="" src={loadedChats["info-" + chatId].avatar} />
 				</div>

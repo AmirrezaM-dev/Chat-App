@@ -5,6 +5,24 @@ const User = require("../models/userModel")
 const csrf = require("csrf")()
 const Token = require("../models/tokenModel")
 
+const get = expressAsyncHandler(async (req, res) => {
+	try {
+		const { fullname, email, username, _id, avatar } = await User.findById(
+			req.user.id
+		).select("-password")
+		res.status(200).json({
+			_id,
+			fullname,
+			email,
+			username,
+			avatar,
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(422)
+		throw new Error(`Something went wrong`)
+	}
+})
 const login = expressAsyncHandler(async (req, res) => {
 	try {
 		if (!req.body?.email && !req.body?.password) {
@@ -33,7 +51,7 @@ const login = expressAsyncHandler(async (req, res) => {
 				secure: true,
 			})
 
-			const { _id, fullname, username } = user
+			const { _id, fullname, username, avatar } = user
 
 			res.status(200).json({
 				_id,
@@ -41,6 +59,7 @@ const login = expressAsyncHandler(async (req, res) => {
 				email,
 				username,
 				csrfToken,
+				avatar,
 			})
 		} else {
 			res.status(400)
@@ -53,24 +72,45 @@ const login = expressAsyncHandler(async (req, res) => {
 		else throw new Error("Something went wrong")
 	}
 })
-
-const get = expressAsyncHandler(async (req, res) => {
-	try {
-		const { fullname, email, username, _id } = await User.findById(
-			req.user.id
-		).select("-password")
-		res.status(200).json({
-			_id,
-			fullname,
-			email,
-			username,
-		})
-	} catch (error) {
-		console.log(error)
-		res.status(422)
-		throw new Error(`Something went wrong`)
+const logout = expressAsyncHandler(async (req, res) => {
+	if (req.cookies.lt) {
+		await Token.findOneAndDelete({ lt: req.cookies.lt, active: true })
+		res.clearCookie("lt")
+		res.status(200).json({})
 	}
 })
+const register = expressAsyncHandler(async (req, res) => {
+	if (!req.body?.email && !req.body?.password) {
+		res.status(400)
+		throw new Error("Please fill all fields")
+	}
+
+	const email = req.body.email.toLowerCase()
+
+	const userExist = await User.findOne({ email })
+	if (userExist) {
+		res.status(400)
+		throw new Error("Email already exists")
+	}
+
+	const salt = await bcrypt.genSalt(10)
+	const password = await bcrypt.hash(req.body.password, salt)
+	const fullname = req.body.fullname
+
+	const user = await User.create({ fullname, email, password })
+
+	if (user) {
+		login(req, res)
+	} else {
+		res.status(400)
+		throw new Error("Invalid user data")
+	}
+})
+const generateToken = (id) => {
+	return jwt.sign({ id }, "abc123", {
+		expiresIn: "30d",
+	})
+}
 
 const saveProfile = expressAsyncHandler(async (req, res) => {
 	try {
@@ -114,6 +154,25 @@ const saveProfile = expressAsyncHandler(async (req, res) => {
 		throw new Error(`Something went wrong`)
 	}
 })
+const changeAvatar = expressAsyncHandler(async (req, res) => {
+	try {
+		if (req?.file?.filename) {
+			const avatar =
+				process?.env?.SERVER_URL +
+				"/" +
+				process?.env?.UPLOAD +
+				req?.file?.filename
+			await User.findOneAndUpdate({ _id: req.user.id }, { avatar })
+			res.status(200).json({ avatar })
+		} else {
+			res.status(400).json({})
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(422)
+		throw new Error(`Something went wrong`)
+	}
+})
 const savePassword = expressAsyncHandler(async (req, res) => {
 	try {
 		if (!req.body?.password && !req.body?.newPassword) {
@@ -137,46 +196,12 @@ const savePassword = expressAsyncHandler(async (req, res) => {
 	}
 })
 
-const logout = expressAsyncHandler(async (req, res) => {
-	if (req.cookies.lt) {
-		await Token.findOneAndDelete({ lt: req.cookies.lt, active: true })
-		res.clearCookie("lt")
-		res.status(200).json({})
-	}
-})
-
-const register = expressAsyncHandler(async (req, res) => {
-	if (!req.body?.email && !req.body?.password) {
-		res.status(400)
-		throw new Error("Please fill all fields")
-	}
-
-	const email = req.body.email.toLowerCase()
-
-	const userExist = await User.findOne({ email })
-	if (userExist) {
-		res.status(400)
-		throw new Error("Email already exists")
-	}
-
-	const salt = await bcrypt.genSalt(10)
-	const password = await bcrypt.hash(req.body.password, salt)
-	const fullname = req.body.fullname
-
-	const user = await User.create({ fullname, email, password })
-
-	if (user) {
-		login(req, res)
-	} else {
-		res.status(400)
-		throw new Error("Invalid user data")
-	}
-})
-
-const generateToken = (id) => {
-	return jwt.sign({ id }, "abc123", {
-		expiresIn: "30d",
-	})
+module.exports = {
+	register,
+	login,
+	logout,
+	get,
+	saveProfile,
+	savePassword,
+	changeAvatar,
 }
-
-module.exports = { register, login, logout, get, saveProfile, savePassword }

@@ -8,12 +8,30 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-import { Button, Dropdown, ListGroup } from "react-bootstrap"
+import { Button, Dropdown, Form, ListGroup } from "react-bootstrap"
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
 import { useAuth } from "./useAuth"
+import { useRef } from "react"
 
 const ProfileSidebar = () => {
-	const { user, logout } = useAuth()
+	const { setUser, user, logout, authApi } = useAuth()
+	const uploadAvatarRef = useRef(null)
+	const uploadAvatar = (e) => {
+		const formData = new FormData()
+		formData.append("file", e.target.files[0])
+		authApi
+			.post("/api/users/changeAvatar", formData)
+			.then((response) => {
+				if (response?.data?.avatar)
+					setUser((user) => {
+						return { ...user, avatar: response.data.avatar }
+					})
+			})
+			.finally(() => {
+				uploadAvatarRef.current.value = ""
+			})
+	}
+
 	return (
 		<div className="d-flex flex-column h-100">
 			<div className="hide-scrollbar">
@@ -37,10 +55,15 @@ const ProfileSidebar = () => {
 								{/* Card Details Start */}
 								<div className="d-flex flex-column align-items-center">
 									{user.avatar ? (
-										<div className="avatar avatar-lg mb-3">
+										<div
+											className="avatar avatar-lg mb-3 cursor-pointer"
+											onClick={() => {
+												uploadAvatarRef.current.click()
+											}}
+										>
 											<img
 												className="avatar-img"
-												src={require(user.avatar)}
+												src={user.avatar}
 												alt=""
 											/>
 										</div>
@@ -75,6 +98,13 @@ const ProfileSidebar = () => {
 								{/* Card Details End */}
 								{/* Card Options Start */}
 								<div className="card-options">
+									<Form.Control
+										ref={uploadAvatarRef}
+										type="file"
+										className="d-none"
+										placeholder="Type username here"
+										onChange={uploadAvatar}
+									/>
 									<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
 										<Dropdown.Toggle
 											className="btn-icon btn-minimal btn-sm text-muted border-0 text-muted"
@@ -84,7 +114,11 @@ const ProfileSidebar = () => {
 												icon={faEllipsisVertical}
 											/>
 										</Dropdown.Toggle>
-										<Dropdown.Menu>
+										<Dropdown.Menu
+											onClick={() =>
+												uploadAvatarRef.current.click()
+											}
+										>
 											<Dropdown.Item>
 												Change Profile picture
 											</Dropdown.Item>
