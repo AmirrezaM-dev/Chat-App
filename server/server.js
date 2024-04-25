@@ -51,10 +51,12 @@ server.once("close", function () {
 	app.use("/api/message", require("./routes/messageRoutes"))
 	app.use("/api/contact", require("./routes/contactRoutes"))
 	// Serve static files from the 'images' directory
-	app.use("/uploads", express.static(path.join(__dirname, "images")))
-
+	app.use(
+		"/" + process.env.UPLOAD + "/",
+		express.static(path.join(__dirname, "images"))
+	)
 	// Define a route to handle GET requests for images
-	app.get("/uploads/:imageName", (req, res) => {
+	app.get("/" + process.env.UPLOAD + "/:imageName", (req, res) => {
 		const { imageName } = req.params
 		const imagePath = path.join(__dirname, "uploads", imageName)
 

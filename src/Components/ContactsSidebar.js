@@ -6,10 +6,12 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
 import { useChat } from "./useChat"
 import { useMain } from "./useMain"
+import { useState } from "react"
 
 const ContactsSidebar = () => {
 	const { setShowAddContact } = useMain()
 	const { contacts } = useChat()
+	const [search, setSearch] = useState("")
 	const navigate = useNavigate()
 	const { id } = useParams()
 	return (
@@ -31,6 +33,10 @@ const ContactsSidebar = () => {
 								<Form.Control
 									placeholder="Search"
 									className="bg-transparent border border-dark border-end-0 no-shadow-change"
+									onChange={({ target: { value } }) => {
+										setSearch(value)
+									}}
+									value={search}
 								/>
 								<InputGroup.Text className="border border-dark border-start-0 bg-transparent">
 									<FontAwesomeIcon icon={faSearch} />
@@ -77,51 +83,63 @@ const ContactsSidebar = () => {
 						</Link>
 					</li>
 					{/* friends Item Start */}
-					{contacts.map((val, i) => {
-						const contact = val.contactUser[0]
-						return (
-							<li
-								key={i}
-								className={`contacts-item ${
-									id === val._id ? "active" : ""
-								}`}
-								onClick={() => {
-									navigate("/contacts/" + val._id)
-								}}
-							>
-								<Link className="contacts-link">
-									{contact.avatar ? (
-										<div className="avatar">
-											<img src={contact.avatar} alt="" />
-										</div>
-									) : (
-										<></>
-									)}
-									<div className="contacts-content">
-										{contact?.fullname ? (
-											<div className="contacts-info">
-												<h6 className="chat-name text-truncate">
-													{contact.fullname}
-												</h6>
-											</div>
-										) : (
-											<></>
-										)}
-										{contact.username ? (
-											<div className="contacts-texts">
-												<FontAwesomeIcon icon={faAt} />
-												<p className="text-muted ms-2 mb-0">
-													{contact.username}
-												</p>
-											</div>
-										) : (
-											<></>
-										)}
-									</div>
-								</Link>
-							</li>
+					{contacts
+						.filter(
+							(val) =>
+								val.contactUser[0].fullname.indexOf(search) >
+									-1 ||
+								val.contactUser[0].username.indexOf(search) > -1
 						)
-					})}
+						.map((val, i) => {
+							const contact = val.contactUser[0]
+							return (
+								<li
+									key={i}
+									className={`contacts-item ${
+										id === val._id ? "active" : ""
+									}`}
+									onClick={() => {
+										navigate("/contacts/" + val._id)
+									}}
+								>
+									<Link className="contacts-link">
+										{contact.avatar ? (
+											<div className="avatar">
+												<img
+													src={contact.avatar}
+													alt=""
+												/>
+											</div>
+										) : (
+											<></>
+										)}
+										<div className="contacts-content">
+											{contact?.fullname ? (
+												<div className="contacts-info">
+													<h6 className="chat-name text-truncate">
+														{contact.fullname}
+													</h6>
+												</div>
+											) : (
+												<></>
+											)}
+											{contact.username ? (
+												<div className="contacts-texts">
+													<FontAwesomeIcon
+														icon={faAt}
+													/>
+													<p className="text-muted ms-2 mb-0">
+														{contact.username}
+													</p>
+												</div>
+											) : (
+												<></>
+											)}
+										</div>
+									</Link>
+								</li>
+							)
+						})}
 					{/* friends Item End */}
 				</ul>
 				{/* Friends Contact List End */}

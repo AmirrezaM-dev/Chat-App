@@ -61,6 +61,7 @@ const Chat = () => {
 		setShowAddContact,
 	} = useMain()
 	const [messageInput, setMessageInput] = useState({})
+	const [search, setSearch] = useState("")
 	const { id } = useParams()
 	const { authApi, user, Socket } = useAuth()
 	const { loadedChats, setLoadedChats, setChats, contacts, blocked } =
@@ -237,6 +238,10 @@ const Chat = () => {
 										type="text"
 										className="form-control form-control-md border-end-0 bg-transparent pe-0"
 										placeholder="Search"
+										onChange={({ target: { value } }) => {
+											setSearch(value)
+										}}
+										value={search}
 									/>
 									<InputGroup.Text className="bg-transparent border-start-0">
 										<FontAwesomeIcon icon={faSearch} />
@@ -249,8 +254,17 @@ const Chat = () => {
 						<div className="chat-content p-2">
 							<div className="container">
 								{groupedChatsWithDate ? (
-									groupedChatsWithDate.map(
-										(group, groupIndex) => {
+									groupedChatsWithDate
+										.filter(
+											(val) =>
+												val.messages.filter(
+													(message) =>
+														message.text.indexOf(
+															search
+														) > -1
+												).length
+										)
+										.map((group, groupIndex) => {
 											return (
 												<div
 													className="message-day"
@@ -276,8 +290,14 @@ const Chat = () => {
 													>
 														&nbsp;
 													</div>
-													{group.messages.map(
-														(message, i) => {
+													{group.messages
+														.filter(
+															(message) =>
+																message.text.indexOf(
+																	search
+																) > -1
+														)
+														.map((message, i) => {
 															return (
 																<div
 																	key={i}
@@ -313,12 +333,10 @@ const Chat = () => {
 																	/>
 																</div>
 															)
-														}
-													)}
+														})}
 												</div>
 											)
-										}
-									)
+										})
 								) : (
 									<></>
 								)}

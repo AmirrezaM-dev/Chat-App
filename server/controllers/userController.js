@@ -161,6 +161,7 @@ const changeAvatar = expressAsyncHandler(async (req, res) => {
 				process?.env?.SERVER_URL +
 				"/" +
 				process?.env?.UPLOAD +
+				"/" +
 				req?.file?.filename
 			await User.findOneAndUpdate({ _id: req.user.id }, { avatar })
 			res.status(200).json({ avatar })

@@ -6,22 +6,30 @@ const Blacklist = require("../models/blacklistModel")
 
 const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 	try {
+		const searchTerm = req.body.chatsSearch || ""
+		const relatedToUserModifier = [
+			{
+				receiver: { $eq: req.user._id },
+				isDeleted: false,
+				isReceiverDeleted: false,
+			},
+			{
+				sender: { $eq: req.user._id },
+				isDeleted: false,
+				isSenderDeleted: false,
+			},
+		]
+		const Match = searchTerm
+			? {
+					$or: relatedToUserModifier,
+					$text: { $search: searchTerm },
+			  }
+			: {
+					$or: relatedToUserModifier,
+			  }
 		const Chats = await Message.aggregate([
 			{
-				$match: {
-					$or: [
-						{
-							receiver: { $eq: req.user._id },
-							isDeleted: false,
-							isReceiverDeleted: false,
-						},
-						{
-							sender: { $eq: req.user._id },
-							isDeleted: false,
-							isSenderDeleted: false,
-						},
-					],
-				},
+				$match: Match,
 			},
 			{
 				$group: {
@@ -124,7 +132,74 @@ const getChatsAndContacts = expressAsyncHandler(async (req, res) => {
 				},
 			},
 		])
-		res.status(200).json({ Chats, Contacts, Blocked })
+		if (searchTerm.length) {
+			const SearchedContacts = await Contact.aggregate([
+				{
+					$match: {
+						relatedUser: req.user._id,
+					},
+				},
+				{
+					$lookup: {
+						from: "users",
+						localField: "contactUser",
+						foreignField: "_id",
+						as: "contactUser",
+					},
+				},
+				{
+					$project: {
+						"contactUser._id": 1,
+						"contactUser.fullname": 1,
+						"contactUser.username": 1,
+						"contactUser.avatar": 1,
+					},
+				},
+				{
+					$match: {
+						$or: [
+							{
+								"contactUser.fullname": {
+									$regex: ".*" + searchTerm + ".*", // Replace "yourSearchTerm" with the search term
+									$options: "i", // Case insensitive
+								},
+							},
+							{
+								"contactUser.username": {
+									$regex: ".*" + searchTerm + ".*", // Replace "yourSearchTerm" with the search term
+									$options: "i", // Case insensitive
+								},
+							},
+						],
+						"contactUser._id": {
+							$nin: Chats.map((obj) =>
+								obj.sender_user
+									.filter(
+										(user) =>
+											user._id.toString() !== req.user.id
+									)
+									.map((user) => user._id)
+							)
+								.flat()
+								.concat(
+									Chats.map((obj) =>
+										obj.receiver_user
+											.filter(
+												(user) =>
+													user._id.toString() !==
+													req.user.id
+											)
+											.map((user) => user._id)
+									).flat()
+								),
+						},
+					},
+				},
+			])
+			res.status(200).json({ Chats, SearchedContacts, Contacts, Blocked })
+		} else {
+			res.status(200).json({ Chats, Contacts, Blocked })
+		}
 	} catch (error) {
 		res.status(422)
 		throw new Error(`Something went wrong ${error}`)

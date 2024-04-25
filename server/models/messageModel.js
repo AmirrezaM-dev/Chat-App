@@ -52,4 +52,6 @@ const messageSchema = mongoose.Schema(
 	},
 	{ timestamps: true }
 )
+
+messageSchema.index({ text: 1 })
 module.exports = mongoose.model("Message", messageSchema)

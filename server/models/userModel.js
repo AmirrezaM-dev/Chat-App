@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
 		username: {
 			type: String,
 			unique: true,
+			index: true,
 		},
 		avatar: {
 			type: String,
@@ -31,4 +32,5 @@ const userSchema = mongoose.Schema(
 	},
 	{ timestamps: true }
 )
+userSchema.index({ fullname: 1, username: 1 })
 module.exports = mongoose.model("User", userSchema)

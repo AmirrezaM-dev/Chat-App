@@ -3,9 +3,13 @@ import { useMain } from "./useMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import { Link, useNavigate } from "react-router-dom"
+import { useChat } from "./useChat"
+import { useState } from "react"
 
 const StartNewChat = () => {
 	const { showNewChat, setShowNewChat } = useMain()
+	const [search, setSearch] = useState("")
+	const { contacts } = useChat()
 	const navigate = useNavigate()
 	return (
 		<Modal
@@ -26,6 +30,10 @@ const StartNewChat = () => {
 								<Form.Control
 									placeholder="Search"
 									className="bg-light border border-end-0 no-shadow-change"
+									onChange={({ target: { value } }) => {
+										setSearch(value)
+									}}
+									value={search}
 								/>
 								<InputGroup.Text className="border border-start-0">
 									<FontAwesomeIcon icon={faSearch} />
@@ -36,34 +44,54 @@ const StartNewChat = () => {
 					</Col>
 					<Col sm={12}>
 						{/* List Group Start */}
-						<ListGroup variant="flush">
-							<ListGroup.Item
-								action
-								onClick={() => {
-									navigate("/chat/123456")
-									setShowNewChat(false)
-								}}
-							>
-								<div className="media">
-									<div className="avatar avatar-online me-2">
-										<img
-											src={require("../assets/media/avatar/1.png")}
-											alt=""
-										/>
-									</div>
-									<div className="media-body">
-										<h6 className="text-truncate">
-											<Link className="text-reset">
-												Firstname Lastname
-											</Link>
-										</h6>
-										<p className="text-muted mb-0">
-											Online
-										</p>
-									</div>
-								</div>
-							</ListGroup.Item>
-							<ListGroup.Item
+						<ListGroup variant="flush" className="pb-2">
+							{contacts
+								.filter(
+									(val) =>
+										val.contactUser[0].fullname.indexOf(
+											search
+										) > -1 ||
+										val.contactUser[0].username.indexOf(
+											search
+										) > -1
+								)
+								.map((val, i) => {
+									const contact = val.contactUser[0]
+									return (
+										<ListGroup.Item
+											key={i}
+											action
+											onClick={() => {
+												navigate("/chat/" + contact._id)
+												setShowNewChat(false)
+											}}
+										>
+											<div className="media">
+												{contact.avatar ? (
+													<div className="avatar avatar-online me-2">
+														<img
+															src={contact.avatar}
+															alt=""
+														/>
+													</div>
+												) : (
+													<></>
+												)}
+												<div className="media-body">
+													<h6 className="text-truncate">
+														<Link className="text-reset">
+															{contact.fullname}
+														</Link>
+													</h6>
+													<p className="text-muted mb-0">
+														Online
+													</p>
+												</div>
+											</div>
+										</ListGroup.Item>
+									)
+								})}
+							{/* <ListGroup.Item
 								action
 								onClick={() => {
 									navigate("/chat/123456")
@@ -140,7 +168,7 @@ const StartNewChat = () => {
 										</p>
 									</div>
 								</div>
-							</ListGroup.Item>
+							</ListGroup.Item> */}
 						</ListGroup>
 						{/* List Group End */}
 					</Col>

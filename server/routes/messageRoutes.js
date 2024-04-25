@@ -8,7 +8,7 @@ const {
 	jsonWebTokenAndCsrfProtection,
 } = require("../middlewares/authMiddleware")
 
-router.get(
+router.post(
 	"/getChatsAndContacts",
 	[jsonWebTokenAndCsrfProtection],
 	getChatsAndContacts

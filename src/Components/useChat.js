@@ -16,19 +16,37 @@ const ChatComponent = ({ children }) => {
 	const [blocked, setBlocked] = useState([])
 	const [filterChats, setFilterChats] = useState("All Chats")
 	const [loadedChats, setLoadedChats] = useState({})
+	const [chatsSearch, setChatsSearch] = useState("")
+
+	useEffect(() => {
+		authApi
+			.post("/api/message/getChatsAndContacts", { chatsSearch })
+			.then((response) => {
+				if (response?.data?.SearchedContacts)
+					setChats(
+						response.data.Chats.concat(
+							response.data.SearchedContacts.map((contact) => {
+								return {
+									_id: null,
+									sender_user: contact.contactUser,
+									receiver_user: contact.contactUser,
+								}
+							})
+						)
+					)
+				else setChats(response.data.Chats)
+				setContacts(response.data.Contacts)
+				setBlocked(response.data.Blocked)
+			})
+			.finally(() => {
+				setShowPreloader(false)
+			})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chatsSearch])
+
 	useEffect(() => {
 		if (loggedIn && Socket) {
 			Socket.connect()
-			authApi
-				.get("/api/message/getChatsAndContacts")
-				.then((response) => {
-					setChats(response.data.Chats)
-					setContacts(response.data.Contacts)
-					setBlocked(response.data.Blocked)
-				})
-				.finally(() => {
-					setShowPreloader(false)
-				})
 			Socket.on("connect", () => {})
 			Socket.on("disconnect", () => {
 				setLoadedChats({})
@@ -195,6 +213,7 @@ const ChatComponent = ({ children }) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [Socket])
+
 	return (
 		<ChatContent.Provider
 			value={{
@@ -208,6 +227,8 @@ const ChatComponent = ({ children }) => {
 				setLoadedChats,
 				blocked,
 				setBlocked,
+				chatsSearch,
+				setChatsSearch,
 			}}
 		>
 			{children}
