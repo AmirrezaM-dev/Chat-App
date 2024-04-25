@@ -1,4 +1,4 @@
-[Live Demo - Coming Soon](https://google.com) - The first visit might take 1 minute of loading, please be patient.
+[Live Demo - Coming Soon]([https://google.com](https://chat-app-7x83.onrender.com)) - The first visit might take 1 minute of loading, please be patient.
 
 Made with React.js, Node.js (Express.js), [Socket.io](https://socket.io/), MongoDB
 
