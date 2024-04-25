@@ -7,7 +7,7 @@ import { useChat } from "./useChat"
 const SearchChats = () => {
 	const { chatsSearch, setChatsSearch } = useChat()
 	return (
-		<Form className="form-inline">
+		<Form className="w-100">
 			<InputGroup className="w-100 bg-transparent">
 				<Form.Control
 					placeholder="Search"

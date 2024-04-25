@@ -68,7 +68,7 @@ const StartNewChat = () => {
 										>
 											<div className="media">
 												{contact.avatar ? (
-													<div className="avatar avatar-online me-2">
+													<div className="avatar /*avatar-online*/ me-2">
 														<img
 															src={contact.avatar}
 															alt=""
@@ -83,9 +83,9 @@ const StartNewChat = () => {
 															{contact.fullname}
 														</Link>
 													</h6>
-													<p className="text-muted mb-0">
+													{/* <p className="text-muted mb-0">
 														Online
-													</p>
+													</p> */}
 												</div>
 											</div>
 										</ListGroup.Item>

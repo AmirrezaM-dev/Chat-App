@@ -127,7 +127,7 @@ const SidebarChatTemplates = () => {
 			{/* Chat Item Start */}
 			<li className="contacts-item unread">
 				<Link className="contacts-link">
-					<div className="avatar avatar-online">
+					<div className="avatar /*avatar-online*/">
 						<img
 							src={require("../assets/media/avatar/4.png")}
 							alt=""
@@ -196,7 +196,7 @@ const SidebarChatTemplates = () => {
 			{/* Chat Item Start */}
 			<li className="contacts-item friends">
 				<Link className="contacts-link">
-					<div className="avatar avatar-online">
+					<div className="avatar /*avatar-online*/">
 						<img
 							src={require("../assets/media/avatar/6.png")}
 							alt=""

@@ -138,6 +138,7 @@ const AuthProvider = ({ children }) => {
 			})
 		} else {
 			if (
+				pathname.indexOf("forgot") === -1 &&
 				pathname.indexOf("signin") === -1 &&
 				pathname.indexOf("signup") === -1
 			)
@@ -155,6 +156,24 @@ const AuthProvider = ({ children }) => {
 					setLoadingLogin(false)
 				})
 		}
+	}
+	const resetPassword = (formData) => {
+		// if (!loadingLogin) {
+		// 	setLoadingLogin(true)
+		// 	authApi
+		// 		.post(`/api/users/resetPassword/`, formData)
+		// 		.then((response) => {
+		// 			console.log(response)
+		// 		})
+		// 		.catch(loginCatchHandler)
+		// 		.finally(() => {
+		// 			setLoadingLogin(false)
+		// 		})
+		// }
+		Toast.fire({
+			icon: "warning",
+			title: "Unfortunately, the service is currently unavailable.",
+		})
 	}
 	const register = (formData) => {
 		if (!loadingLogin) {
@@ -238,6 +257,7 @@ const AuthProvider = ({ children }) => {
 			value={{
 				authApi,
 				login,
+				resetPassword,
 				register,
 				logout,
 				loggedIn,

@@ -59,7 +59,7 @@ const ChatSidebar = () => {
 												/>
 											</Button>
 										) : otherUser?.avatar ? (
-											<div className="avatar avatar-online">
+											<div className="avatar /*avatar-online*/">
 												<img
 													src={otherUser.avatar}
 													alt=""

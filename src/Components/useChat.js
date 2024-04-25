@@ -9,7 +9,7 @@ export function useChat() {
 }
 
 const ChatComponent = ({ children }) => {
-	const { authApi, loggedIn, Socket, user } = useAuth()
+	const { authApi, loggedIn, Socket, user, loadingLogin } = useAuth()
 	const { setShowPreloader } = useMain()
 	const [chats, setChats] = useState([])
 	const [contacts, setContacts] = useState([])
@@ -19,30 +19,43 @@ const ChatComponent = ({ children }) => {
 	const [chatsSearch, setChatsSearch] = useState("")
 
 	useEffect(() => {
-		authApi
-			.post("/api/message/getChatsAndContacts", { chatsSearch })
-			.then((response) => {
-				if (response?.data?.SearchedContacts)
-					setChats(
-						response.data.Chats.concat(
-							response.data.SearchedContacts.map((contact) => {
-								return {
-									_id: null,
-									sender_user: contact.contactUser,
-									receiver_user: contact.contactUser,
-								}
-							})
+		if (!loggedIn && !user._id && loadingLogin === false) {
+			setChats([])
+			setContacts([])
+			setBlocked([])
+			setLoadedChats([])
+			setChatsSearch("")
+		}
+	}, [loadingLogin, loggedIn, user._id])
+
+	useEffect(() => {
+		if (loggedIn)
+			authApi
+				.post("/api/message/getChatsAndContacts", { chatsSearch })
+				.then((response) => {
+					if (response?.data?.SearchedContacts)
+						setChats(
+							response.data.Chats.concat(
+								response.data.SearchedContacts.map(
+									(contact) => {
+										return {
+											_id: null,
+											sender_user: contact.contactUser,
+											receiver_user: contact.contactUser,
+										}
+									}
+								)
+							)
 						)
-					)
-				else setChats(response.data.Chats)
-				setContacts(response.data.Contacts)
-				setBlocked(response.data.Blocked)
-			})
-			.finally(() => {
-				setShowPreloader(false)
-			})
+					else setChats(response.data.Chats)
+					setContacts(response.data.Contacts)
+					setBlocked(response.data.Blocked)
+				})
+				.finally(() => {
+					setShowPreloader(false)
+				})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chatsSearch])
+	}, [chatsSearch, loggedIn])
 
 	useEffect(() => {
 		if (loggedIn && Socket) {

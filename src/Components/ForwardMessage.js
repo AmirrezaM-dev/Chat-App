@@ -45,7 +45,7 @@ const ForwardMessage = () => {
 								}}
 							>
 								<div className="media">
-									<div className="avatar avatar-online me-2">
+									<div className="avatar /*avatar-online*/ me-2">
 										<img
 											src={require("../assets/media/avatar/1.png")}
 											alt=""
@@ -57,9 +57,9 @@ const ForwardMessage = () => {
 												Firstname Lastname
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</ListGroup.Item>
@@ -83,9 +83,9 @@ const ForwardMessage = () => {
 												Firstname Lastname
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</ListGroup.Item>
@@ -109,9 +109,9 @@ const ForwardMessage = () => {
 												Firstname Lastname
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</ListGroup.Item>
@@ -135,9 +135,9 @@ const ForwardMessage = () => {
 												Firstname Lastname
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 								</div>
 							</ListGroup.Item>

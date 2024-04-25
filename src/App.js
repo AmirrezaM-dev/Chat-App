@@ -71,6 +71,9 @@ const App = () => {
 			[].concat(
 				[
 					"/",
+					"/signin",
+					"/signup",
+					"/forgot",
 					"/chat",
 					"/chat/:id",
 					"/contacts",

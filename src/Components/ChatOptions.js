@@ -1,7 +1,5 @@
 import {
-	faVolumeMute,
 	faTrash,
-	faArchive,
 	faSearch,
 	faEllipsisVertical,
 	faInfoCircle,
@@ -67,20 +65,20 @@ const ChatOptions = ({ setShowSearch, setShowInfo }) => {
 									View Info
 								</Dropdown.Item>
 
-								<Dropdown.Item disabled>
+								{/* <Dropdown.Item disabled>
 									<FontAwesomeIcon
 										icon={faVolumeMute}
 										className="me-2"
 									/>
 									Mute Notifications
-								</Dropdown.Item>
-								<Dropdown.Item disabled>
+								</Dropdown.Item> */}
+								{/* <Dropdown.Item disabled>
 									<FontAwesomeIcon
 										icon={faArchive}
 										className="me-2"
 									/>
 									Archive
-								</Dropdown.Item>
+								</Dropdown.Item> */}
 							</>
 						) : (
 							<></>

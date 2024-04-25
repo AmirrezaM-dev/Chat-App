@@ -1,5 +1,5 @@
 import SideBarDropDownOptions from "./SideBarDropDownOptions"
-import FilterChats from "./FilterChats"
+// import FilterChats from "./FilterChats"
 import SearchChats from "./SearchChats"
 
 const ChatSidebarHeader = () => {
@@ -14,7 +14,7 @@ const ChatSidebarHeader = () => {
 			{/* Sidebar Header Start */}
 			<div className="sidebar-sub-header">
 				{/* Sidebar Header Dropdown Start */}
-				<FilterChats />
+				{/* <FilterChats /> */}
 				{/* Sidebar Header Dropdown End */}
 				{/* Sidebar Search Start */}
 				<SearchChats />

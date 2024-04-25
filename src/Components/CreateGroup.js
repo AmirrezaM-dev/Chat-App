@@ -130,7 +130,7 @@ const CreateGroup = () => {
 							{/* List Group Item Start */}
 							<li className="list-group-item">
 								<div className="media">
-									<div className="avatar avatar-online me-2">
+									<div className="avatar /*avatar-online*/ me-2">
 										<img
 											src={require("../assets/media/avatar/1.png")}
 											alt=""
@@ -142,9 +142,9 @@ const CreateGroup = () => {
 												Catherine Richardson
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 									<div className="media-options">
 										<div className="custom-control custom-checkbox">
@@ -171,7 +171,7 @@ const CreateGroup = () => {
 							{/* List Group Item Start */}
 							<li className="list-group-item">
 								<div className="media">
-									<div className="avatar avatar-online me-2">
+									<div className="avatar /*avatar-online*/ me-2">
 										<img
 											src={require("../assets/media/avatar/2.png")}
 											alt=""
@@ -183,9 +183,9 @@ const CreateGroup = () => {
 												Katherine Schneider
 											</Link>
 										</h6>
-										<p className="text-muted mb-0">
+										{/* <p className="text-muted mb-0">
 											Online
-										</p>
+										</p> */}
 									</div>
 									<div className="media-options">
 										<div className="custom-control custom-checkbox">

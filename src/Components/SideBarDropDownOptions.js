@@ -1,22 +1,17 @@
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useMain } from "./useMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBell, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons"
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons"
 import { Dropdown, Nav } from "react-bootstrap"
 import { useAuth } from "./useAuth"
 
 const SideBarDropDownOptions = () => {
-	const {
-		setShowNotifications,
-		setShowNewChat,
-		setShowCreateGroup,
-		setShowInviteOthers,
-	} = useMain()
+	const { setShowNewChat } = useMain()
 	const { user, logout } = useAuth()
 	const navigate = useNavigate()
 	return (
 		<Nav className="flex-nowrap">
-			<Nav.Item
+			{/* <Nav.Item
 				className="list-inline-item me-1"
 				onClick={() => {
 					setShowNotifications(true)
@@ -28,7 +23,7 @@ const SideBarDropDownOptions = () => {
 				>
 					<FontAwesomeIcon icon={faBell} />
 				</Link>
-			</Nav.Item>
+			</Nav.Item> */}
 			<Nav.Item className="list-inline-item me-0">
 				<Dropdown className="nav-link px-1 me-2 no-dropdown-after">
 					<Dropdown.Toggle
@@ -46,18 +41,18 @@ const SideBarDropDownOptions = () => {
 						<Dropdown.Item onClick={() => setShowNewChat(true)}>
 							New Chat
 						</Dropdown.Item>
-						<Dropdown.Item
+						{/* <Dropdown.Item
 							disabled
 							onClick={() => setShowCreateGroup(true)}
 						>
 							Create Group
-						</Dropdown.Item>
-						<Dropdown.Item
+						</Dropdown.Item> */}
+						{/* <Dropdown.Item
 							disabled
 							onClick={() => setShowInviteOthers(true)}
 						>
 							Invite Others
-						</Dropdown.Item>
+						</Dropdown.Item> */}
 						<Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown>
