@@ -114,9 +114,11 @@ const socketDeleteAllMessages = expressAsyncHandler(
 						$or: [
 							{
 								receiver: socket.user.id,
+								sender: OtherUserID,
 								isReceiverDeleted: { $ne: true },
 							},
 							{
+								receiver: OtherUserID,
 								sender: socket.user.id,
 								isSenderDeleted: { $ne: true },
 							},
