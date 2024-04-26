@@ -41,11 +41,7 @@ server.once("close", function () {
 	connectDB()
 
 	app.use(cors(CORS))
-	app.use((req, res, next) => {
-		console.log(req.headers.cookie)
-		console.log(req.cookies)
-		next()
-	})
+
 	app.use(cookieParser())
 
 	app.use(express.json())
