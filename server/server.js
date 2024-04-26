@@ -40,7 +40,11 @@ server.once("close", function () {
 
 	connectDB()
 
-	app.use(cookieParser())
+	try {
+		app.use(cookieParser())
+	} catch (e) {
+		console.log(e)
+	}
 
 	app.use(cors(CORS))
 
