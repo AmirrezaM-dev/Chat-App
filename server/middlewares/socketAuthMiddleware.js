@@ -4,9 +4,9 @@ const User = require("../models/userModel")
 const Token = require("../models/tokenModel")
 const cookie = require("cookie")
 const socketAuthMiddleware = async (socket, next) => {
-	console.log(socket.request.headers)
-	console.log(socket.request.headers.cookie)
-	socket.cookies = cookie.parse(socket.request.headers.cookie)
+	socket.cookies = socket?.request?.headers?.cookie
+		? cookie.parse(socket.request.headers.cookie)
+		: ""
 	const errorHandler = (error) => {
 		console.log("Socket Error :", error)
 		next(new Error(error))
