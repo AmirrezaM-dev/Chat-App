@@ -1,12 +1,10 @@
-[Live Demo](https://chat-app-7x83.onrender.com) - The first visit might take 1 minute of loading, please be patient.
+[Live Demo](https://chat-app-7x83.onrender.com) - The first visit might take up to 1 minute to load, so please be patient.
 
-Made with React.js, Node.js (Express.js), [Socket.io](https://socket.io/), MongoDB
+Built with React.js, Bootstrap, Node.js (Express.js), [Socket.io](https://socket.io/), and MongoDB.
 
-Features:
-
--   Sing Up
--   Sign In
--   Real-Time messaging using Socket.io framework
--   Add/Remove/Block Contacts
--   Send/Edit/Delete (+Clear History) Messages (Real-Time)
--   Profile/Edit Profile (Fullname,Email,Username,Password,Avatar)
+**Features:**
+- Authentication (Sign Up/Sign In)
+- Real-time messaging using the Socket.io framework
+- Add/Remove/Block Contacts
+- Send/Edit/Delete messages (with real-time updates) and clear message history
+- Profile editing (Full Name, Email, Username, Password, Avatar)
