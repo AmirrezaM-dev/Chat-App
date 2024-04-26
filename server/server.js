@@ -41,6 +41,11 @@ server.once("close", function () {
 	connectDB()
 
 	try {
+		app.use((req, res, next) => {
+			console.log(req.cookie)
+			console.log(req.cookies)
+			next()
+		})
 		app.use(cookieParser())
 	} catch (e) {
 		console.log(e)
