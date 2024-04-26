@@ -1,4 +1,4 @@
-[Live Demo](https://chat-app-7x83.onrender.com) - The first visit might take up to 1 minute to load, so please be patient.
+[Live Demo](https://chat-app-7x83.onrender.com) - The initial visit may take up to 1 minute to load. Please be patient.
 
 Built with React.js, Bootstrap, Node.js (Express.js), [Socket.io](https://socket.io/), and MongoDB.
 
