@@ -1,4 +1,4 @@
-# Chat-React-App
+# Chat-App-React-Node
 
 [Live Demo](https://chat.tdem.ir) - The initial visit may take up to 1 minute to load. Please be patient.
 
