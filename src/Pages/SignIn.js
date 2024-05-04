@@ -81,9 +81,9 @@ const SignIn = () => {
 							<Form.Control
 								type="email"
 								name="email"
+								placeholder="Enter your email address"
 								value={formData.email}
 								onChange={(e) => handleFormData(e)}
-								placeholder="Enter your email address"
 								disabled={!firstLogin}
 								isInvalid={validator.email === false}
 								isValid={validator.email}
@@ -98,9 +98,9 @@ const SignIn = () => {
 							<Form.Control
 								type="password"
 								name="password"
+								placeholder="Enter your password"
 								value={formData.password}
 								onChange={(e) => handleFormData(e)}
-								placeholder="Enter your password"
 								disabled={!firstLogin}
 								isInvalid={validator.password === false}
 								isValid={validator.password}
